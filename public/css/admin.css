@@ -1211,6 +1211,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); }
   .modal-header { padding: 16px; }
   .modal-close { font-size: 1.8rem; padding: 4px; }
   .modal .form-actions { position: sticky; bottom: 0; background: var(--bg-card); padding: 12px 0 0; margin-top: 8px; z-index: 1; }
+
+  /* Order detail mobile */
+  .detail-row { flex-direction: column; gap: 4px; }
+  .detail-row span:first-child { min-width: auto; }
 }
 
 /* ================================================================

@@ -23,43 +23,74 @@
         <p>Orders from customers will appear here</p>
       </div>
     <% } else { %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Order #</th>
-            <th>Customer</th>
-            <th>Phone</th>
-            <th>Total</th>
-            <th>Payment</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% orders.forEach(order => { %>
-            <tr>
-              <td><strong><%= order.order_number %></strong></td>
-              <td><%= order.customer_name %><br><small><%= order.customer_email %></small></td>
-              <td><%= order.customer_phone %></td>
-              <td><strong>₹<%= order.total.toLocaleString() %></strong></td>
-              <td><span class="badge badge-<%= order.payment_status %>"><%= order.payment_status %></span></td>
-              <td><span class="badge badge-<%= order.order_status %>"><%= order.order_status %></span></td>
-              <td><small><%= new Date(order.created_at).toLocaleDateString('en-IN') %></small></td>
-              <td>
-                <div class="btn-group">
-                  <a href="/admin/orders/<%= order.id %>" class="btn btn-xs btn-primary" title="View"><i class="fas fa-eye"></i></a>
-                  <form action="/admin/orders/<%= order.id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this order?')">
-                    <button type="submit" class="btn btn-xs btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
+      <div class="admin-search">
+        <div class="admin-search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" id="orderSearch" placeholder="Search orders..." oninput="filterOrders()">
+        </div>
+        <span class="admin-search-count" id="orderCount"><%= orders.length %> order<%= orders.length === 1 ? '' : 's' %></span>
+      </div>
+      <div class="admin-item-list" id="orderList">
+        <% orders.forEach(order => { %>
+          <div class="admin-item" data-search="<%= (order.order_number + ' ' + order.customer_name + ' ' + order.customer_email + ' ' + order.customer_phone).toLowerCase() %>">
+            <div class="admin-item-main">
+              <div class="admin-item-thumb">
+                <div class="order-icon"><i class="fas fa-receipt"></i></div>
+              </div>
+              <div class="admin-item-title">
+                <%= order.order_number %>
+                <span class="badge badge-<%= order.order_status %>"><%= order.order_status %></span>
+                <span class="badge badge-<%= order.payment_status %>"><%= order.payment_status %></span>
+              </div>
+              <div class="admin-item-actions">
+                <a href="/admin/orders/<%= order.id %>" class="btn btn-xs btn-primary" title="View"><i class="fas fa-eye"></i></a>
+                <form action="/admin/orders/<%= order.id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this order?')">
+                  <button type="submit" class="btn btn-xs btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                </form>
+                <button class="btn btn-xs btn-outline admin-item-toggle" onclick="this.closest('.admin-item').classList.toggle('expanded')" title="Details"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+            <div class="admin-item-details">
+              <div class="admin-detail"><span class="admin-detail-label">Customer</span><span><%= order.customer_name %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Email</span><span><%= order.customer_email %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Phone</span><span><%= order.customer_phone %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Total</span><span class="text-bold">₹<%= order.total.toLocaleString() %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Date</span><span><%= new Date(order.created_at).toLocaleDateString('en-IN') %></span></div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
     <% } %>
   </div>
 </div>
+
+<script>
+function filterOrders() {
+  const query = document.getElementById('orderSearch').value.toLowerCase();
+  const items = document.querySelectorAll('#orderList .admin-item');
+  let visible = 0;
+  items.forEach(item => {
+    const search = item.dataset.search || '';
+    const match = search.includes(query);
+    item.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('orderCount').textContent = visible + ' order' + (visible === 1 ? '' : 's');
+}
+</script>
+
+<style>
+.order-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(201,169,110,0.1);
+  border-radius: 8px;
+  color: var(--primary);
+  font-size: 1rem;
+}
+</style>
 
 <%- include('admin-footer') %>
