@@ -2,12 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { initDB } = require('./database');
+const { connectDB } = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-initDB();
+connectDB().then(() => {
+  console.log('Database initialized');
+}).catch(err => {
+  console.error('Database init error:', err);
+});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
