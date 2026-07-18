@@ -27,7 +27,7 @@
         <a href="/shop?category=<%= cat.id %>" class="category-tile" data-name="<%= cat.name.toLowerCase() %>" data-desc="<%= (cat.description || '').toLowerCase() %>">
           <div class="category-tile-image">
             <% if (cat.image) { %>
-              <img src="/uploads/<%= cat.image %>" alt="<%= cat.name %>">
+              <img src="/images/<%= cat.image %>" alt="<%= cat.name %>">
             <% } else { %>
               <div class="category-tile-icon">
                 <i class="fas <%= cat.icon || 'fa-layer-group' %>"></i>

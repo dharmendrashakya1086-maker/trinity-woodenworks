@@ -28,7 +28,7 @@
             <div class="admin-item-main">
               <div class="admin-item-thumb">
                 <% if (cat.image) { %>
-                  <img src="/uploads/<%= cat.image %>" alt="<%= cat.name %>">
+                  <img src="/images/<%= cat.image %>" alt="<%= cat.name %>">
                 <% } else { %>
                   <div class="img-placeholder"><i class="fas fa-image"></i></div>
                 <% } %>
@@ -162,7 +162,7 @@ function editCategory(id, name, desc, image, featured) {
   document.getElementById('editFeatured').checked = featured === 1;
   const preview = document.getElementById('editPreview');
   if (image) {
-    preview.innerHTML = '<img src="/uploads/' + image + '" alt="Preview">';
+    preview.innerHTML = '<img src="/images/' + image + '" alt="Preview">';
   } else {
     preview.innerHTML = '';
   }

@@ -16,7 +16,7 @@
       <div class="product-detail-images">
         <div class="product-main-image">
           <% if (product.image) { %>
-            <img src="/uploads/<%= product.image %>" alt="<%= product.name %>" id="mainImage">
+            <img src="/images/<%= product.image %>" alt="<%= product.name %>" id="mainImage">
           <% } else { %>
             <div class="product-placeholder large"><i class="fas fa-image"></i></div>
           <% } %>
@@ -27,13 +27,13 @@
         <% if (images.length > 0) { %>
           <div class="product-thumbnails">
             <% if (product.image) { %>
-              <div class="thumbnail active" onclick="document.getElementById('mainImage').src='/uploads/<%= product.image %>'; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
-                <img src="/uploads/<%= product.image %>" alt="<%= product.name %>">
+              <div class="thumbnail active" onclick="document.getElementById('mainImage').src='/images/<%= product.image %>'; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
+                <img src="/images/<%= product.image %>" alt="<%= product.name %>">
               </div>
             <% } %>
             <% images.forEach(img => { %>
-              <div class="thumbnail" onclick="document.getElementById('mainImage').src='/uploads/<%= img.image %>'; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
-                <img src="/uploads/<%= img.image %>" alt="<%= product.name %>">
+              <div class="thumbnail" onclick="document.getElementById('mainImage').src='/images/<%= img.image %>'; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
+                <img src="/images/<%= img.image %>" alt="<%= product.name %>">
               </div>
             <% }) %>
           </div>
@@ -121,7 +121,7 @@
         <div class="product-card" onclick="window.location='/product/<%= rp.id %>'">
           <div class="product-image">
             <% if (rp.image) { %>
-              <img src="/uploads/<%= rp.image %>" alt="<%= rp.name %>">
+              <img src="/images/<%= rp.image %>" alt="<%= rp.name %>">
             <% } else { %>
               <div class="product-placeholder"><i class="fas fa-image"></i></div>
             <% } %>

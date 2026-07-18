@@ -62,7 +62,7 @@
           <input type="file" name="image" accept="image/*" class="file-input">
           <% if (product && product.image) { %>
             <div class="current-image">
-              <img src="/uploads/<%= product.image %>" alt="Current image" style="max-width:100px;margin-top:8px;border-radius:8px">
+              <img src="/images/<%= product.image %>" alt="Current image" style="max-width:100px;margin-top:8px;border-radius:8px">
               <label><input type="checkbox" name="remove_image" value="1"> Remove image</label>
               <input type="hidden" name="existing_image" value="<%= product.image %>">
             </div>
@@ -75,7 +75,7 @@
             <div class="current-gallery">
               <% images.forEach(img => { %>
                 <div class="gallery-thumb">
-                  <img src="/uploads/<%= img.image %>" alt="Gallery">
+                  <img src="/images/<%= img.image %>" alt="Gallery">
                   <a href="/admin/products/delete-image/<%= img.id %>" class="remove-img" onclick="return confirm('Remove this image?')"><i class="fas fa-times"></i></a>
                 </div>
               <% }) %>
