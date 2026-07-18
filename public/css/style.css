@@ -32,6 +32,11 @@
   --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --glass-bg: rgba(14,14,20,0.55);
+  --glass-bg-light: rgba(20,20,30,0.45);
+  --glass-border: rgba(201,169,110,0.08);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -55,6 +60,248 @@ body {
 .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; height: auto; }
+
+/* ================================================================
+   GLASSMORPHISM SYSTEM
+   ================================================================ */
+
+/* ---- Cards ---- */
+.card, .product-card, .category-card, .order-card,
+.auth-card, .order-header-card, .order-detail-card,
+.track-form, .product-info {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+}
+.card-header {
+  background: rgba(201,169,110,0.03) !important;
+  border-bottom: 1px solid rgba(201,169,110,0.06) !important;
+  backdrop-filter: blur(10px) !important;
+}
+.card-body {
+  background: transparent !important;
+}
+
+/* ---- Navbar ---- */
+.navbar {
+  background: rgba(8,8,12,0.7) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(201,169,110,0.06) !important;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3) !important;
+}
+
+/* ---- Footer ---- */
+.footer {
+  background: rgba(8,8,12,0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(201,169,110,0.06) !important;
+}
+
+/* ---- Page Headers ---- */
+.page-header {
+  background: rgba(12,12,18,0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(201,169,110,0.04) !important;
+}
+
+/* ---- Hero Section ---- */
+.hero {
+  background: rgba(6,6,8,0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* ---- Forms ---- */
+.auth-form .form-group input,
+.auth-form .form-group select,
+.auth-form .form-group textarea,
+.form-group input, .form-group select, .form-group textarea {
+  background: rgba(18,18,24,0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(201,169,110,0.08) !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: rgba(201,169,110,0.3) !important;
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.08), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+/* ---- Auth Card ---- */
+.auth-card {
+  background: rgba(14,14,20,0.6) !important;
+  border: 1px solid rgba(201,169,110,0.06) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+}
+
+/* ---- Buttons (Glass style) ---- */
+.btn-glass {
+  background: rgba(201,169,110,0.08) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(201,169,110,0.15) !important;
+}
+.btn-glass:hover {
+  background: rgba(201,169,110,0.15) !important;
+  border-color: rgba(201,169,110,0.3) !important;
+}
+
+/* ---- Shop Grid Product Cards ---- */
+.shop-grid .product-card {
+  background: rgba(14,14,22,0.5) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(201,169,110,0.05) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02) !important;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+.shop-grid .product-card:hover {
+  border-color: rgba(201,169,110,0.15) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,169,110,0.08) !important;
+  transform: translateY(-6px) !important;
+}
+
+/* ---- Category Cards ---- */
+.category-grid .category-card,
+.categories-grid .category-card {
+  background: rgba(14,14,22,0.45) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(201,169,110,0.05) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+}
+
+/* ---- Cart Page ---- */
+.cart-item, .cart-summary, .track-order-section {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+/* ---- Modals ---- */
+.modal-content, .auth-modal, .cancel-modal {
+  background: rgba(14,14,22,0.85) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border: 1px solid rgba(201,169,110,0.1) !important;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+/* ---- Filter Bar ---- */
+.filter-bar {
+  background: rgba(14,14,22,0.5) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(201,169,110,0.05) !important;
+}
+.filter-btn {
+  background: rgba(201,169,110,0.04) !important;
+  border: 1px solid rgba(201,169,110,0.06) !important;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: rgba(201,169,110,0.12) !important;
+  border-color: rgba(201,169,110,0.25) !important;
+}
+
+/* ---- Badges ---- */
+.badge {
+  background: rgba(201,169,110,0.1) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(201,169,110,0.1) !important;
+}
+
+/* ---- Search Bars ---- */
+.admin-search-wrap, .track-input-group input, #categorySearch, #productSearch, #orderSearch {
+  background: rgba(18,18,24,0.5) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(201,169,110,0.06) !important;
+}
+
+/* ---- Empty States ---- */
+.empty-state {
+  background: rgba(14,14,22,0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px dashed rgba(201,169,110,0.1) !important;
+}
+
+/* ---- Account Sidebar ---- */
+.account-sidebar, .account-user {
+  background: rgba(14,14,22,0.5) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(201,169,110,0.06) !important;
+}
+.account-nav-link {
+  background: rgba(201,169,110,0.03) !important;
+  border: 1px solid transparent !important;
+}
+.account-nav-link:hover, .account-nav-link.active {
+  background: rgba(201,169,110,0.08) !important;
+  border-color: rgba(201,169,110,0.1) !important;
+}
+
+/* ---- Order Tracking Steps ---- */
+.tracking-step {
+  background: rgba(14,14,22,0.4) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(201,169,110,0.04) !important;
+}
+.tracking-step.completed {
+  background: rgba(0,230,118,0.04) !important;
+  border-color: rgba(0,230,118,0.1) !important;
+}
+.tracking-step.current {
+  background: rgba(201,169,110,0.06) !important;
+  border-color: rgba(201,169,110,0.15) !important;
+}
+
+/* ---- Quantity Controls ---- */
+.qty-btn {
+  background: rgba(201,169,110,0.06) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(201,169,110,0.08) !important;
+}
+.qty-btn:hover {
+  background: rgba(201,169,110,0.15) !important;
+}
+
+/* ---- Product Tabs ---- */
+.tab-btn {
+  background: rgba(201,169,110,0.04) !important;
+  border: 1px solid rgba(201,169,110,0.06) !important;
+}
+.tab-btn.active, .tab-btn:hover {
+  background: rgba(201,169,110,0.1) !important;
+  border-color: rgba(201,169,110,0.2) !important;
+}
+
+/* ---- Pagination ---- */
+.pagination a, .pagination span {
+  background: rgba(201,169,110,0.05) !important;
+  border: 1px solid rgba(201,169,110,0.08) !important;
+}
+.pagination a:hover, .pagination .active {
+  background: rgba(201,169,110,0.15) !important;
+  border-color: rgba(201,169,110,0.3) !important;
+}
+
+/* ---- Toast Notifications ---- */
+.toast {
+  background: rgba(14,14,22,0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(201,169,110,0.1) !important;
+}
 
 /* ================================================================
    FUTURISTIC BUTTON SYSTEM
