@@ -4482,6 +4482,83 @@ img { max-width: 100%; height: auto; }
   margin-left: 6px;
 }
 
+/* ---- Mobile Bottom Navigation ---- */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(201,169,110,0.12);
+  z-index: 9998;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+  justify-content: space-around;
+  align-items: center;
+}
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  transition: var(--transition);
+  position: relative;
+}
+.bottom-nav-item i { font-size: 1.15rem; transition: var(--transition); }
+.bottom-nav-item.active { color: var(--primary); }
+.bottom-nav-item.active i { color: var(--primary); transform: scale(1.1); }
+.bottom-nav-cart-circle {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary), #a8863e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -20px;
+  box-shadow: 0 4px 15px rgba(201,169,110,0.3);
+  position: relative;
+  transition: var(--transition);
+}
+.bottom-nav-cart:hover .bottom-nav-cart-circle {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(201,169,110,0.4);
+}
+.bottom-nav-cart-circle i {
+  color: #000 !important;
+  font-size: 1.2rem;
+}
+.bottom-nav-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #0a0a0f;
+}
+@media (max-width: 768px) {
+  .bottom-nav { display: flex; }
+  body { padding-bottom: 70px; }
+  .footer { padding-bottom: 80px !important; }
+  .cart-icon { display: none !important; }
+  .nav-account-desktop { display: none !important; }
+}
+
 /* ---- Account Layout ---- */
 .account-layout {
   display: grid;

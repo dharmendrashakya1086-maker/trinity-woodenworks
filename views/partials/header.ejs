@@ -46,9 +46,6 @@
     <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
     <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
     <a href="/track-order" class="nav-link <%= currentPath === '/track-order' ? 'active' : '' %>">Track Order</a>
-    <a href="/account" class="nav-link nav-account-mobile">
-      <i class="fas fa-user"></i> Account
-    </a>
   </div>
   <nav class="navbar">
     <div class="container nav-container">
@@ -167,3 +164,24 @@
   <% } else { %>
   <script>const isLoggedIn = true;</script>
   <% } %>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="bottom-nav" id="bottomNav">
+    <a href="/" class="bottom-nav-item <%= currentPath === '/' ? 'active' : '' %>">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/cart" class="bottom-nav-item bottom-nav-cart <%= currentPath === '/cart' ? 'active' : '' %>">
+      <div class="bottom-nav-cart-circle">
+        <i class="fas fa-shopping-bag"></i>
+        <% if (typeof cartCount !== 'undefined' && cartCount > 0) { %>
+          <span class="bottom-nav-badge"><%= cartCount %></span>
+        <% } %>
+      </div>
+      <span>Cart</span>
+    </a>
+    <a href="<%= customer ? '/account' : '/login' %>" class="bottom-nav-item <%= currentPath === '/account' || currentPath === '/login' ? 'active' : '' %>">
+      <i class="fas fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
