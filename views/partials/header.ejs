@@ -9,8 +9,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .page-loader{position:fixed;inset:0;background:#0a0a0f;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease;}
+    .page-loader.hidden{opacity:0;pointer-events:none;}
+    .loader-logo{width:70px;height:70px;border:3px solid rgba(201,169,110,0.15);border-top-color:#C9A96E;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+    .loader-text{color:#C9A96E;font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:2px;}
+    .loader-sub{color:#666;font-size:0.75rem;margin-top:8px;letter-spacing:1px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
 <body>
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-logo"></div>
+    <div class="loader-text">TRINITY WOODENWORKS</div>
+    <div class="loader-sub">Loading...</div>
+  </div>
+  <script>
+    window.addEventListener('load', function() {
+      var loader = document.getElementById('pageLoader');
+      if (loader) { loader.classList.add('hidden'); setTimeout(function(){ loader.remove(); }, 500); }
+    });
+  </script>
   <div class="nav-overlay" id="navOverlay" onclick="closeMenu()"></div>
   <div class="nav-menu" id="navMenu">
     <div class="nav-menu-header">
