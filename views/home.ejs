@@ -3,12 +3,12 @@
 <section class="hero hero-3d">
   <div class="hero-bg"></div>
   <div class="container hero-content">
-    <div class="hero-badge badge-glass">Handcrafted with Love</div>
-    <h1>Trinity <span class="text-accent">Woodenworks</span></h1>
+    <div class="hero-badge badge-glass floating">Handcrafted with Love</div>
+    <h1 class="gradient-text">Trinity Woodenworks</h1>
     <p class="hero-subtitle">Crafted with Passion, Built to Last</p>
     <p class="hero-desc">Premium handcrafted wooden items made by three friends who share a passion for woodworking. Each piece tells a story of craftsmanship and dedication.</p>
     <div class="hero-actions">
-      <a href="/shop" class="btn btn-primary btn-lg"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+      <a href="/shop" class="btn btn-primary btn-lg btn-glow"><i class="fas fa-shopping-bag"></i> Shop Now</a>
       <a href="/about" class="btn btn-outline btn-lg"><i class="fas fa-info-circle"></i> Our Story</a>
     </div>
     <div class="hero-founders">
@@ -17,25 +17,82 @@
   </div>
 </section>
 
+<!-- Trust Badges -->
+<section class="section" style="padding-top: 60px; padding-bottom: 0;">
+  <div class="container">
+    <div class="stats-grid stagger-children">
+      <div class="trust-badge reveal">
+        <div class="trust-badge-icon"><i class="fas fa-truck-fast"></i></div>
+        <div class="trust-badge-title">Free Shipping</div>
+        <div class="trust-badge-text">On orders above ₹1,000</div>
+      </div>
+      <div class="trust-badge reveal">
+        <div class="trust-badge-icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="trust-badge-title">Quality Assured</div>
+        <div class="trust-badge-text">Premium wood, built to last</div>
+      </div>
+      <div class="trust-badge reveal">
+        <div class="trust-badge-icon"><i class="fas fa-rotate-left"></i></div>
+        <div class="trust-badge-title">Easy Returns</div>
+        <div class="trust-badge-text">7-day return policy</div>
+      </div>
+      <div class="trust-badge reveal">
+        <div class="trust-badge-icon"><i class="fas fa-headset"></i></div>
+        <div class="trust-badge-title">24/7 Support</div>
+        <div class="trust-badge-text">We're here to help</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="section">
+  <div class="container">
+    <div class="stats-grid stagger-children">
+      <div class="stat-item reveal">
+        <div class="counter-value" data-count="<%= stats.products %>">0</div>
+        <div class="counter-label">Products</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="counter-value" data-count="500">0</div>
+        <div class="counter-label">Happy Customers</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="counter-value" data-count="50">0</div>
+        <div class="counter-label">Custom Designs</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="counter-value" data-count="5">0</div>
+        <div class="counter-label">Years Experience</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="features">
   <div class="container">
-    <div class="features-grid">
-      <div class="feature-card">
+    <div class="section-header reveal">
+      <span class="section-tag">Why Choose Us</span>
+      <h2>Crafted for You</h2>
+      <p>Every piece reflects our commitment to quality</p>
+    </div>
+    <div class="features-grid stagger-children">
+      <div class="feature-card reveal">
         <div class="feature-icon"><i class="fas fa-hand-sparkles"></i></div>
         <h3>100% Handcrafted</h3>
         <p>Every piece is carefully handcrafted by skilled artisans</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon"><i class="fas fa-leaf"></i></div>
         <h3>Eco-Friendly</h3>
         <p>Made from sustainably sourced natural wood</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon"><i class="fas fa-truck"></i></div>
         <h3>Free Shipping</h3>
         <p>Free delivery on orders above ₹1,000</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
         <h3>Quality Assured</h3>
         <p>Premium quality wood with lifetime durability</p>
@@ -47,14 +104,14 @@
 <% if (featuredCategories.length > 0) { %>
 <section class="section featured-section">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <span class="section-tag">Our Collection</span>
       <h2>Featured Categories</h2>
       <p>Explore our handcrafted collections by category</p>
     </div>
-    <div class="categories-grid home-categories-grid">
+    <div class="categories-grid home-categories-grid stagger-children">
       <% featuredCategories.forEach(cat => { %>
-        <a href="/shop?category=<%= cat.id %>" class="category-tile">
+        <a href="/shop?category=<%= cat.id %>" class="category-tile reveal">
           <div class="category-tile-image">
             <% if (cat.image) { %>
               <img src="/images/<%= cat.image %>" alt="<%= cat.name %>">
@@ -74,25 +131,117 @@
         </a>
       <% }) %>
     </div>
-    <div class="section-footer">
+    <div class="section-footer reveal">
       <a href="/categories" class="btn btn-outline">View All Categories <i class="fas fa-arrow-right"></i></a>
     </div>
   </div>
 </section>
 <% } %>
 
+<% if (latest.length > 0) { %>
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">New Arrivals</span>
+      <h2>Latest Products</h2>
+      <p>Check out our newest handcrafted pieces</p>
+    </div>
+    <div class="products-grid home-products-grid stagger-children">
+      <% latest.forEach(product => { %>
+        <a href="/product/<%= product.id %>" class="product-card reveal">
+          <div class="product-image">
+            <% if (product.image) { %>
+              <img src="/images/<%= product.image %>" alt="<%= product.name %>">
+            <% } else { %>
+              <div class="product-placeholder"><i class="fas fa-image"></i></div>
+            <% } %>
+            <% if (product.discount_percent > 0) { %>
+              <span class="product-badge sale"><%= product.discount_percent %>% OFF</span>
+            <% } %>
+            <button class="card-share-btn" onclick="event.stopPropagation(); shareProduct(<%= product.id %>, '<%= product.name.replace(/'/g, "\\'") %>', <%= product.price %>)" title="Share">
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+          <div class="product-info">
+            <span class="product-category"><%= product.category_name || 'Uncategorized' %></span>
+            <h3 class="product-name"><%= product.name %></h3>
+            <div class="product-price">
+              <% if (product.discount_percent > 0) { %>
+                <span class="price-current">₹<%= product.price.toLocaleString() %></span>
+                <span class="price-old">₹<%= (product.mrp || product.price).toLocaleString() %></span>
+              <% } else { %>
+                <span class="price-current">₹<%= product.price.toLocaleString() %></span>
+              <% } %>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+    <div class="section-footer reveal">
+      <a href="/shop" class="btn btn-primary">View All Products <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Testimonials -->
+<section class="section" style="background: linear-gradient(180deg, transparent, rgba(201,169,110,0.02), transparent);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Testimonials</span>
+      <h2>What Our Customers Say</h2>
+      <p>Real reviews from real people</p>
+    </div>
+    <div class="stagger-children" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="testimonial-text">"The craftsmanship is outstanding. I ordered a custom nameplate and it exceeded my expectations. The attention to detail is remarkable."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">R</div>
+          <div>
+            <div class="testimonial-name">Rahul Sharma</div>
+            <div class="testimonial-location">Jaipur, Rajasthan</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="testimonial-text">"Beautiful wooden furniture delivered right to my door. The coffee table is now the centerpiece of my living room. Highly recommended!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">P</div>
+          <div>
+            <div class="testimonial-name">Priya Patel</div>
+            <div class="testimonial-location">Mumbai, Maharashtra</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="testimonial-text">"Amazing quality and fast delivery. The wooden chess board I bought is a work of art. Will definitely order again!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div>
+            <div class="testimonial-name">Amit Kumar</div>
+            <div class="testimonial-location">Delhi, NCR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section about-preview">
   <div class="container">
     <div class="about-grid">
-      <div class="about-content">
+      <div class="about-content reveal-left">
         <span class="section-tag">Our Story</span>
         <h2>Three Friends, One Passion</h2>
         <p>Trinity Woodenworks was born from a shared dream between three friends — <strong>Anshuman</strong>, <strong>Sachin</strong>, and <strong>Sankalp</strong> — who found their calling in the art of woodworking.</p>
-        <p>What started as a hobby in a small workshop has grown into a brand known for its quality craftsmanship, attention to detail, and unique designs. Each piece of wood we work with is transformed into something beautiful, functional, and built to last generations.</p>
+        <p>What started as a hobby in a small workshop has grown into a brand known for its quality craftsmanship, attention to detail, and unique designs.</p>
         <p>We believe in sustainable practices, supporting local communities, and creating products that bring warmth and character to every home.</p>
-        <a href="/about" class="btn btn-primary">Read Our Full Story <i class="fas fa-arrow-right"></i></a>
+        <a href="/about" class="btn btn-primary btn-glow">Read Our Full Story <i class="fas fa-arrow-right"></i></a>
       </div>
-      <div class="about-visual">
+      <div class="about-visual reveal-right">
         <div class="about-card">
           <div class="about-icon"><i class="fas fa-tree"></i></div>
           <h4>Sustainable Wood</h4>
@@ -113,17 +262,88 @@
   </div>
 </section>
 
+<!-- Newsletter -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Stay Connected</span>
+      <h2>Join Our Newsletter</h2>
+      <p>Get updates on new arrivals, offers, and woodworking tips</p>
+    </div>
+    <form class="newsletter-form reveal" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\"fas fa-check\"></i> Subscribed!'; this.querySelector('input').value='';">
+      <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+      <button type="submit" class="btn btn-primary btn-glow"><i class="fas fa-paper-plane"></i> Subscribe</button>
+    </form>
+  </div>
+</section>
+
 <section class="section cta-section">
   <div class="container">
-    <div class="cta-card">
+    <div class="cta-card reveal-scale">
       <h2>Ready to Transform Your Space?</h2>
       <p>Browse our collection of handcrafted wooden items and find the perfect piece for your home.</p>
       <div class="cta-actions">
-        <a href="/shop" class="btn btn-primary btn-lg">Shop Now</a>
+        <a href="/shop" class="btn btn-primary btn-lg btn-glow">Shop Now</a>
         <a href="/contact" class="btn btn-outline-light btn-lg">Get in Touch</a>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Back to Top -->
+<button id="backToTop" class="back-to-top" title="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+function shareProduct(id, name, price) {
+  const url = window.location.origin + '/product/' + id;
+  const text = 'Check out ' + name + ' at ₹' + price.toLocaleString() + '\n\n' + url;
+  if (navigator.share) {
+    navigator.share({ title: name, text: text, url: url });
+  } else {
+    const popup = document.createElement('div');
+    popup.className = 'share-popup';
+    popup.innerHTML = '<div class="share-popup-content"><h4>Share Product</h4><p>' + name + '</p><div class="share-popup-buttons"><a href="https://wa.me/?text=' + encodeURIComponent(text) + '" target="_blank" class="share-popup-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank" class="share-popup-btn facebook"><i class="fab fa-facebook-f"></i> Facebook</a><a href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(name + ' ₹' + price.toLocaleString()) + '&url=' + encodeURIComponent(url) + '" target="_blank" class="share-popup-btn twitter"><i class="fab fa-twitter"></i> Twitter</a><button onclick="navigator.clipboard.writeText(\'' + url + '\'); this.innerHTML=\'<i class=fas fa-check></i> Copied!\'; setTimeout(()=>this.closest(\'.share-popup\').remove(), 1500)" class="share-popup-btn copy"><i class="fas fa-link"></i> Copy Link</button></div><button class="share-popup-close" onclick="this.closest(\'.share-popup\').remove()">&times;</button></div>';
+    document.body.appendChild(popup);
+  }
+}
+</script>
+
+<style>
+.back-to-top {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(201,169,110,0.2);
+  background: rgba(10,10,14,0.8);
+  backdrop-filter: blur(12px);
+  color: var(--primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s var(--ease-out);
+  z-index: 999;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: rgba(201,169,110,0.15);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+}
+</style>
 
 <%- include('partials/footer') %>

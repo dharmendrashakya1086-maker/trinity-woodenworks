@@ -5692,3 +5692,457 @@ textarea:focus-visible {
   border-color: rgba(255,23,68,0.3);
   color: var(--danger);
 }
+
+/* ================================================================
+   PREMIUM UI ENHANCEMENTS
+   ================================================================ */
+
+/* ---- Animated Gradient Text ---- */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary), var(--gold-light), var(--primary), var(--gold));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ---- Scroll Reveal Animations (Pure CSS) ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger children */
+.stagger-children .reveal:nth-child(1) { transition-delay: 0s; }
+.stagger-children .reveal:nth-child(2) { transition-delay: 0.1s; }
+.stagger-children .reveal:nth-child(3) { transition-delay: 0.2s; }
+.stagger-children .reveal:nth-child(4) { transition-delay: 0.3s; }
+.stagger-children .reveal:nth-child(5) { transition-delay: 0.4s; }
+.stagger-children .reveal:nth-child(6) { transition-delay: 0.5s; }
+
+/* ---- Premium Product Card Hover ---- */
+.product-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s var(--ease-out);
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(201,169,110,0.15), 0 0 30px rgba(201,169,110,0.05);
+}
+
+.product-card .product-image {
+  overflow: hidden;
+  position: relative;
+}
+
+.product-card .product-image img {
+  transition: transform 0.6s var(--ease-out);
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.08);
+}
+
+.product-card .product-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(2,2,3,0.8) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.product-card:hover .product-image::after {
+  opacity: 1;
+}
+
+/* ---- Floating Badge Animation ---- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ---- Shimmer Loading Skeleton ---- */
+.skeleton {
+  background: linear-gradient(90deg, var(--dark-3) 25%, var(--dark-4) 50%, var(--dark-3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text { height: 14px; margin-bottom: 8px; }
+.skeleton-title { height: 24px; width: 60%; margin-bottom: 12px; }
+.skeleton-image { height: 200px; }
+.skeleton-avatar { width: 48px; height: 48px; border-radius: 50%; }
+
+/* ---- Premium Button Glow ---- */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(201,169,110,0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.btn-glow:hover::after {
+  opacity: 1;
+  animation: glowPulse 1.5s ease infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* ---- Glassmorphism Testimonial Card ---- */
+.testimonial-card {
+  background: rgba(10,10,14,0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(201,169,110,0.1);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  transition: all 0.4s var(--ease-out);
+}
+
+.testimonial-card:hover {
+  border-color: rgba(201,169,110,0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.testimonial-card::before {
+  content: '\201C';
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  font-size: 4rem;
+  font-family: var(--font-display);
+  color: var(--primary);
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.testimonial-stars {
+  color: var(--gold);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.testimonial-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-light);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(201,169,110,0.1);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.testimonial-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.testimonial-location {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ---- Trust Badges Section ---- */
+.trust-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  background: rgba(10,10,14,0.4);
+  border: 1px solid rgba(201,169,110,0.08);
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s var(--ease-out);
+}
+
+.trust-badge:hover {
+  border-color: rgba(201,169,110,0.2);
+  background: rgba(201,169,110,0.04);
+  transform: translateY(-4px);
+}
+
+.trust-badge-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(201,169,110,0.08);
+  border: 1px solid rgba(201,169,110,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--primary);
+  transition: all 0.3s;
+}
+
+.trust-badge:hover .trust-badge-icon {
+  background: rgba(201,169,110,0.15);
+  box-shadow: 0 0 20px rgba(201,169,110,0.2);
+}
+
+.trust-badge-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.trust-badge-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ---- Newsletter Section ---- */
+.newsletter-section {
+  background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, rgba(10,10,14,0.8) 50%, rgba(201,169,110,0.04) 100%);
+  border-top: 1px solid rgba(201,169,110,0.1);
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+  padding: 80px 0;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(201,169,110,0.15);
+  background: rgba(10,10,14,0.6);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  font-size: 0.95rem;
+  transition: all 0.3s;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(201,169,110,0.15);
+}
+
+.newsletter-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ---- Floating Label Input ---- */
+.float-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.float-input {
+  width: 100%;
+  padding: 16px 16px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(201,169,110,0.15);
+  background: rgba(10,10,14,0.6);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.float-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(201,169,110,0.12);
+}
+
+.float-label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  pointer-events: none;
+  transition: all 0.3s var(--ease-out);
+}
+
+.float-input:focus + .float-label,
+.float-input:not(:placeholder-shown) + .float-label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.7rem;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+/* ---- Animated Counter ---- */
+.counter-value {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.counter-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ---- Image Hover Overlay ---- */
+.image-overlay {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.image-overlay img {
+  transition: transform 0.6s var(--ease-out);
+}
+
+.image-overlay:hover img {
+  transform: scale(1.05);
+}
+
+.image-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(2,2,3,0.7) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.image-overlay:hover::after {
+  opacity: 1;
+}
+
+/* ---- Premium Divider ---- */
+.divider-gold {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  margin: 24px auto;
+}
+
+/* ---- Stats Section ---- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.stat-item {
+  padding: 32px 16px;
+  background: rgba(10,10,14,0.4);
+  border: 1px solid rgba(201,169,110,0.08);
+  border-radius: 16px;
+  transition: all 0.3s var(--ease-out);
+}
+
+.stat-item:hover {
+  border-color: rgba(201,169,110,0.2);
+  transform: translateY(-4px);
+}
+
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .newsletter-form { flex-direction: column; }
+  .testimonial-card { padding: 24px; }
+}
