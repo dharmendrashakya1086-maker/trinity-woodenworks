@@ -80,11 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
       trigger: '.hero',
       start: 'top top',
       end: 'bottom top',
-      scrub: 1
+      scrub: 1,
+      pin: false
     },
-    y: 150,
-    opacity: 0.3,
-    scale: 0.95,
+    y: 80,
+    opacity: 0.4,
     ease: 'none'
   });
 
@@ -353,8 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
       end: 'bottom top',
       scrub: 1
     },
-    scale: 1.2,
-    opacity: 0.5,
+    scale: 1.1,
+    opacity: 0.7,
     ease: 'none'
   });
 

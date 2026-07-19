@@ -34,13 +34,26 @@ html {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 .hero-content {
   text-align: center;
-  z-index: 2;
+  z-index: 5;
   max-width: 800px;
   padding: 0 24px;
+  position: relative;
+}
+
+/* ---- Fix sections below hero ---- */
+.section,
+.features,
+.about-preview,
+.newsletter-section,
+.cta-section {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
 }
 
 .hero h1 {

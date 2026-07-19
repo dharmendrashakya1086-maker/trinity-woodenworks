@@ -230,6 +230,7 @@ body::before {
 .hero-3d {
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 .hero-3d::before {
@@ -250,6 +251,7 @@ body::before {
     transparent 360deg
   );
   animation: heroRotate 30s linear infinite;
+  z-index: -1;
 }
 
 @keyframes heroRotate {
@@ -267,6 +269,13 @@ body::before {
     rgba(2,2,3,0.8) 100%
   );
   pointer-events: none;
+  z-index: 1;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 /* ---- 3D Floating Elements ---- */
