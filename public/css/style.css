@@ -278,6 +278,33 @@ img { max-width: 100%; height: auto; }
   border: 1px solid var(--glass-border) !important;
   box-shadow: var(--shadow-glass) !important;
 }
+
+/* ---- All Remaining Cards/Panels Glass ---- */
+.founder-card, .value-card, .contact-card, .contact-form-section,
+.checkout-form-section, .checkout-summary, .payment-card, .cart-items,
+.order-number-box, .order-info-item, .account-message-card,
+.shop-sidebar, .product-main-image, .product-features, .mobile-filters-bar,
+.founders-grid .founder-card, .values-grid .value-card,
+.newsletter-form, .newsletter-input,
+.tracking-step, .account-sidebar, .account-user,
+.product-detail-info, .product-detail-tabs,
+.review-card, .review-form,
+.tab-content, .tab-btn,
+.qty-btn, .pagination, .empty-state,
+.order-card, .order-header-card, .order-detail-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
+}
+
+/* ---- Section Containers Glass ---- */
+.section, .features, .about-preview, .newsletter-section, .cta-section {
+  background: rgba(2,2,3,0.88) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
 .filter-btn {
   background: rgba(201,169,110,0.04) !important;
   border: 1px solid rgba(201,169,110,0.08) !important;

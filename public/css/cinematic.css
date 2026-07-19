@@ -84,15 +84,6 @@ html { scroll-behavior: smooth; }
 }
 
 /* ---- Fix sections below hero ---- */
-.section,
-.features,
-.about-preview,
-.newsletter-section,
-.cta-section {
-  position: relative;
-  z-index: 2;
-  background: rgba(2,2,3,0.88);
-}
 
 /* ---- Section decoration line ---- */
 .section::before {
