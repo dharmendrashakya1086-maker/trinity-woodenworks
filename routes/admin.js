@@ -21,6 +21,11 @@ function requireAdmin(req, res, next) {
   res.redirect('/admin/login');
 }
 
+// Root redirect to login
+router.get('/', (req, res) => {
+  res.redirect('/admin/login');
+});
+
 // Login
 router.get('/login', (req, res) => {
   if (req.session.admin) return res.redirect('/admin/dashboard');
