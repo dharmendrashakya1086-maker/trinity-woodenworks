@@ -175,49 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- SCROLL REVEAL (GSAP handles this via cinematic.js) ----
 
-  // ---- PARALLAX ON HERO ----
-  const heroBg = document.querySelector('.hero-bg');
-  if (heroBg) {
-    window.addEventListener('scroll', () => {
-      const scrolled = window.scrollY;
-      if (scrolled < window.innerHeight) {
-        heroBg.style.transform = `translateY(${scrolled * 0.35}px)`;
-      }
-    });
-  }
-
-  // ---- 3D TILT ON PRODUCT CARDS ----
-  document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = (y - centerY) / 25;
-      const rotateY = (centerX - x) / 25;
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
-      card.style.boxShadow = `${-rotateY * 2}px ${rotateX * 2}px 40px rgba(0,0,0,0.3), 0 0 40px rgba(201,169,110,0.08)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-      card.style.boxShadow = '';
-    });
-  });
-
-  // ---- MAGNETIC EFFECT ON BUTTONS ----
-  document.querySelectorAll('.btn-primary, .btn-glow').forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) translateY(-3px)`;
-    });
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = '';
-    });
-  });
-
   // ---- TYPED EFFECT ON HERO BADGE (if exists) ----
   const heroBadge = document.querySelector('.hero-badge');
   if (heroBadge) {
@@ -235,55 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 50);
   }
 
-  // ---- COUNTER ANIMATION FOR STATS ----
-  document.querySelectorAll('.stat-info h3').forEach(stat => {
-    const text = stat.textContent;
-    const match = text.match(/[\d,]+/);
-    if (match) {
-      const target = parseInt(match[0].replace(/,/g, ''));
-      const prefix = text.substring(0, text.indexOf(match[0]));
-      const suffix = text.substring(text.indexOf(match[0]) + match[0].length);
-      let current = 0;
-      const step = Math.max(1, Math.floor(target / 40));
-      const interval = setInterval(() => {
-        current += step;
-        if (current >= target) {
-          current = target;
-          clearInterval(interval);
-        }
-        stat.textContent = prefix + current.toLocaleString() + suffix;
-      }, 30);
-    }
-  });
+  // ---- COUNTER ANIMATION (handled by 3d-effects.js) ----
 
-  // ---- CURSOR GLOW ----
-  if (window.matchMedia('(pointer: fine)').matches) {
-    const cursorGlow = document.createElement('div');
-    cursorGlow.id = 'cursorGlow';
-    cursorGlow.style.cssText = `
-      position: fixed;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      pointer-events: none;
-      background: radial-gradient(circle, rgba(201,169,110,0.35) 0%, transparent 70%);
-      transform: translate(-50%, -50%);
-      z-index: 9998;
-      transition: opacity 0.4s;
-      will-change: left, top;
-    `;
-    document.body.appendChild(cursorGlow);
-
-    let mx = 0, my = 0, gx = 0, gy = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function animateGlow() {
-      gx += (mx - gx) * 0.08;
-      gy += (my - gy) * 0.08;
-      cursorGlow.style.left = gx + 'px';
-      cursorGlow.style.top = gy + 'px';
-      requestAnimationFrame(animateGlow);
-    })();
-  }
+  // ---- CURSOR GLOW (handled by 3d-effects.js) ----
 
   // ---- SMOOTH SCROLL FOR ANCHOR LINKS ----
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -402,31 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(rippleStyle);
 
-  // ---- ANIMATED COUNTERS ----
-  const counters = document.querySelectorAll('[data-count]');
-  if (counters.length > 0) {
-    const counterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const el = entry.target;
-          const target = parseInt(el.dataset.count);
-          const duration = 2000;
-          const start = performance.now();
-          const animate = (now) => {
-            const progress = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            el.textContent = Math.floor(target * eased).toLocaleString();
-            if (progress < 1) requestAnimationFrame(animate);
-            else el.textContent = target.toLocaleString();
-          };
-          requestAnimationFrame(animate);
-          counterObserver.unobserve(el);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    counters.forEach(el => counterObserver.observe(el));
-  }
+  // ---- ANIMATED COUNTERS (handled by 3d-effects.js) ----
 
   // ---- BACK TO TOP BUTTON ----
   const backToTop = document.getElementById('backToTop');
