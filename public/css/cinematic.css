@@ -94,7 +94,7 @@ html { scroll-behavior: smooth; }
   background: var(--bg);
 }
 
-/* ---- Section Transitions (decoration only) ---- */
+/* ---- Section decoration line ---- */
 .section::before {
   content: '';
   position: absolute;

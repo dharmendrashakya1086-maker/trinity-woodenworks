@@ -296,26 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---- STAGGER REVEAL FOR GRID ITEMS ----
-  const staggerObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }, i * 60);
-        staggerObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.products-grid .product-card, .categories-grid .category-tile').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(25px)';
-    el.style.transition = 'opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)';
-    staggerObserver.observe(el);
-  });
-
   // ---- NAVBAR GLOW ON SCROLL ----
   const nav = document.querySelector('.navbar');
   if (nav) {
