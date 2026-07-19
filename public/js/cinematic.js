@@ -196,8 +196,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // ---- Testimonial Cards ----
   gsap.from('.testimonial-card', {
     scrollTrigger: {
-      trigger: '.testimonials-section',
-      start: 'top 80%',
+      trigger: '.testimonial-card',
+      start: 'top 85%',
       toggleActions: 'play none none none'
     },
     opacity: 0,

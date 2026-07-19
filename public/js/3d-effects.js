@@ -132,32 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // ---- Scroll Reveal Animation ----
-  const revealElements = document.querySelectorAll('.section, .feature-card, .product-card, .category-card, .cta-card, .about-grid, .testimonial-card, .trust-badge');
-  
-  revealElements.forEach(el => {
-    el.classList.add('reveal-3d');
-  });
+  // ---- Scroll Reveal (handled by GSAP in cinematic.js) ----
 
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-  revealElements.forEach(el => revealObserver.observe(el));
-
-  // ---- Parallax Effect on Hero ----
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    window.addEventListener('scroll', () => {
-      const scrolled = window.pageYOffset;
-      const rate = scrolled * 0.3;
-      hero.style.transform = `translateY(${rate}px)`;
-    });
-  }
+  // ---- Parallax on Hero (handled by GSAP) ----
 
   // ---- Smooth 3D Navigation ----
   const navLinks = document.querySelectorAll('.nav-link');

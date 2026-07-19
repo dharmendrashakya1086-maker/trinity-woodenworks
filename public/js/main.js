@@ -173,27 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ---- SCROLL REVEAL WITH STAGGER ----
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.product-card, .feature-card, .about-card, .founder-card, .value-card, .contact-card, .section-header, .stat-card, .category-item, .category-tile').forEach((el, i) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = `opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${(i % 5) * 0.08}s, transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${(i % 5) * 0.08}s`;
-    revealObserver.observe(el);
-  });
-
-  // Add revealed class styles
-  const style = document.createElement('style');
-  style.textContent = `.revealed { opacity: 1 !important; transform: translateY(0) !important; }`;
-  document.head.appendChild(style);
+  // ---- SCROLL REVEAL (GSAP handles this via cinematic.js) ----
 
   // ---- PARALLAX ON HERO ----
   const heroBg = document.querySelector('.hero-bg');
@@ -441,20 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(rippleStyle);
-
-  // ---- SCROLL REVEAL ANIMATIONS ----
-  const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
-  if (revealElements.length > 0) {
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-    revealElements.forEach(el => revealObserver.observe(el));
-  }
 
   // ---- ANIMATED COUNTERS ----
   const counters = document.querySelectorAll('[data-count]');
