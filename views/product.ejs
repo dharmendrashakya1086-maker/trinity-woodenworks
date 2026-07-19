@@ -105,6 +105,26 @@
           <div class="feature-item"><i class="fas fa-certificate"></i> Authentic handcrafted guarantee</div>
           <div class="feature-item"><i class="fas fa-shield-alt"></i> Secure payment on delivery</div>
         </div>
+
+        <!-- Share Section -->
+        <div class="product-share">
+          <span class="share-label"><i class="fas fa-share-alt"></i> Share this product:</span>
+          <div class="share-buttons">
+            <button class="share-btn whatsapp" onclick="shareWhatsApp()" title="Share on WhatsApp">
+              <i class="fab fa-whatsapp"></i>
+            </button>
+            <button class="share-btn facebook" onclick="shareFacebook()" title="Share on Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+            <button class="share-btn twitter" onclick="shareTwitter()" title="Share on Twitter">
+              <i class="fab fa-twitter"></i>
+            </button>
+            <button class="share-btn copy-link" onclick="copyLink()" title="Copy Link" id="copyLinkBtn">
+              <i class="fas fa-link"></i>
+            </button>
+          </div>
+          <span class="copy-success" id="copySuccess"><i class="fas fa-check"></i> Link copied!</span>
+        </div>
       </div>
     </div>
   </div>
@@ -150,6 +170,33 @@ function updateQty(delta) {
 function addToCartDetail(id) {
   const qty = parseInt(document.getElementById('quantity').value);
   addToCart(id, qty);
+}
+
+// Share Functions
+const productUrl = window.location.href;
+const productName = '<%= product.name %>';
+const productPrice = '₹<%= product.price.toLocaleString() %>';
+
+function shareWhatsApp() {
+  const text = `Check out this product: ${productName} at ${productPrice}\n\n${productUrl}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareFacebook() {
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`, '_blank');
+}
+
+function shareTwitter() {
+  const text = `Check out ${productName} at ${productPrice}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(productUrl)}`, '_blank');
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(productUrl).then(() => {
+    const success = document.getElementById('copySuccess');
+    success.classList.add('show');
+    setTimeout(() => success.classList.remove('show'), 2000);
+  });
 }
 </script>
 
