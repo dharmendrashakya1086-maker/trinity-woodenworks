@@ -10,8 +10,8 @@ function requireCustomer(req, res, next) {
 
 router.get('/', async (req, res) => {
   try {
-    const allCategories = await findAll('categories');
-    const allProducts = await findAll('products');
+    const { data: allCategories } = await findAll('categories');
+    const { data: allProducts } = await findAll('products');
     const featuredCategories = allCategories.filter(c => c.featured === 1).map(c => ({
       ...c,
       product_count: allProducts.filter(p => p.category_id === c.id && p.status === 'active').length
@@ -21,10 +21,8 @@ router.get('/', async (req, res) => {
       ...p,
       category_name: p.category_id ? (allCategories.find(c => c.id === p.category_id) || {}).name : null
     }));
-    const stats = {
-      products: activeProducts.length,
-      orders: (await findAll('orders')).length
-    };
+    const { total: orderCount } = await findAll('orders');
+    const stats = { products: activeProducts.length, orders: orderCount };
     res.render('home', { featuredCategories, latest, categories: allCategories, stats });
   } catch (err) {
     console.error('Home page error:', err);
@@ -34,8 +32,8 @@ router.get('/', async (req, res) => {
 
 router.get('/categories', async (req, res) => {
   try {
-    const allCategories = await findAll('categories');
-    const allProducts = await findAll('products');
+    const { data: allCategories } = await findAll('categories');
+    const { data: allProducts } = await findAll('products');
     const categories = allCategories.map(c => ({
       ...c,
       product_count: allProducts.filter(p => p.category_id === c.id && p.status === 'active').length
@@ -56,7 +54,8 @@ router.get('/shop', async (req, res) => {
     const limit = 12;
     const offset = (page - 1) * limit;
 
-    let products = (await findAll('products')).filter(p => p.status === 'active');
+    let { data: products } = await findAll('products');
+    products = products.filter(p => p.status === 'active');
 
     if (category) {
       products = products.filter(p => p.category_id === parseInt(category));
@@ -75,7 +74,7 @@ router.get('/shop', async (req, res) => {
 
     const total = products.length;
     const totalPages = Math.ceil(total / limit);
-    const allCategories = await findAll('categories');
+    const { data: allCategories } = await findAll('categories');
     const paged = products.slice(offset, offset + limit).map(p => ({
       ...p,
       category_name: p.category_id ? (allCategories.find(c => c.id === p.category_id) || {}).name : null
@@ -94,12 +93,14 @@ router.get('/product/:id', async (req, res) => {
     const product = await findById('products', parseInt(req.params.id));
     if (!product) return res.redirect('/shop');
 
-    const allCategories = await findAll('categories');
+    const { data: allCategories } = await findAll('categories');
     const cat = product.category_id ? allCategories.find(c => c.id === product.category_id) : null;
     product.category_name = cat ? cat.name : null;
 
-    const images = (await findAll('product_images')).filter(img => img.product_id === product.id);
-    const related = (await findAll('products'))
+    const { data: allImages } = await findAll('product_images');
+    const images = allImages.filter(img => img.product_id === product.id);
+    const { data: allProducts } = await findAll('products');
+    const related = allProducts
       .filter(p => p.category_id === product.category_id && p.status === 'active' && p.id !== product.id)
       .slice(0, 4).map(p => ({
         ...p,
@@ -140,7 +141,7 @@ router.get('/checkout', requireCustomer, async (req, res) => {
     const cart = req.session.cart || [];
     if (cart.length === 0) return res.redirect('/cart');
 
-    const settingsArr = await findAll('site_settings');
+    const { data: settingsArr } = await findAll('site_settings');
     const settings = {};
     settingsArr.forEach(s => settings[s.key] = s.value);
 
@@ -161,7 +162,7 @@ router.get('/checkout', requireCustomer, async (req, res) => {
 router.get('/cart', async (req, res) => {
   try {
     const cart = req.session.cart || [];
-    const settingsArr = await findAll('site_settings');
+    const { data: settingsArr } = await findAll('site_settings');
     const settings = {};
     settingsArr.forEach(s => settings[s.key] = s.value);
 
@@ -178,8 +179,8 @@ router.get('/cart', async (req, res) => {
 
 router.get('/order-confirmation/:orderNumber', async (req, res) => {
   try {
-    const orders = await findAll('orders');
-    const order = orders.find(o => o.order_number === req.params.orderNumber);
+    const { data: allOrders } = await findAll('orders');
+    const order = allOrders.find(o => o.order_number === req.params.orderNumber);
     if (!order) return res.redirect('/');
     res.render('order-confirmation', { order });
   } catch (err) {
@@ -200,7 +201,7 @@ router.get('/track-order', async (req, res) => {
   try {
     let myOrders = [];
     if (req.session.customer) {
-      const allOrders = await findAll('orders');
+      const { data: allOrders } = await findAll('orders');
       myOrders = allOrders
         .filter(o => o.customer_id === req.session.customer.id || o.customer_email === req.session.customer.email)
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -215,7 +216,7 @@ router.get('/track-order', async (req, res) => {
 
 router.post('/track-order', async (req, res) => {
   try {
-    const allOrders = await findAll('orders');
+    const { data: allOrders } = await findAll('orders');
     const order = allOrders.find(o => o.order_number === req.body.order_number) || null;
     let myOrders = [];
     if (req.session.customer) {

@@ -264,12 +264,14 @@ router.post('/login', (req, res) => {
 router.get('/account', requireCustomer, async (req, res) => {
   try {
     const customer = findById('customers', req.session.customer.id);
-    const messages = await findAll('messages', { customer_id: customer.id });
-    messages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const { data: allMessages } = await findAll('messages');
+    const messages = allMessages
+      .filter(m => m.customer_id === customer.id)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     // Mark messages as read
     for (const msg of messages) {
       if (!msg.read) {
-        await updateOne('messages', msg.id, { read: true });
+        await updateOne('messages', { id: msg.id }, { read: true });
       }
     }
     res.render('account', { title: 'My Account', customer, messages, success: null, error: null });
@@ -318,7 +320,7 @@ router.post('/account', requireCustomer, (req, res) => {
 router.get('/orders', requireCustomer, async (req, res) => {
   try {
     const customer = findById('customers', req.session.customer.id);
-    const allOrders = await findAll('orders');
+    const { data: allOrders } = await findAll('orders');
     const orders = allOrders
       .filter(o => o.customer_id === req.session.customer.id || o.customer_email === customer.email)
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -348,19 +350,19 @@ router.post('/orders/:id/cancel', requireCustomer, async (req, res) => {
       return res.status(400).json({ error: 'Please provide a valid reason' });
     }
 
-    await updateOne('orders', order.id, {
+    await updateOne('orders', { id: order.id }, {
       order_status: 'cancelled',
       cancel_reason: cancel_reason.trim(),
       updated_at: new Date().toISOString()
     });
 
     // Restore stock
-    const allOrderItems = await findAll('order_items');
+    const { data: allOrderItems } = await findAll('order_items');
     const items = allOrderItems.filter(i => i.order_id === order.id);
     for (const item of items) {
       const product = await findById('products', item.product_id);
       if (product) {
-        await updateOne('products', product.id, { stock: product.stock + item.quantity });
+        await updateOne('products', { id: product.id }, { stock: product.stock + item.quantity });
       }
     }
 

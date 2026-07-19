@@ -20,7 +20,7 @@ router.post('/place', async (req, res) => {
     }
 
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const settingsArr = await findAll('site_settings');
+    const { data: settingsArr } = await findAll('site_settings');
     const settings = {};
     settingsArr.forEach(s => settings[s.key] = s.value);
     const freeShippingAbove = parseFloat(settings.free_shipping_above) || 1000;
@@ -28,7 +28,7 @@ router.post('/place', async (req, res) => {
     const total = subtotal + shippingCost;
     const orderNumber = generateOrderNumber();
 
-    const allOrders = await findAll('orders');
+    const { data: allOrders } = await findAll('orders');
     const maxOrderId = allOrders.reduce((max, o) => Math.max(max, o.id || 0), 0);
 
     const order = {
@@ -54,7 +54,7 @@ router.post('/place', async (req, res) => {
     };
     await insertOne('orders', order);
 
-    const allOrderItems = await findAll('order_items');
+    const { data: allOrderItems } = await findAll('order_items');
     let maxItemId = allOrderItems.reduce((max, i) => Math.max(max, i.id || 0), 0);
 
     for (const item of cart) {
@@ -70,7 +70,7 @@ router.post('/place', async (req, res) => {
 
       const product = await findById('products', item.product_id);
       if (product) {
-        await updateOne('products', product.id, { stock: product.stock - item.quantity });
+        await updateOne('products', { id: product.id }, { stock: product.stock - item.quantity });
       }
     }
 
@@ -84,11 +84,11 @@ router.post('/place', async (req, res) => {
 
 router.get('/track/:orderNumber', async (req, res) => {
   try {
-    const allOrders = await findAll('orders');
+    const { data: allOrders } = await findAll('orders');
     const order = allOrders.find(o => o.order_number === req.params.orderNumber);
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
-    const allItems = await findAll('order_items');
+    const { data: allItems } = await findAll('order_items');
     const items = allItems.filter(i => i.order_id === order.id);
     res.json({ order, items });
   } catch (err) {
