@@ -223,7 +223,8 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Category Cards ---- */
 .category-grid .category-card,
-.categories-grid .category-card {
+.categories-grid .category-card,
+.categories-grid .category-tile {
   background: rgba(10,10,14,0.55) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
@@ -232,7 +233,8 @@ img { max-width: 100%; height: auto; }
 }
 
 /* ---- Cart Page ---- */
-.cart-item, .cart-summary, .track-order-section {
+.cart-item, .cart-summary, .track-order-section,
+.products-grid .product-card {
   background: var(--glass-bg) !important;
   backdrop-filter: var(--glass-blur) !important;
   -webkit-backdrop-filter: var(--glass-blur) !important;
@@ -248,12 +250,33 @@ img { max-width: 100%; height: auto; }
   box-shadow: 0 30px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05) !important;
 }
 
+/* ---- Feature / About / CTA Cards Glass ---- */
+.features-grid .feature-card,
+.about-grid .about-card,
+.cta-section .cta-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
+}
+
 /* ---- Filter Bar ---- */
 .filter-bar {
   background: rgba(10,10,14,0.6) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
+}
+
+/* ---- Stats / Trust Badges Glass ---- */
+.stats-grid .stat-item,
+.stats-grid .trust-badge {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
 }
 .filter-btn {
   background: rgba(201,169,110,0.04) !important;
@@ -1186,8 +1209,11 @@ img { max-width: 100%; height: auto; }
   padding: 48px 28px;
   border-radius: var(--radius);
   transition: var(--transition);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass);
   position: relative;
   overflow: hidden;
 }
@@ -1298,13 +1324,16 @@ img { max-width: 100%; height: auto; }
 }
 
 .product-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
   cursor: pointer;
   transition: var(--transition);
   position: relative;
+  box-shadow: var(--shadow-glass);
 }
 
 .product-card::before {
@@ -1950,8 +1979,10 @@ img { max-width: 100%; height: auto; }
 .about-visual { display: grid; gap: 16px; }
 
 .about-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
   padding: 28px;
   display: flex;
@@ -1960,6 +1991,7 @@ img { max-width: 100%; height: auto; }
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-glass);
 }
 
 .about-card::before {
@@ -2176,13 +2208,16 @@ img { max-width: 100%; height: auto; }
 .cta-section { padding: 60px 0 100px; }
 
 .cta-card {
-  background: var(--dark-3);
-  border: 1px solid var(--border-gold);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: 80px 60px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-glass);
 }
 
 .cta-card::before {
@@ -3022,12 +3057,15 @@ img { max-width: 100%; height: auto; }
 }
 
 .category-tile {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius);
   overflow: hidden;
   transition: var(--transition);
   position: relative;
+  box-shadow: var(--shadow-glass);
 }
 
 .category-tile:hover {
@@ -4144,9 +4182,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Product Cards Glassmorphism ---- */
 .product-card {
-  background: rgba(14,14,20,0.7) !important;
-  border: 1px solid rgba(201,169,110,0.06) !important;
-  backdrop-filter: blur(10px);
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass) !important;
   transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
@@ -4185,9 +4225,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Category Tiles Glass Effect ---- */
 .category-tile {
-  background: rgba(14,14,20,0.6) !important;
-  border: 1px solid rgba(201,169,110,0.08) !important;
-  backdrop-filter: blur(8px);
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass) !important;
   transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
@@ -4419,9 +4461,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Feature Cards Enhanced ---- */
 .feature-card {
-  background: rgba(14,14,20,0.5) !important;
-  border: 1px solid rgba(201,169,110,0.06) !important;
-  backdrop-filter: blur(8px);
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass) !important;
 }
 
 .feature-card:hover {
@@ -4431,8 +4475,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Value Cards Enhanced ---- */
 .value-card {
-  background: rgba(14,14,20,0.5) !important;
-  border: 1px solid rgba(201,169,110,0.06) !important;
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass) !important;
 }
 
 .value-card:hover {
@@ -4659,8 +4706,10 @@ img { max-width: 100%; height: auto; }
   visibility: visible;
 }
 .auth-modal {
-  background: var(--dark-2);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 36px 32px;
   width: 90%;
@@ -5944,11 +5993,14 @@ textarea:focus-visible {
   align-items: center;
   gap: 12px;
   padding: 24px 16px;
-  background: rgba(10,10,14,0.4);
-  border: 1px solid rgba(201,169,110,0.08);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   text-align: center;
   transition: all 0.3s var(--ease-out);
+  box-shadow: var(--shadow-glass);
 }
 
 .trust-badge:hover {
@@ -6130,10 +6182,13 @@ textarea:focus-visible {
 
 .stat-item {
   padding: 32px 16px;
-  background: rgba(10,10,14,0.4);
-  border: 1px solid rgba(201,169,110,0.08);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   transition: all 0.3s var(--ease-out);
+  box-shadow: var(--shadow-glass);
 }
 
 .stat-item:hover {
