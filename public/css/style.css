@@ -33,8 +33,8 @@
   --text-muted: #7a726a;
 
   /* === Backgrounds === */
-  --bg: rgba(2,2,3,0.4);
-  --bg-card: #08080c;
+  --bg: transparent;
+  --bg-card: rgba(8,8,12,0.85);
 
   /* === Borders === */
   --border: #1a1a24;
@@ -79,9 +79,9 @@
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* === Glassmorphism (Frosted Glass) === */
-  --glass-bg: rgba(10,10,14,0.75);
-  --glass-bg-light: rgba(16,16,22,0.6);
-  --glass-border: rgba(201,169,110,0.12);
+  --glass-bg: rgba(10,10,14,0.2);
+  --glass-bg-light: rgba(16,16,22,0.15);
+  --glass-border: rgba(201,169,110,0.15);
   --glass-blur: blur(16px) saturate(180%);
   --glass-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
 }
@@ -139,7 +139,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Navbar (Premium Frosted) ---- */
 .navbar {
-  background: rgba(4,4,6,0.82) !important;
+  background: rgba(4,4,6,0.2) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border-bottom: 1px solid rgba(201,169,110,0.06) !important;
@@ -148,7 +148,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Footer ---- */
 .footer {
-  background: rgba(4,4,6,0.88) !important;
+  background: rgba(4,4,6,0.25) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-top: 1px solid rgba(201,169,110,0.06) !important;
@@ -156,7 +156,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Page Headers ---- */
 .page-header {
-  background: rgba(8,8,12,0.35) !important;
+  background: transparent !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid rgba(201,169,110,0.05) !important;
@@ -164,7 +164,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Hero Section ---- */
 .hero {
-  background: rgba(4,4,6,0.5) !important;
+  background: transparent !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
 }
@@ -174,7 +174,7 @@ img { max-width: 100%; height: auto; }
 .auth-form .form-group select,
 .auth-form .form-group textarea,
 .form-group input, .form-group select, .form-group textarea {
-  background: rgba(12,12,16,0.7) !important;
+  background: rgba(12,12,16,0.2) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(201,169,110,0.1) !important;
@@ -189,7 +189,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Auth Card ---- */
 .auth-card {
-  background: rgba(10,10,14,0.5) !important;
+  background: rgba(10,10,14,0.3) !important;
   border: 1px solid rgba(201,169,110,0.08) !important;
   box-shadow: 0 25px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04) !important;
 }
@@ -208,7 +208,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Shop Grid Product Cards ---- */
 .shop-grid .product-card {
-  background: rgba(10,10,14,0.45) !important;
+  background: rgba(10,10,14,0.25) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
@@ -225,7 +225,7 @@ img { max-width: 100%; height: auto; }
 .category-grid .category-card,
 .categories-grid .category-card,
 .categories-grid .category-tile {
-  background: rgba(10,10,14,0.4) !important;
+  background: rgba(10,10,14,0.2) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
@@ -243,7 +243,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Modals (Deep Frosted) ---- */
 .modal-content, .auth-modal, .cancel-modal {
-  background: rgba(10,10,14,0.9) !important;
+  background: rgba(10,10,14,0.5) !important;
   backdrop-filter: blur(32px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
   border: 1px solid rgba(201,169,110,0.12) !important;
@@ -263,7 +263,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Filter Bar ---- */
 .filter-bar {
-  background: rgba(10,10,14,0.4) !important;
+  background: rgba(10,10,14,0.2) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
@@ -301,7 +301,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Section Containers Glass ---- */
 .section, .features, .about-preview, .newsletter-section, .cta-section {
-  background: rgba(2,2,3,0.25) !important;
+  background: transparent !important;
   backdrop-filter: blur(4px) !important;
   -webkit-backdrop-filter: blur(4px) !important;
 }
@@ -4869,7 +4869,7 @@ img { max-width: 100%; height: auto; }
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, rgba(12,12,18,0.85) 0%, rgba(8,8,12,0.98) 100%);
+  background: linear-gradient(180deg, rgba(12,12,18,0.2) 0%, rgba(8,8,12,0.3) 100%);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-top: 1px solid rgba(201,169,110,0.08);
@@ -6065,7 +6065,7 @@ textarea:focus-visible {
 
 /* ---- Newsletter Section ---- */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, rgba(10,10,14,0.3) 50%, rgba(201,169,110,0.04) 100%);
+  background: transparent !important;
   border-top: 1px solid rgba(201,169,110,0.1);
   border-bottom: 1px solid rgba(201,169,110,0.1);
   padding: 80px 0;
