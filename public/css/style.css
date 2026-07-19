@@ -33,7 +33,7 @@
   --text-muted: #7a726a;
 
   /* === Backgrounds === */
-  --bg: rgba(2,2,3,0.92);
+  --bg: rgba(2,2,3,0.4);
   --bg-card: #08080c;
 
   /* === Borders === */
@@ -129,7 +129,7 @@ img { max-width: 100%; height: auto; }
   box-shadow: var(--shadow-glass), 0 0 40px rgba(201,169,110,0.06) !important;
 }
 .card-header {
-  background: rgba(201,169,110,0.04) !important;
+  background: rgba(201,169,110,0.06) !important;
   border-bottom: 1px solid rgba(201,169,110,0.08) !important;
   backdrop-filter: blur(12px) !important;
 }
@@ -156,7 +156,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Page Headers ---- */
 .page-header {
-  background: rgba(8,8,12,0.7) !important;
+  background: rgba(8,8,12,0.35) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid rgba(201,169,110,0.05) !important;
@@ -189,7 +189,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Auth Card ---- */
 .auth-card {
-  background: rgba(10,10,14,0.8) !important;
+  background: rgba(10,10,14,0.5) !important;
   border: 1px solid rgba(201,169,110,0.08) !important;
   box-shadow: 0 25px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04) !important;
 }
@@ -208,7 +208,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Shop Grid Product Cards ---- */
 .shop-grid .product-card {
-  background: rgba(10,10,14,0.7) !important;
+  background: rgba(10,10,14,0.45) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
@@ -225,7 +225,7 @@ img { max-width: 100%; height: auto; }
 .category-grid .category-card,
 .categories-grid .category-card,
 .categories-grid .category-tile {
-  background: rgba(10,10,14,0.7) !important;
+  background: rgba(10,10,14,0.4) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
@@ -263,7 +263,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Filter Bar ---- */
 .filter-bar {
-  background: rgba(10,10,14,0.7) !important;
+  background: rgba(10,10,14,0.4) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(201,169,110,0.06) !important;
@@ -301,7 +301,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Section Containers Glass ---- */
 .section, .features, .about-preview, .newsletter-section, .cta-section {
-  background: rgba(2,2,3,0.92) !important;
+  background: rgba(2,2,3,0.25) !important;
   backdrop-filter: blur(4px) !important;
   -webkit-backdrop-filter: blur(4px) !important;
 }
@@ -6065,7 +6065,7 @@ textarea:focus-visible {
 
 /* ---- Newsletter Section ---- */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, rgba(10,10,14,0.8) 50%, rgba(201,169,110,0.04) 100%);
+  background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, rgba(10,10,14,0.3) 50%, rgba(201,169,110,0.04) 100%);
   border-top: 1px solid rgba(201,169,110,0.1);
   border-bottom: 1px solid rgba(201,169,110,0.1);
   padding: 80px 0;
