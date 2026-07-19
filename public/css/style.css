@@ -5550,3 +5550,145 @@ textarea:focus-visible {
     gap: 12px;
   }
 }
+
+/* ================================================================
+   CARD SHARE BUTTON
+   ================================================================ */
+
+.card-share-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(201,169,110,0.15);
+  background: rgba(10,10,14,0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-light);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s var(--ease-out);
+  z-index: 5;
+}
+
+.product-card:hover .card-share-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.card-share-btn:hover {
+  background: rgba(201,169,110,0.2);
+  border-color: rgba(201,169,110,0.4);
+  color: var(--primary);
+  transform: scale(1.1) !important;
+}
+
+/* ================================================================
+   SHARE POPUP
+   ================================================================ */
+
+.share-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.share-popup-content {
+  background: rgba(14,14,20,0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(201,169,110,0.15);
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 360px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+
+.share-popup-content h4 {
+  font-family: var(--font-display);
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.share-popup-content p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.share-popup-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.share-popup-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(201,169,110,0.1);
+  background: rgba(201,169,110,0.04);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.share-popup-btn:hover {
+  background: rgba(201,169,110,0.1);
+  border-color: rgba(201,169,110,0.2);
+}
+
+.share-popup-btn.whatsapp:hover { border-color: rgba(37,211,102,0.4); color: #25d366; }
+.share-popup-btn.facebook:hover { border-color: rgba(24,119,242,0.4); color: #1877f2; }
+.share-popup-btn.twitter:hover { border-color: rgba(29,161,242,0.4); color: #1da1f2; }
+.share-popup-btn.copy:hover { border-color: rgba(201,169,110,0.4); color: var(--primary); }
+
+.share-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(201,169,110,0.1);
+  background: rgba(201,169,110,0.05);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.share-popup-close:hover {
+  background: rgba(255,23,68,0.1);
+  border-color: rgba(255,23,68,0.3);
+  color: var(--danger);
+}

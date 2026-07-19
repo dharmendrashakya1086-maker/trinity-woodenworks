@@ -102,6 +102,9 @@
                   <% if (product.stock <= 0) { %>
                     <span class="product-badge out-of-stock">Out of Stock</span>
                   <% } %>
+                  <button class="card-share-btn" onclick="event.stopPropagation(); shareProduct(<%= product.id %>, '<%= product.name.replace(/'/g, "\\'") %>', <%= product.price %>)" title="Share">
+                    <i class="fas fa-share-alt"></i>
+                  </button>
                 </div>
                 <div class="product-info">
                   <span class="product-category"><%= product.category_name || 'Uncategorized' %></span>
@@ -154,6 +157,32 @@ function toggleMobileFilters() {
   const btn = document.querySelector('.mobile-filter-toggle');
   bar.classList.toggle('open');
   btn.classList.toggle('active');
+}
+
+function shareProduct(id, name, price) {
+  const url = window.location.origin + '/product/' + id;
+  const text = 'Check out ' + name + ' at ₹' + price.toLocaleString() + '\n\n' + url;
+  
+  // Try native share first (mobile)
+  if (navigator.share) {
+    navigator.share({ title: name, text: text, url: url });
+  } else {
+    // Show share popup
+    const popup = document.createElement('div');
+    popup.className = 'share-popup';
+    popup.innerHTML = '<div class="share-popup-content">' +
+      '<h4>Share Product</h4>' +
+      '<p>' + name + '</p>' +
+      '<div class="share-popup-buttons">' +
+      '<a href="https://wa.me/?text=' + encodeURIComponent(text) + '" target="_blank" class="share-popup-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>' +
+      '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank" class="share-popup-btn facebook"><i class="fab fa-facebook-f"></i> Facebook</a>' +
+      '<a href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(name + ' ₹' + price.toLocaleString()) + '&url=' + encodeURIComponent(url) + '" target="_blank" class="share-popup-btn twitter"><i class="fab fa-twitter"></i> Twitter</a>' +
+      '<button onclick="navigator.clipboard.writeText(\'' + url + '\'); this.innerHTML=\'<i class=fas fa-check></i> Copied!\'; setTimeout(()=>this.closest(\'.share-popup\').remove(), 1500)" class="share-popup-btn copy"><i class="fas fa-link"></i> Copy Link</button>' +
+      '</div>' +
+      '<button class="share-popup-close" onclick="this.closest(\'.share-popup\').remove()">&times;</button>' +
+      '</div>';
+    document.body.appendChild(popup);
+  }
 }
 </script>
 
