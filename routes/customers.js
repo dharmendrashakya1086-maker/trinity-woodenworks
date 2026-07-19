@@ -261,21 +261,22 @@ router.post('/login', (req, res) => {
 });
 
 // ==================== ACCOUNT ====================
-router.get('/account', requireCustomer, (req, res) => {
-  const customer = findById('customers', req.session.customer.id);
-  const db = getDB();
-  const messages = db.get('messages')
-    .filter({ customer_id: customer.id })
-    .sortBy('created_at')
-    .reverse()
-    .value();
-  // Mark messages as read
-  messages.forEach(msg => {
-    if (!msg.read) {
-      db.get('messages').find({ id: msg.id }).assign({ read: true }).write();
+router.get('/account', requireCustomer, async (req, res) => {
+  try {
+    const customer = findById('customers', req.session.customer.id);
+    const messages = await findAll('messages', { customer_id: customer.id });
+    messages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // Mark messages as read
+    for (const msg of messages) {
+      if (!msg.read) {
+        await updateOne('messages', msg.id, { read: true });
+      }
     }
-  });
-  res.render('account', { title: 'My Account', customer, messages, success: null, error: null });
+    res.render('account', { title: 'My Account', customer, messages, success: null, error: null });
+  } catch (err) {
+    console.error('Account page error:', err);
+    res.status(500).render('error', { title: 'Error', message: 'Something went wrong', customer: req.session.customer || null });
+  }
 });
 
 router.post('/account', requireCustomer, (req, res) => {
@@ -314,52 +315,60 @@ router.post('/account', requireCustomer, (req, res) => {
 });
 
 // ==================== ORDERS ====================
-router.get('/orders', requireCustomer, (req, res) => {
-  const customer = findById('customers', req.session.customer.id);
-  const db = getDB();
-  const orders = db.get('orders')
-    .filter(o => o.customer_id === req.session.customer.id || o.customer_email === customer.email)
-    .sortBy('created_at')
-    .reverse()
-    .value();
-  res.render('order-history', { title: 'My Orders', orders, customer });
+router.get('/orders', requireCustomer, async (req, res) => {
+  try {
+    const customer = findById('customers', req.session.customer.id);
+    const allOrders = await findAll('orders');
+    const orders = allOrders
+      .filter(o => o.customer_id === req.session.customer.id || o.customer_email === customer.email)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    res.render('order-history', { title: 'My Orders', orders, customer });
+  } catch (err) {
+    console.error('Orders page error:', err);
+    res.status(500).render('error', { title: 'Error', message: 'Something went wrong', customer: req.session.customer || null });
+  }
 });
 
-router.post('/orders/:id/cancel', requireCustomer, (req, res) => {
-  const db = getDB();
-  const order = db.get('orders').find({ id: parseInt(req.params.id) }).value();
+router.post('/orders/:id/cancel', requireCustomer, async (req, res) => {
+  try {
+    const order = await findById('orders', parseInt(req.params.id));
 
-  if (!order) return res.status(404).json({ error: 'Order not found' });
+    if (!order) return res.status(404).json({ error: 'Order not found' });
 
-  if (order.customer_id !== req.session.customer.id && order.customer_email !== req.session.customer.email) {
-    return res.status(403).json({ error: 'Not authorized' });
-  }
-
-  if (!['pending', 'confirmed'].includes(order.order_status)) {
-    return res.status(400).json({ error: 'This order cannot be cancelled' });
-  }
-
-  const { cancel_reason } = req.body;
-  if (!cancel_reason || cancel_reason.trim().length < 5) {
-    return res.status(400).json({ error: 'Please provide a valid reason' });
-  }
-
-  db.get('orders').find({ id: order.id }).assign({
-    order_status: 'cancelled',
-    cancel_reason: cancel_reason.trim(),
-    updated_at: new Date().toISOString()
-  }).write();
-
-  // Restore stock
-  const items = db.get('order_items').filter({ order_id: order.id }).value();
-  items.forEach(item => {
-    const product = db.get('products').find({ id: item.product_id }).value();
-    if (product) {
-      db.get('products').find({ id: item.product_id }).assign({ stock: product.stock + item.quantity }).write();
+    if (order.customer_id !== req.session.customer.id && order.customer_email !== req.session.customer.email) {
+      return res.status(403).json({ error: 'Not authorized' });
     }
-  });
 
-  res.json({ success: true });
+    if (!['pending', 'confirmed'].includes(order.order_status)) {
+      return res.status(400).json({ error: 'This order cannot be cancelled' });
+    }
+
+    const { cancel_reason } = req.body;
+    if (!cancel_reason || cancel_reason.trim().length < 5) {
+      return res.status(400).json({ error: 'Please provide a valid reason' });
+    }
+
+    await updateOne('orders', order.id, {
+      order_status: 'cancelled',
+      cancel_reason: cancel_reason.trim(),
+      updated_at: new Date().toISOString()
+    });
+
+    // Restore stock
+    const allOrderItems = await findAll('order_items');
+    const items = allOrderItems.filter(i => i.order_id === order.id);
+    for (const item of items) {
+      const product = await findById('products', item.product_id);
+      if (product) {
+        await updateOne('products', product.id, { stock: product.stock + item.quantity });
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Cancel order error:', err);
+    res.status(500).json({ error: 'Failed to cancel order' });
+  }
 });
 
 // ==================== LOGOUT ====================

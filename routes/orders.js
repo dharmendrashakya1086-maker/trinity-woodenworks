@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getDB, generateId } = require('../database');
+const { findAll, findById, insertOne, updateOne, countAll, generateId } = require('../database');
 
 function generateOrderNumber() {
   const date = new Date();
@@ -10,26 +10,27 @@ function generateOrderNumber() {
   return `${prefix}${datePart}${random}`;
 }
 
-router.post('/place', (req, res) => {
-  const db = getDB();
-  const { name, email, phone, address, city, state, pincode, payment_method, notes } = req.body;
-  const cart = req.session.cart;
-
-  if (!cart || cart.length === 0) {
-    return res.status(400).json({ error: 'Cart is empty' });
-  }
-
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const settings = {};
-  db.get('site_settings').value().forEach(s => settings[s.key] = s.value);
-  const freeShippingAbove = parseFloat(settings.free_shipping_above) || 1000;
-  const shippingCost = subtotal >= freeShippingAbove ? 0 : parseFloat(settings.shipping_cost) || 0;
-  const total = subtotal + shippingCost;
-  const orderNumber = generateOrderNumber();
-
+router.post('/place', async (req, res) => {
   try {
-    // Create order
-    const maxOrderId = db.get('orders').map('id').max().value() || 0;
+    const { name, email, phone, address, city, state, pincode, payment_method, notes } = req.body;
+    const cart = req.session.cart;
+
+    if (!cart || cart.length === 0) {
+      return res.status(400).json({ error: 'Cart is empty' });
+    }
+
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const settingsArr = await findAll('site_settings');
+    const settings = {};
+    settingsArr.forEach(s => settings[s.key] = s.value);
+    const freeShippingAbove = parseFloat(settings.free_shipping_above) || 1000;
+    const shippingCost = subtotal >= freeShippingAbove ? 0 : parseFloat(settings.shipping_cost) || 0;
+    const total = subtotal + shippingCost;
+    const orderNumber = generateOrderNumber();
+
+    const allOrders = await findAll('orders');
+    const maxOrderId = allOrders.reduce((max, o) => Math.max(max, o.id || 0), 0);
+
     const order = {
       id: maxOrderId + 1,
       order_number: orderNumber,
@@ -51,42 +52,49 @@ router.post('/place', (req, res) => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
-    db.get('orders').push(order).write();
+    await insertOne('orders', order);
 
-    // Create order items and update stock
-    cart.forEach(item => {
-      const maxItemId = db.get('order_items').map('id').max().value() || 0;
-      db.get('order_items').push({
-        id: maxItemId + 1,
+    const allOrderItems = await findAll('order_items');
+    let maxItemId = allOrderItems.reduce((max, i) => Math.max(max, i.id || 0), 0);
+
+    for (const item of cart) {
+      maxItemId++;
+      await insertOne('order_items', {
+        id: maxItemId,
         order_id: order.id,
         product_id: item.product_id,
         product_name: item.name,
         product_price: item.price,
         quantity: item.quantity
-      }).write();
+      });
 
-      // Update stock
-      const product = db.get('products').find({ id: item.product_id }).value();
+      const product = await findById('products', item.product_id);
       if (product) {
-        db.get('products').find({ id: item.product_id }).assign({ stock: product.stock - item.quantity }).write();
+        await updateOne('products', product.id, { stock: product.stock - item.quantity });
       }
-    });
+    }
 
     req.session.cart = [];
     res.json({ success: true, order_number: orderNumber });
   } catch (err) {
-    console.error(err);
+    console.error('Order place error:', err);
     res.status(500).json({ error: 'Failed to place order' });
   }
 });
 
-router.get('/track/:orderNumber', (req, res) => {
-  const db = getDB();
-  const order = db.get('orders').find({ order_number: req.params.orderNumber }).value();
-  if (!order) return res.status(404).json({ error: 'Order not found' });
+router.get('/track/:orderNumber', async (req, res) => {
+  try {
+    const allOrders = await findAll('orders');
+    const order = allOrders.find(o => o.order_number === req.params.orderNumber);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
 
-  const items = db.get('order_items').filter({ order_id: order.id }).value();
-  res.json({ order, items });
+    const allItems = await findAll('order_items');
+    const items = allItems.filter(i => i.order_id === order.id);
+    res.json({ order, items });
+  } catch (err) {
+    console.error('Order track error:', err);
+    res.status(500).json({ error: 'Failed to track order' });
+  }
 });
 
 module.exports = router;
