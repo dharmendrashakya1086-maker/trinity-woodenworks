@@ -91,7 +91,7 @@ html { scroll-behavior: smooth; }
 .cta-section {
   position: relative;
   z-index: 2;
-  background: var(--bg);
+  background: rgba(2,2,3,0.88);
 }
 
 /* ---- Section decoration line ---- */
