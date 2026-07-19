@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-  document.querySelectorAll('.product-card, .feature-card, .about-card, .founder-card, .value-card, .contact-card, .section-header, .stat-card, .category-item').forEach((el, i) => {
+  document.querySelectorAll('.product-card, .feature-card, .about-card, .founder-card, .value-card, .contact-card, .section-header, .stat-card, .category-item, .category-tile').forEach((el, i) => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
     el.style.transition = `opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${(i % 5) * 0.08}s, transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${(i % 5) * 0.08}s`;

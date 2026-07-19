@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   try {
     const { data: allCategories } = await findAll('categories');
     const { data: allProducts } = await findAll('products');
-    const featuredCategories = allCategories.filter(c => c.featured === 1).map(c => ({
+    const featuredCategories = allCategories.filter(c => Number(c.featured) === 1).map(c => ({
       ...c,
       product_count: allProducts.filter(p => p.category_id === c.id && p.status === 'active').length
     }));
