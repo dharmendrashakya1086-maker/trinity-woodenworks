@@ -282,49 +282,20 @@ body::before {
   75% { transform: translateY(-20px) rotateX(4deg) rotateY(-4deg); }
 }
 
-/* ---- Glassmorphism Button Premium ---- */
-.btn-glass-3d {
-  position: relative;
-  background: rgba(201,169,110,0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(201,169,110,0.15);
-  color: var(--primary);
-  padding: 14px 36px;
-  border-radius: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  cursor: pointer;
-  overflow: hidden;
-  transform-style: preserve-3d;
-  transition: all 0.4s var(--ease-out);
-}
-
-.btn-glass-3d::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.1) 0%,
-    transparent 50%,
-    rgba(201,169,110,0.05) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.4s;
-  transform: translateZ(1px);
-}
-
-.btn-glass-3d:hover {
-  transform: translateY(-4px) translateZ(10px);
+/* ---- Glassmorphism Button Premium (Hover Only) ---- */
+.btn-primary:hover,
+.btn-glow:hover {
+  transform: translateY(-4px) translateZ(10px) !important;
   box-shadow:
-    0 10px 40px rgba(201,169,110,0.2),
-    0 0 20px rgba(201,169,110,0.1);
-  border-color: rgba(201,169,110,0.3);
+    0 10px 40px rgba(201,169,110,0.25),
+    0 0 20px rgba(201,169,110,0.12) !important;
 }
 
-.btn-glass-3d:hover::before {
-  opacity: 1;
+.btn-outline:hover {
+  transform: translateY(-4px) translateZ(10px) !important;
+  box-shadow:
+    0 10px 40px rgba(201,169,110,0.15),
+    0 0 20px rgba(201,169,110,0.08) !important;
 }
 
 /* ---- 3D Category Card ---- */

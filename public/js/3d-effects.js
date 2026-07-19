@@ -155,10 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
     card.classList.add('category-card-3d');
   });
 
-  document.querySelectorAll('.btn-primary, .btn-glow').forEach(btn => {
-    btn.classList.add('btn-glass-3d');
-  });
-
   document.querySelectorAll('.feature-icon').forEach(icon => {
     icon.classList.add('feature-icon-3d');
   });
