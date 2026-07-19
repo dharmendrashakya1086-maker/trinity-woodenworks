@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
-const { getDB, insertOne, updateOne, removeOne, findAll, findById } = require('../database');
+const { getDB, insertOne, updateOne, removeOne, findAll, findById, findByKey, countAll, sumField, generateId } = require('../database');
 const { sendOrderMessageEmail } = require('../services/email');
 
 const storage = multer.diskStorage({
@@ -32,10 +32,9 @@ router.get('/login', (req, res) => {
   res.render('admin/login', { error: null });
 });
 
-router.post('/login', (req, res) => {
-  const db = getDB();
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const admin = db.get('admin').find({ username }).value();
+  const admin = await findByKey('admin', { username });
 
   if (!admin || !bcrypt.compareSync(password, admin.password)) {
     return res.render('admin/login', { error: 'Invalid credentials' });
@@ -51,48 +50,78 @@ router.get('/logout', (req, res) => {
 });
 
 // Dashboard
-router.get('/dashboard', requireAdmin, (req, res) => {
-  const db = getDB();
-  const stats = {
-    totalProducts: db.get('products').size().value(),
-    activeProducts: db.get('products').filter({ status: 'active' }).size().value(),
-    totalOrders: db.get('orders').size().value(),
-    pendingOrders: db.get('orders').filter({ order_status: 'pending' }).size().value(),
-    totalRevenue: db.get('orders').filter({ payment_status: 'paid' }).sumBy('total').value() || 0,
-    lowStock: db.get('products').filter(p => p.stock <= 5 && p.status === 'active').size().value(),
-    todayOrders: db.get('orders').filter(o => new Date(o.created_at).toDateString() === new Date().toDateString()).size().value(),
-    monthlyRevenue: db.get('orders').filter(o => {
+router.get('/dashboard', requireAdmin, async (req, res) => {
+  const [totalProducts, activeProducts, totalOrders, pendingOrders, totalRevenue, lowStockProductsAll, allOrders, allProducts] = await Promise.all([
+    countAll('products'),
+    countAll('products', { status: 'active' }),
+    countAll('orders'),
+    countAll('orders', { order_status: 'pending' }),
+    sumField('orders', 'total', { payment_status: 'paid' }),
+    findAll('products', { status: 'active' }, { stock: 'asc' }),
+    findAll('orders', {}, { created_at: 'desc' }),
+    findAll('products', {}, { created_at: 'desc' })
+  ]);
+
+  const now = new Date();
+  const todayStr = now.toDateString();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const todayOrders = allOrders.data.filter(o => new Date(o.created_at).toDateString() === todayStr).length;
+
+  const monthlyRevenue = allOrders.data
+    .filter(o => {
       const d = new Date(o.created_at);
-      const now = new Date();
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && o.payment_status === 'paid';
-    }).sumBy('total').value() || 0
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear && o.payment_status === 'paid';
+    })
+    .reduce((sum, o) => sum + (o.total || 0), 0);
+
+  const lowStock = lowStockProductsAll.data.filter(p => p.stock <= 5).length;
+
+  const stats = {
+    totalProducts,
+    activeProducts,
+    totalOrders,
+    pendingOrders,
+    totalRevenue: totalRevenue || 0,
+    lowStock,
+    todayOrders,
+    monthlyRevenue: monthlyRevenue || 0
   };
-  const recentOrders = db.get('orders').sortBy('created_at').reverse().take(5).value();
-  const lowStockProducts = db.get('products').filter(p => p.stock <= 5 && p.status === 'active').sortBy('stock').take(5).value().map(p => ({
+
+  const recentOrders = allOrders.data.slice(0, 5);
+
+  const lowStockList = lowStockProductsAll.data.slice(0, 5);
+  const categories = (await findAll('categories')).data;
+  const catMap = {};
+  categories.forEach(c => { catMap[c.id] = c.name; });
+  const lowStockProducts = lowStockList.map(p => ({
     ...p,
-    category_name: p.category_id ? (db.get('categories').find({ id: p.category_id }).value() || {}).name : null
+    category_name: p.category_id ? catMap[p.category_id] || null : null
   }));
+
   res.render('admin/dashboard', { stats, recentOrders, lowStockProducts });
 });
 
 // Products
-router.get('/products', requireAdmin, (req, res) => {
-  const db = getDB();
-  const products = db.get('products').sortBy('created_at').reverse().value().map(p => ({
+router.get('/products', requireAdmin, async (req, res) => {
+  const { data: products } = await findAll('products', {}, { created_at: 'desc' });
+  const { data: categories } = await findAll('categories');
+  const catMap = {};
+  categories.forEach(c => { catMap[c.id] = c.name; });
+  const enriched = products.map(p => ({
     ...p,
-    category_name: p.category_id ? (db.get('categories').find({ id: p.category_id }).value() || {}).name : null
+    category_name: p.category_id ? catMap[p.category_id] || null : null
   }));
-  res.render('admin/products', { products });
+  res.render('admin/products', { products: enriched });
 });
 
-router.get('/products/add', requireAdmin, (req, res) => {
-  const db = getDB();
-  const categories = db.get('categories').value();
+router.get('/products/add', requireAdmin, async (req, res) => {
+  const { data: categories } = await findAll('categories');
   res.render('admin/product-form', { product: null, categories });
 });
 
-router.post('/products/add', requireAdmin, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), (req, res) => {
-  const db = getDB();
+router.post('/products/add', requireAdmin, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   const { name, description, mrp, discount_percent, price, category_id, stock, featured } = req.body;
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
 
@@ -100,9 +129,7 @@ router.post('/products/add', requireAdmin, upload.fields([{ name: 'image', maxCo
   const discVal = parseFloat(discount_percent) || 0;
   const salePrice = mrpVal > 0 ? Math.round(mrpVal * (1 - discVal / 100)) : 0;
 
-  const maxId = db.get('products').map('id').max().value() || 0;
   const product = {
-    id: maxId + 1,
     name,
     description,
     mrp: mrpVal,
@@ -113,37 +140,33 @@ router.post('/products/add', requireAdmin, upload.fields([{ name: 'image', maxCo
     stock: parseInt(stock) || 0,
     image,
     featured: featured ? 1 : 0,
-    status: 'active',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    status: 'active'
   };
-  db.get('products').push(product).write();
+
+  const inserted = await insertOne('products', product);
 
   if (req.files && req.files.gallery) {
-    const maxImgId = db.get('product_images').map('id').max().value() || 0;
-    req.files.gallery.forEach((f, i) => {
-      db.get('product_images').push({
-        id: maxImgId + i + 1,
-        product_id: product.id,
+    for (let i = 0; i < req.files.gallery.length; i++) {
+      const f = req.files.gallery[i];
+      await insertOne('product_images', {
+        product_id: inserted.id,
         image: f.filename,
         is_primary: i === 0 ? 1 : 0
-      }).write();
-    });
+      });
+    }
   }
 
   res.redirect('/admin/products');
 });
 
-router.get('/products/edit/:id', requireAdmin, (req, res) => {
-  const db = getDB();
-  const product = db.get('products').find({ id: parseInt(req.params.id) }).value();
-  const categories = db.get('categories').value();
-  const images = db.get('product_images').filter({ product_id: parseInt(req.params.id) }).value();
+router.get('/products/edit/:id', requireAdmin, async (req, res) => {
+  const product = await findById('products', parseInt(req.params.id));
+  const { data: categories } = await findAll('categories');
+  const { data: images } = await findAll('product_images', { product_id: parseInt(req.params.id) });
   res.render('admin/product-form', { product, categories, images });
 });
 
-router.post('/products/edit/:id', requireAdmin, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), (req, res) => {
-  const db = getDB();
+router.post('/products/edit/:id', requireAdmin, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   const { name, description, mrp, discount_percent, price, category_id, stock, featured, status, remove_image } = req.body;
   let image = req.body.existing_image;
 
@@ -158,7 +181,7 @@ router.post('/products/edit/:id', requireAdmin, upload.fields([{ name: 'image', 
     image = req.files.image[0].filename;
   }
 
-  db.get('products').find({ id: parseInt(req.params.id) }).assign({
+  await updateOne('products', { id: parseInt(req.params.id) }, {
     name,
     description,
     mrp: mrpVal,
@@ -169,137 +192,120 @@ router.post('/products/edit/:id', requireAdmin, upload.fields([{ name: 'image', 
     stock: parseInt(stock) || 0,
     image,
     featured: featured ? 1 : 0,
-    status: status || 'active',
-    updated_at: new Date().toISOString()
-  }).write();
+    status: status || 'active'
+  });
 
   if (req.files && req.files.gallery) {
-    const maxImgId = db.get('product_images').map('id').max().value() || 0;
-    req.files.gallery.forEach((f, i) => {
-      db.get('product_images').push({
-        id: maxImgId + i + 1,
+    for (let i = 0; i < req.files.gallery.length; i++) {
+      const f = req.files.gallery[i];
+      await insertOne('product_images', {
         product_id: parseInt(req.params.id),
         image: f.filename,
         is_primary: 0
-      }).write();
-    });
+      });
+    }
   }
 
   res.redirect('/admin/products');
 });
 
-router.post('/products/delete/:id', requireAdmin, (req, res) => {
-  const db = getDB();
-  db.get('product_images').remove({ product_id: parseInt(req.params.id) }).write();
-  db.get('products').remove({ id: parseInt(req.params.id) }).write();
+router.post('/products/delete/:id', requireAdmin, async (req, res) => {
+  await removeOne('product_images', { product_id: parseInt(req.params.id) });
+  await removeOne('products', { id: parseInt(req.params.id) });
   res.redirect('/admin/products');
 });
 
-router.post('/products/delete-image/:id', requireAdmin, (req, res) => {
-  const db = getDB();
-  const img = db.get('product_images').find({ id: parseInt(req.params.id) }).value();
+router.post('/products/delete-image/:id', requireAdmin, async (req, res) => {
+  const img = await findById('product_images', parseInt(req.params.id));
   if (img) {
     const filePath = path.join(__dirname, '..', 'uploads', img.image);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    db.get('product_images').remove({ id: parseInt(req.params.id) }).write();
+    await removeOne('product_images', { id: parseInt(req.params.id) });
   }
   res.redirect('back');
 });
 
 // Categories
-router.get('/categories', requireAdmin, (req, res) => {
-  const db = getDB();
-  const categories = db.get('categories').value().map(c => ({
-    ...c,
-    product_count: db.get('products').filter({ category_id: c.id }).size().value()
-  }));
-  res.render('admin/categories', { categories });
+router.get('/categories', requireAdmin, async (req, res) => {
+  const { data: categories } = await findAll('categories');
+  const enriched = [];
+  for (const c of categories) {
+    const productCount = await countAll('products', { category_id: c.id });
+    enriched.push({ ...c, product_count: productCount });
+  }
+  res.render('admin/categories', { categories: enriched });
 });
 
-router.post('/categories/add', requireAdmin, upload.single('image'), (req, res) => {
-  const db = getDB();
+router.post('/categories/add', requireAdmin, upload.single('image'), async (req, res) => {
   const { name, description, featured } = req.body;
   const image = req.file ? req.file.filename : null;
-  const maxId = db.get('categories').map('id').max().value() || 0;
-  db.get('categories').push({
-    id: maxId + 1,
+  await insertOne('categories', {
     name,
     description: description || '',
     image,
-    featured: featured ? 1 : 0,
-    created_at: new Date().toISOString()
-  }).write();
+    featured: featured ? 1 : 0
+  });
   res.redirect('/admin/categories');
 });
 
-router.post('/categories/edit/:id', requireAdmin, upload.single('image'), (req, res) => {
-  const db = getDB();
+router.post('/categories/edit/:id', requireAdmin, upload.single('image'), async (req, res) => {
   const { name, description, existing_image, featured } = req.body;
   let image = existing_image || null;
   if (req.file) {
     image = req.file.filename;
   }
-  db.get('categories').find({ id: parseInt(req.params.id) }).assign({ name, description, image, featured: featured ? 1 : 0 }).write();
+  await updateOne('categories', { id: parseInt(req.params.id) }, { name, description, image, featured: featured ? 1 : 0 });
   res.redirect('/admin/categories');
 });
 
-router.post('/categories/toggle-featured/:id', requireAdmin, (req, res) => {
-  const db = getDB();
-  const cat = db.get('categories').find({ id: parseInt(req.params.id) }).value();
+router.post('/categories/toggle-featured/:id', requireAdmin, async (req, res) => {
+  const cat = await findById('categories', parseInt(req.params.id));
   if (cat) {
-    db.get('categories').find({ id: parseInt(req.params.id) }).assign({ featured: cat.featured ? 0 : 1 }).write();
+    await updateOne('categories', { id: parseInt(req.params.id) }, { featured: cat.featured ? 0 : 1 });
   }
   res.redirect('/admin/categories');
 });
 
-router.post('/categories/delete/:id', requireAdmin, (req, res) => {
-  const db = getDB();
-  // Set products in this category to no category
-  db.get('products').filter({ category_id: parseInt(req.params.id) }).each(p => {
-    p.category_id = null;
-  }).write();
-  db.get('categories').remove({ id: parseInt(req.params.id) }).write();
+router.post('/categories/delete/:id', requireAdmin, async (req, res) => {
+  const { data: productsInCat } = await findAll('products', { category_id: parseInt(req.params.id) });
+  for (const p of productsInCat) {
+    await updateOne('products', { id: p.id }, { category_id: null });
+  }
+  await removeOne('categories', { id: parseInt(req.params.id) });
   res.redirect('/admin/categories');
 });
 
 // Orders
-router.get('/orders', requireAdmin, (req, res) => {
-  const db = getDB();
+router.get('/orders', requireAdmin, async (req, res) => {
   const status = req.query.status || '';
-  let orders = db.get('orders').sortBy('created_at').reverse();
-  if (status) {
-    orders = orders.filter({ order_status: status });
-  }
-  res.render('admin/orders', { orders: orders.value(), status });
+  const filter = status ? { order_status: status } : {};
+  const { data: orders } = await findAll('orders', filter, { created_at: 'desc' });
+  res.render('admin/orders', { orders, status });
 });
 
-router.get('/orders/:id', requireAdmin, (req, res) => {
-  const db = getDB();
-  const order = db.get('orders').find({ id: parseInt(req.params.id) }).value();
+router.get('/orders/:id', requireAdmin, async (req, res) => {
+  const order = await findById('orders', parseInt(req.params.id));
   if (!order) return res.redirect('/admin/orders');
-  const items = db.get('order_items').filter({ order_id: order.id }).value();
-  const sentMessages = db.get('messages').filter({ order_id: order.id }).sortBy('created_at').reverse().value();
+  const { data: items } = await findAll('order_items', { order_id: order.id });
+  const { data: sentMessages } = await findAll('messages', { order_id: order.id }, { created_at: 'desc' });
   res.render('admin/order-detail', { order, items, sentMessages });
 });
 
-router.post('/orders/:id/status', requireAdmin, (req, res) => {
-  const db = getDB();
+router.post('/orders/:id/status', requireAdmin, async (req, res) => {
   const { order_status, payment_status } = req.body;
-  db.get('orders').find({ id: parseInt(req.params.id) }).assign({
+  await updateOne('orders', { id: parseInt(req.params.id) }, {
     order_status,
-    payment_status,
-    updated_at: new Date().toISOString()
-  }).write();
+    payment_status
+  });
   res.redirect('/admin/orders/' + req.params.id);
 });
 
 router.post('/orders/:id/message', requireAdmin, async (req, res) => {
-  const db = getDB();
   const { subject, message } = req.body;
-  const order = db.get('orders').find({ id: parseInt(req.params.id) }).value();
+  const order = await findById('orders', parseInt(req.params.id));
   if (!order) return res.redirect('/admin/orders');
 
-  insertOne('messages', {
+  await insertOne('messages', {
     order_id: order.id,
     order_number: order.order_number,
     customer_id: order.customer_id || null,
@@ -319,46 +325,43 @@ router.post('/orders/:id/message', requireAdmin, async (req, res) => {
   res.redirect('/admin/orders/' + req.params.id);
 });
 
-router.post('/orders/:id/delete', requireAdmin, (req, res) => {
-  const db = getDB();
-  db.get('order_items').remove({ order_id: parseInt(req.params.id) }).write();
-  db.get('orders').remove({ id: parseInt(req.params.id) }).write();
+router.post('/orders/:id/delete', requireAdmin, async (req, res) => {
+  await removeOne('order_items', { order_id: parseInt(req.params.id) });
+  await removeOne('orders', { id: parseInt(req.params.id) });
   res.redirect('/admin/orders');
 });
 
 // Settings
-router.get('/settings', requireAdmin, (req, res) => {
-  const db = getDB();
+router.get('/settings', requireAdmin, async (req, res) => {
+  const { data: settingsList } = await findAll('site_settings');
   const settings = {};
-  db.get('site_settings').value().forEach(s => settings[s.key] = s.value);
+  settingsList.forEach(s => { settings[s.key] = s.value; });
   res.render('admin/settings', { settings });
 });
 
-router.post('/settings', requireAdmin, (req, res) => {
-  const db = getDB();
-  Object.entries(req.body).forEach(([key, value]) => {
-    const existing = db.get('site_settings').find({ key }).value();
+router.post('/settings', requireAdmin, async (req, res) => {
+  for (const [key, value] of Object.entries(req.body)) {
+    const existing = await findByKey('site_settings', { key });
     if (existing) {
-      db.get('site_settings').find({ key }).assign({ value }).write();
+      await updateOne('site_settings', { key }, { value });
     } else {
-      db.get('site_settings').push({ key, value }).write();
+      await insertOne('site_settings', { key, value });
     }
-  });
+  }
   res.redirect('/admin/settings');
 });
 
 // Change password
-router.post('/change-password', requireAdmin, (req, res) => {
-  const db = getDB();
+router.post('/change-password', requireAdmin, async (req, res) => {
   const { current_password, new_password } = req.body;
-  const admin = db.get('admin').find({ id: req.session.admin.id }).value();
+  const admin = await findByKey('admin', { id: req.session.admin.id });
 
   if (!bcrypt.compareSync(current_password, admin.password)) {
     return res.redirect('/admin/settings?error=wrong_password');
   }
 
   const hash = bcrypt.hashSync(new_password, 10);
-  db.get('admin').find({ id: req.session.admin.id }).assign({ password: hash }).write();
+  await updateOne('admin', { id: req.session.admin.id }, { password: hash });
   res.redirect('/admin/settings?success=password_changed');
 });
 
