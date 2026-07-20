@@ -51,7 +51,7 @@ router.get('/logout', (req, res) => {
 
 // Dashboard
 router.get('/dashboard', requireAdmin, async (req, res) => {
-  const [totalProducts, activeProducts, totalOrders, pendingOrders, totalRevenue, lowStockProductsAll, allOrders, allProducts] = await Promise.all([
+  const [totalProducts, activeProducts, totalOrders, pendingOrders, totalRevenue, lowStockProductsAll, allOrders, allProducts, newCustomOrders] = await Promise.all([
     countAll('products'),
     countAll('products', { status: 'active' }),
     countAll('orders'),
@@ -59,7 +59,8 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
     sumField('orders', 'total', { payment_status: 'paid' }),
     findAll('products', { status: 'active' }, { stock: 'asc' }),
     findAll('orders', {}, { created_at: 'desc' }),
-    findAll('products', {}, { created_at: 'desc' })
+    findAll('products', {}, { created_at: 'desc' }),
+    countAll('custom_orders', { status: 'new' })
   ]);
 
   const now = new Date();
@@ -86,7 +87,8 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
     totalRevenue: totalRevenue || 0,
     lowStock,
     todayOrders,
-    monthlyRevenue: monthlyRevenue || 0
+    monthlyRevenue: monthlyRevenue || 0,
+    newCustomOrders
   };
 
   const recentOrders = allOrders.data.slice(0, 5);
@@ -273,6 +275,31 @@ router.post('/categories/delete/:id', requireAdmin, async (req, res) => {
   }
   await removeOne('categories', { id: parseInt(req.params.id) });
   res.redirect('/admin/categories');
+});
+
+// Custom Orders
+router.get('/custom-orders', requireAdmin, async (req, res) => {
+  const status = req.query.status || '';
+  const filter = status ? { status: status } : {};
+  const { data: orders } = await findAll('custom_orders', filter, { created_at: 'desc' });
+  res.render('admin/custom-orders', { orders, status });
+});
+
+router.get('/custom-orders/:id', requireAdmin, async (req, res) => {
+  const order = await findById('custom_orders', parseInt(req.params.id));
+  if (!order) return res.redirect('/admin/custom-orders');
+  res.render('admin/custom-order-detail', { order });
+});
+
+router.post('/custom-orders/:id/status', requireAdmin, async (req, res) => {
+  const { status } = req.body;
+  await updateOne('custom_orders', { id: parseInt(req.params.id) }, { status });
+  res.redirect('/admin/custom-orders/' + req.params.id);
+});
+
+router.post('/custom-orders/:id/delete', requireAdmin, async (req, res) => {
+  await removeOne('custom_orders', { id: parseInt(req.params.id) });
+  res.redirect('/admin/custom-orders');
 });
 
 // Orders

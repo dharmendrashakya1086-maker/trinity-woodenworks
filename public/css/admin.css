@@ -709,6 +709,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); }
 .badge-inactive { background: rgba(106,98,96,0.15); color: var(--text-muted); }
 .badge-paid { background: rgba(0,230,118,0.1); color: var(--success); }
 .badge-info { background: rgba(201,169,110,0.08); color: var(--primary); }
+.badge-new { background: rgba(255,171,0,0.1); color: var(--warning); }
+.badge-contacted { background: rgba(0,176,255,0.1); color: var(--info); }
+.badge-crafting { background: rgba(201,169,110,0.1); color: var(--primary); }
+.badge-completed { background: rgba(0,230,118,0.1); color: var(--success); }
 
 .stock-badge {
   display: inline-flex;

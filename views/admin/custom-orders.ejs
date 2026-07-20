@@ -1,0 +1,81 @@
+<%- include('admin-header') %>
+
+<div class="page-title">
+  <h1>Custom Orders</h1>
+</div>
+
+<div class="filter-bar">
+  <a href="/admin/custom-orders" class="filter-btn <%= !status ? 'active' : '' %>">All</a>
+  <a href="/admin/custom-orders?status=new" class="filter-btn <%= status === 'new' ? 'active' : '' %>">New</a>
+  <a href="/admin/custom-orders?status=contacted" class="filter-btn <%= status === 'contacted' ? 'active' : '' %>">Contacted</a>
+  <a href="/admin/custom-orders?status=confirmed" class="filter-btn <%= status === 'confirmed' ? 'active' : '' %>">Confirmed</a>
+  <a href="/admin/custom-orders?status=crafting" class="filter-btn <%= status === 'crafting' ? 'active' : '' %>">Crafting</a>
+  <a href="/admin/custom-orders?status=completed" class="filter-btn <%= status === 'completed' ? 'active' : '' %>">Completed</a>
+  <a href="/admin/custom-orders?status=cancelled" class="filter-btn <%= status === 'cancelled' ? 'active' : '' %>">Cancelled</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <% if (orders.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-pencil-ruler"></i>
+        <h3>No Custom Orders</h3>
+        <p>Custom order requests from customers will appear here</p>
+      </div>
+    <% } else { %>
+      <div class="admin-search">
+        <div class="admin-search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" id="coSearch" placeholder="Search custom orders..." oninput="filterCO()">
+        </div>
+        <span class="admin-search-count" id="coCount"><%= orders.length %> order<%= orders.length === 1 ? '' : 's' %></span>
+      </div>
+      <div class="admin-item-list" id="coList">
+        <% orders.forEach(order => { %>
+          <div class="admin-item" data-search="<%= (order.name + ' ' + order.email + ' ' + order.phone + ' ' + order.category + ' ' + order.description).toLowerCase() %>">
+            <div class="admin-item-main">
+              <div class="admin-item-thumb">
+                <div class="order-icon"><i class="fas fa-pencil-ruler"></i></div>
+              </div>
+              <div class="admin-item-title">
+                <%= order.name %> — <%= order.category %>
+                <span class="badge badge-<%= order.status %>"><%= order.status %></span>
+              </div>
+              <div class="admin-item-actions">
+                <a href="/admin/custom-orders/<%= order.id %>" class="btn btn-xs btn-primary" title="View"><i class="fas fa-eye"></i></a>
+                <form action="/admin/custom-orders/<%= order.id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this custom order?')">
+                  <button type="submit" class="btn btn-xs btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                </form>
+                <button class="btn btn-xs btn-outline admin-item-toggle" onclick="this.closest('.admin-item').classList.toggle('expanded')" title="Details"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+            <div class="admin-item-details">
+              <div class="admin-detail"><span class="admin-detail-label">Email</span><span><%= order.email %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Phone</span><span><%= order.phone %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Category</span><span><%= order.category %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Wood</span><span><%= order.wood || 'No preference' %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Budget</span><span><%= order.budget || 'Not specified' %></span></div>
+              <div class="admin-detail"><span class="admin-detail-label">Date</span><span><%= new Date(order.created_at).toLocaleDateString('en-IN') %></span></div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function filterCO() {
+  var q = document.getElementById('coSearch').value.toLowerCase();
+  var items = document.querySelectorAll('#coList .admin-item');
+  var count = 0;
+  items.forEach(function(item) {
+    var match = (item.dataset.search || '').includes(q);
+    item.style.display = match ? '' : 'none';
+    if (match) count++;
+  });
+  document.getElementById('coCount').textContent = count + ' order' + (count === 1 ? '' : 's');
+}
+</script>
+
+<%- include('admin-footer') %>

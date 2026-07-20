@@ -19,7 +19,8 @@
         <a href="/admin/dashboard" class="sidebar-link <%= currentPath === '/admin/dashboard' ? 'active' : '' %>"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         <a href="/admin/products" class="sidebar-link <%= currentPath.includes('/admin/products') ? 'active' : '' %>"><i class="fas fa-box"></i> Products</a>
         <a href="/admin/categories" class="sidebar-link <%= currentPath === '/admin/categories' ? 'active' : '' %>"><i class="fas fa-tags"></i> Categories</a>
-        <a href="/admin/orders" class="sidebar-link <%= currentPath.includes('/admin/orders') ? 'active' : '' %>"><i class="fas fa-shopping-cart"></i> Orders</a>
+        <a href="/admin/orders" class="sidebar-link <%= currentPath.includes('/admin/orders') && !currentPath.includes('custom') ? 'active' : '' %>"><i class="fas fa-shopping-cart"></i> Orders</a>
+        <a href="/admin/custom-orders" class="sidebar-link <%= currentPath.includes('/admin/custom-orders') ? 'active' : '' %>"><i class="fas fa-pencil-ruler"></i> Custom Orders</a>
         <a href="/admin/settings" class="sidebar-link <%= currentPath === '/admin/settings' ? 'active' : '' %>"><i class="fas fa-cog"></i> Settings</a>
       </nav>
       <div class="sidebar-footer">

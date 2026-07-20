@@ -67,6 +67,31 @@ app.post('/api/newsletter', (req, res) => {
   res.json({ success: true });
 });
 
+// ---- Custom Order ----
+app.post('/api/custom-order', (req, res) => {
+  var b = req.body;
+  var name = (b.name || '').trim();
+  var email = (b.email || '').trim();
+  var phone = (b.phone || '').trim();
+  var category = (b.category || '').trim();
+  var description = (b.description || '').trim();
+  if (!name || !email || !phone || !category || !description) {
+    return res.json({ success: false, error: 'All required fields must be filled' });
+  }
+  try {
+    var db = getDB();
+    if (db) {
+      db.collection('custom_orders').insertOne({
+        name: name, email: email, phone: phone,
+        category: category, wood: b.wood || '', budget: b.budget || '',
+        dimensions: b.dimensions || '', description: description,
+        status: 'new', created_at: new Date()
+      });
+    }
+  } catch(e) {}
+  res.json({ success: true });
+});
+
 app.use((req, res) => {
   res.status(404).render('404', { title: 'Page Not Found' });
 });

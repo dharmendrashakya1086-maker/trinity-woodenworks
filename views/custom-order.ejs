@@ -11,7 +11,7 @@
   <div class="container">
     <div class="custom-order-page-grid">
       <div class="custom-order-form-section">
-        <form class="contact-form" onsubmit="handleCustomOrder(event)">
+        <form class="contact-form" onsubmit="return handleCustomOrder(event)">
           <div class="form-row">
             <div class="form-group">
               <label for="co-name">Your Name *</label>
@@ -141,9 +141,45 @@
 <script>
 function handleCustomOrder(e) {
   e.preventDefault();
-  document.querySelector('.contact-form').style.display = 'none';
-  document.getElementById('customOrderSuccess').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  var form = e.target;
+  var btn = form.querySelector('button[type="submit"]');
+  var data = {
+    name: document.getElementById('co-name').value.trim(),
+    email: document.getElementById('co-email').value.trim(),
+    phone: document.getElementById('co-phone').value.trim(),
+    category: document.getElementById('co-category').value,
+    wood: document.getElementById('co-wood').value,
+    budget: document.getElementById('co-budget').value,
+    dimensions: document.getElementById('co-dimensions').value.trim(),
+    description: document.getElementById('co-description').value.trim()
+  };
+  if (!data.name || !data.email || !data.phone || !data.category || !data.description) {
+    alert('Please fill all required fields');
+    return false;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  fetch('/api/custom-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        form.style.display = 'none';
+        document.getElementById('customOrderSuccess').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert(d.error || 'Failed to submit');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Custom Order Request';
+      }
+    }).catch(function() {
+      alert('Something went wrong');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Custom Order Request';
+    });
+  return false;
 }
 </script>
 
