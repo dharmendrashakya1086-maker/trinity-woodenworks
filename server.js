@@ -69,6 +69,9 @@ app.post('/api/newsletter', (req, res) => {
 
 // ---- Custom Order ----
 app.post('/api/custom-order', (req, res) => {
+  if (!req.session || !req.session.customer) {
+    return res.json({ success: false, error: 'Please sign in to place a custom order' });
+  }
   var b = req.body;
   var name = (b.name || '').trim();
   var email = (b.email || '').trim();
@@ -85,6 +88,7 @@ app.post('/api/custom-order', (req, res) => {
         name: name, email: email, phone: phone,
         category: category, wood: b.wood || '', budget: b.budget || '',
         dimensions: b.dimensions || '', description: description,
+        customer_id: req.session.customer.id || null,
         status: 'new', created_at: new Date()
       });
     }
