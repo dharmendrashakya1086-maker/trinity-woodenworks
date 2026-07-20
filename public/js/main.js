@@ -204,7 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        if (window.smoothScroll) {
+        if (typeof gsap !== 'undefined' && gsap.to) {
+          gsap.to(window, { scrollTo: { y: target, offsetY: 80 }, duration: 1, ease: 'power2.inOut' });
+        } else if (window.smoothScroll) {
           window.smoothScroll.scrollTo(target);
         } else {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -329,8 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
       backToTop.classList.toggle('visible', window.scrollY > 400);
     });
     backToTop.addEventListener('click', () => {
-      if (window.smoothScroll) window.smoothScroll.scrollTo(0);
-      else window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (typeof gsap !== 'undefined' && gsap.to) {
+        gsap.to(window, { scrollTo: 0, duration: 1, ease: 'power2.inOut' });
+      } else {
+        window.scrollTo(0, 0);
+      }
     });
   }
 });
