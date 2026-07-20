@@ -51,9 +51,7 @@
     <a href="/categories" class="nav-link <%= currentPath === '/categories' || currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>">Shop</a>
     <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
     <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
-    <a href="/custom-order" class="nav-link <%= currentPath === '/custom-order' ? 'active' : '' %>">Custom Order</a>
-    <a href="/track-custom-order" class="nav-link <%= currentPath === '/track-custom-order' ? 'active' : '' %>">Track Custom Order</a>
-    <a href="/track-order" class="nav-link <%= currentPath === '/track-order' ? 'active' : '' %>">Track Order</a>
+    <a href="/track-order" class="nav-link <%= currentPath === '/track-order' || currentPath === '/track-custom-order' ? 'active' : '' %>">Track Order</a>
   </div>
   <nav class="navbar">
     <div class="container nav-container">
@@ -71,9 +69,7 @@
         <a href="/categories" class="nav-link <%= currentPath === '/categories' || currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>">Shop</a>
         <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
         <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
-        <a href="/custom-order" class="nav-link <%= currentPath === '/custom-order' ? 'active' : '' %>">Custom Order</a>
-        <a href="/track-custom-order" class="nav-link <%= currentPath === '/track-custom-order' ? 'active' : '' %>">Track Custom Order</a>
-        <a href="/track-order" class="nav-link <%= currentPath === '/track-order' ? 'active' : '' %>">Track Order</a>
+        <a href="/track-order" class="nav-link <%= currentPath === '/track-order' || currentPath === '/track-custom-order' ? 'active' : '' %>">Track Order</a>
       </div>
       <div class="nav-actions">
         <a href="/cart" class="nav-icon cart-icon" title="Cart">
