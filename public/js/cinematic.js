@@ -43,20 +43,22 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ---- Scroll Progress Indicator ----
-  const progressBar = document.createElement('div');
-  progressBar.className = 'scroll-progress';
-  document.body.appendChild(progressBar);
+  if (!document.getElementById('scrollProgress')) {
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress';
+    document.body.appendChild(progressBar);
 
-  gsap.to(progressBar, {
-    scaleX: 1,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: document.body,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.3
-    }
-  });
+    gsap.to(progressBar, {
+      scaleX: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.3
+      }
+    });
+  }
 
   // ---- Section Title Reveal ----
   document.querySelectorAll('.section-title, .section-subtitle').forEach(function(el) {

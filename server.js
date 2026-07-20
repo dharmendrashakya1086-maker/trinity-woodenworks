@@ -53,7 +53,7 @@ app.get('/health', (req, res) => {
 });
 
 // ---- Newsletter ----
-app.post('/api/newsletter', (req, res) => {
+app.post('/api/newsletter', async (req, res) => {
   var email = (req.body.email || '').trim();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.json({ success: false, error: 'Valid email required' });
@@ -61,14 +61,14 @@ app.post('/api/newsletter', (req, res) => {
   try {
     var db = getDB();
     if (db) {
-      db.collection('newsletter').insertOne({ email: email, subscribed_at: new Date() }).catch(function(){});
+      await db.collection('newsletter').insertOne({ email: email, subscribed_at: new Date() });
     }
   } catch(e) {}
   res.json({ success: true });
 });
 
 // ---- Custom Order ----
-app.post('/api/custom-order', (req, res) => {
+app.post('/api/custom-order', async (req, res) => {
   var b = req.body;
   var name = (b.name || '').trim();
   var email = (b.email || '').trim();
@@ -84,7 +84,7 @@ app.post('/api/custom-order', (req, res) => {
   try {
     var db = getDB();
     if (db) {
-      db.collection('custom_orders').insertOne({
+      await db.collection('custom_orders').insertOne({
         name: name, email: email, phone: phone,
         category: category, wood: b.wood || '', budget: b.budget || '',
         dimensions: b.dimensions || '', description: description,
@@ -98,6 +98,28 @@ app.post('/api/custom-order', (req, res) => {
 
 app.post('/api/check-auth', (req, res) => {
   res.json({ loggedIn: !!(req.session && req.session.customer) });
+});
+
+// ---- Contact Form ----
+app.post('/api/contact', async (req, res) => {
+  var b = req.body;
+  var name = (b.name || '').trim();
+  var email = (b.email || '').trim();
+  var subject = (b.subject || '').trim();
+  var message = (b.message || '').trim();
+  if (!name || !email || !subject || !message) {
+    return res.json({ success: false, error: 'All required fields must be filled' });
+  }
+  try {
+    var db = getDB();
+    if (db) {
+      await db.collection('contact_messages').insertOne({
+        name: name, email: email, phone: b.phone || '',
+        subject: subject, message: message, created_at: new Date(), read: false
+      });
+    }
+  } catch(e) {}
+  res.json({ success: true });
 });
 
 app.use((req, res) => {
