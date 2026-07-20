@@ -1,355 +1,600 @@
 <%- include('partials/header') %>
 
+<!-- Scroll Progress -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- Noise + Stripe Overlay -->
-<div class="ss-noise-overlay"></div>
-<div class="ss-stripe-overlay"></div>
-
-<!-- ===== HERO ===== -->
-<section class="ss-hero">
-  <div class="ss-hero-content">
-    <div class="ss-hero-label">Trinity Woodenworks</div>
-    <div class="ss-hero-label ss-hero-label--right">Handcrafted Collection</div>
-    <h1 class="ss-hero-title">
-      <span class="ss-hero-title-line" data-text="Crafted">Crafted</span>
-      <span class="ss-hero-title-line ss-hero-title-line--italic" data-text="With Soul">With Soul</span>
-    </h1>
-    <div class="ss-hero-bottom">
-      <div class="ss-hero-desc">Premium wooden furniture &amp; decor, built to last generations</div>
-      <a href="/shop" class="ss-btn ss-btn--primary">Shop Now</a>
-      <div class="ss-hero-scroll">Scroll <span class="ss-hero-arrow">&gt;&gt;&gt;</span></div>
+<!-- ==================== HERO ==================== -->
+<section class="hero hero-3d">
+  <div class="hero-bg"></div>
+  <div class="parallax-orb orb-gold" data-speed="0.3" style="top:15%;left:10%;"></div>
+  <div class="parallax-orb orb-cyan" data-speed="0.5" style="top:60%;right:8%;"></div>
+  <div class="parallax-orb orb-purple" data-speed="0.2" style="bottom:20%;left:20%;"></div>
+  <div class="parallax-shape shape-ring" data-speed="0.4" style="top:25%;right:15%;"></div>
+  <div class="parallax-shape shape-diamond" data-speed="0.6" style="bottom:30%;left:8%;"></div>
+  <div class="container hero-content" data-parallax="0.15">
+    <div class="hero-badge badge-glass floating">Handcrafted with Love</div>
+    <h1 class="gradient-text">Trinity Woodenworks</h1>
+    <p class="hero-subtitle">Crafted with Passion, Built to Last</p>
+    <p class="hero-desc">Premium handcrafted wooden items made by three friends who share a passion for woodworking. Each piece tells a story of craftsmanship and dedication.</p>
+    <div class="hero-actions">
+      <a href="/shop" class="btn btn-primary btn-lg btn-glow"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+      <a href="/about" class="btn btn-outline btn-lg"><i class="fas fa-info-circle"></i> Our Story</a>
+    </div>
+    <div class="hero-founders">
+      <span>Founded by Anshuman, Sachin & Sankalp</span>
     </div>
   </div>
 </section>
 
-<!-- ===== MARQUEE TICKER ===== -->
-<div class="ss-marquee-wrapper">
-  <div class="ss-marquee-track">
-    <span class="ss-marquee-content">Handcrafted Wood &mdash; Sustainable Materials &mdash; Built to Last &mdash; Free Shipping &mdash; Custom Orders Welcome &mdash; Made in India &mdash;&nbsp;</span>
-    <span class="ss-marquee-content" aria-hidden="true">Handcrafted Wood &mdash; Sustainable Materials &mdash; Built to Last &mdash; Free Shipping &mdash; Custom Orders Welcome &mdash; Made in India &mdash;&nbsp;</span>
-  </div>
-</div>
-
-<!-- ===== TRUST BADGES ===== -->
-<section class="ss-badges">
-  <div class="ss-badge">
-    <div class="ss-badge-icon"><i class="fas fa-truck"></i></div>
-    <div class="ss-badge-text">Free Shipping</div>
-  </div>
-  <div class="ss-badge">
-    <div class="ss-badge-icon"><i class="fas fa-award"></i></div>
-    <div class="ss-badge-text">Quality Assured</div>
-  </div>
-  <div class="ss-badge">
-    <div class="ss-badge-icon"><i class="fas fa-undo"></i></div>
-    <div class="ss-badge-text">Easy Returns</div>
-  </div>
-  <div class="ss-badge">
-    <div class="ss-badge-icon"><i class="fas fa-headset"></i></div>
-    <div class="ss-badge-text">24/7 Support</div>
-  </div>
-</section>
-
-<!-- ===== STATS ===== -->
-<section class="ss-stats">
-  <div class="ss-stat">
-    <div class="ss-stat-number counter-value" data-count="<%= stats.products %>">0</div>
-    <div class="ss-stat-label">Products</div>
-  </div>
-  <div class="ss-stat-divider"></div>
-  <div class="ss-stat">
-    <div class="ss-stat-number counter-value" data-count="500">0</div>
-    <div class="ss-stat-label">Happy Customers</div>
-  </div>
-  <div class="ss-stat-divider"></div>
-  <div class="ss-stat">
-    <div class="ss-stat-number counter-value" data-count="50">0</div>
-    <div class="ss-stat-label">Custom Designs</div>
-  </div>
-  <div class="ss-stat-divider"></div>
-  <div class="ss-stat">
-    <div class="ss-stat-number counter-value" data-count="5">0</div>
-    <div class="ss-stat-label">Years Experience</div>
+<!-- Trust Badges -->
+<section class="section" style="padding-top: 60px; padding-bottom: 40px;">
+  <div class="parallax-orb orb-gold" data-speed="0.25" style="top:10%;right:12%;"></div>
+  <div class="parallax-orb orb-cyan" data-speed="0.4" style="bottom:15%;left:5%;"></div>
+  <div class="container" data-parallax="0.1">
+    <div class="stats-grid stagger-children">
+      <div class="trust-badge snap-reveal">
+        <div class="trust-badge-icon"><i class="fas fa-truck-fast"></i></div>
+        <div class="trust-badge-title">Free Shipping</div>
+        <div class="trust-badge-text">On orders above ₹1,000</div>
+      </div>
+      <div class="trust-badge snap-reveal">
+        <div class="trust-badge-icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="trust-badge-title">Quality Assured</div>
+        <div class="trust-badge-text">Premium wood, built to last</div>
+      </div>
+      <div class="trust-badge snap-reveal">
+        <div class="trust-badge-icon"><i class="fas fa-rotate-left"></i></div>
+        <div class="trust-badge-title">Easy Returns</div>
+        <div class="trust-badge-text">7-day return policy</div>
+      </div>
+      <div class="trust-badge snap-reveal">
+        <div class="trust-badge-icon"><i class="fas fa-headset"></i></div>
+        <div class="trust-badge-title">24/7 Support</div>
+        <div class="trust-badge-text">We're here to help</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ===== MARQUEE TICKER 2 ===== -->
-<div class="ss-marquee-wrapper ss-marquee-wrapper--reverse">
-  <div class="ss-marquee-track ss-marquee-track--reverse">
-    <span class="ss-marquee-content">Wooden Decor &mdash; Furniture &mdash; Kitchen &amp; Dining &mdash; Gifting &mdash; Custom Orders &mdash;&nbsp;</span>
-    <span class="ss-marquee-content" aria-hidden="true">Wooden Decor &mdash; Furniture &mdash; Kitchen &amp; Dining &mdash; Gifting &mdash; Custom Orders &mdash;&nbsp;</span>
+<!-- Stats -->
+<section class="section">
+  <div class="container">
+    <div class="stats-grid stagger-children">
+      <div class="stat-item snap-reveal">
+        <div class="counter-value" data-count="<%= stats.products %>">0</div>
+        <div class="counter-label">Products</div>
+      </div>
+      <div class="stat-item snap-reveal">
+        <div class="counter-value" data-count="500">0</div>
+        <div class="counter-label">Happy Customers</div>
+      </div>
+      <div class="stat-item snap-reveal">
+        <div class="counter-value" data-count="50">0</div>
+        <div class="counter-label">Custom Designs</div>
+      </div>
+      <div class="stat-item snap-reveal">
+        <div class="counter-value" data-count="5">0</div>
+        <div class="counter-label">Years Experience</div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- ===== FEATURED CATEGORIES ===== -->
+<!-- Features -->
+<section class="features">
+  <div class="parallax-shape shape-ring" data-speed="0.35" style="top:20%;left:5%;"></div>
+  <div class="parallax-orb orb-purple" data-speed="0.45" style="bottom:10%;right:10%;"></div>
+  <div class="container" data-parallax="0.12">
+    <div class="section-header snap-reveal">
+      <span class="section-tag">Why Choose Us</span>
+      <h2>Crafted for You</h2>
+      <p>Every piece reflects our commitment to quality</p>
+    </div>
+    <div class="features-grid stagger-children">
+      <div class="feature-card snap-reveal">
+        <div class="feature-icon"><i class="fas fa-hand-sparkles"></i></div>
+        <h3>100% Handcrafted</h3>
+        <p>Every piece is carefully handcrafted by skilled artisans</p>
+      </div>
+      <div class="feature-card snap-reveal">
+        <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+        <h3>Eco-Friendly</h3>
+        <p>Made from sustainably sourced natural wood</p>
+      </div>
+      <div class="feature-card snap-reveal">
+        <div class="feature-icon"><i class="fas fa-truck"></i></div>
+        <h3>Free Shipping</h3>
+        <p>Free delivery on orders above ₹1,000</p>
+      </div>
+      <div class="feature-card snap-reveal">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Quality Assured</h3>
+        <p>Premium quality wood with lifetime durability</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Categories -->
 <% if (featuredCategories.length > 0) { %>
-<section class="ss-section">
-  <div class="ss-section-header">
-    <h2 class="ss-section-title">Shop by Category</h2>
-    <a href="/categories" class="ss-link">View All <span>&rarr;</span></a>
-  </div>
-  <div class="ss-category-grid">
-    <% featuredCategories.forEach(function(cat) { %>
-    <a href="/shop?category=<%= cat.id %>" class="ss-category-card">
-      <div class="ss-category-image">
-        <% if (cat.image) { %>
-          <img src="<%= cat.image %>" alt="<%= cat.name %>" loading="lazy">
-        <% } else { %>
-          <div class="ss-category-icon"><i class="<%= cat.icon || 'fas fa-box' %>"></i></div>
-        <% } %>
-      </div>
-      <div class="ss-category-info">
-        <h3 class="ss-category-name"><%= cat.name %></h3>
-        <p class="ss-category-desc"><%= cat.description || '' %></p>
-        <span class="ss-category-count"><%= cat.product_count %> products</span>
-      </div>
-    </a>
-    <% }); %>
+<section class="section featured-section">
+  <div class="parallax-orb orb-gold" data-speed="0.3" style="top:8%;left:8%;"></div>
+  <div class="parallax-shape shape-diamond" data-speed="0.5" style="bottom:12%;right:6%;"></div>
+  <div class="container" data-parallax="0.1">
+    <div class="section-header snap-reveal">
+      <span class="section-tag">Our Collection</span>
+      <h2>Featured Categories</h2>
+      <p>Explore our handcrafted collections by category</p>
+    </div>
+    <div class="categories-grid home-categories-grid stagger-children">
+      <% featuredCategories.forEach(cat => { %>
+        <a href="/shop?category=<%= cat.id %>" class="category-tile snap-reveal">
+          <div class="category-tile-image">
+            <% if (cat.image) { %>
+              <img src="/images/<%= cat.image %>" alt="<%= cat.name %>">
+            <% } else { %>
+              <div class="category-tile-icon">
+                <i class="fas <%= cat.icon || 'fa-layer-group' %>"></i>
+              </div>
+            <% } %>
+            <div class="category-tile-overlay"></div>
+          </div>
+          <div class="category-tile-content">
+            <h3><%= cat.name %></h3>
+            <p><%= cat.description %></p>
+            <span class="category-tile-count"><%= cat.product_count %> product<%= cat.product_count !== 1 ? 's' : '' %></span>
+            <span class="category-tile-btn">View Collection <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+    <div class="section-footer snap-reveal">
+      <a href="/categories" class="btn btn-outline">View All Categories <i class="fas fa-arrow-right"></i></a>
+    </div>
   </div>
 </section>
 <% } %>
 
-<!-- ===== LATEST PRODUCTS ===== -->
+<!-- Latest Products -->
 <% if (latest.length > 0) { %>
-<section class="ss-section ss-section--dark">
-  <div class="ss-section-header">
-    <h2 class="ss-section-title">Latest Arrivals</h2>
-    <a href="/shop" class="ss-link">Shop All <span>&rarr;</span></a>
-  </div>
-  <div class="ss-product-grid">
-    <% latest.forEach(function(product) { %>
-    <a href="/product/<%= product.id %>" class="ss-product-card">
-      <div class="ss-product-image">
-        <% if (product.image) { %>
-          <img src="<%= product.image %>" alt="<%= product.name %>" loading="lazy">
-        <% } else { %>
-          <div class="ss-product-placeholder"><i class="fas fa-image"></i></div>
-        <% } %>
-        <% if (product.discount_percent) { %>
-          <span class="ss-product-badge">-<%= product.discount_percent %>%</span>
-        <% } %>
-        <div class="ss-product-overlay">
-          <span class="ss-product-quick">Quick View</span>
-        </div>
-      </div>
-      <div class="ss-product-info">
-        <span class="ss-product-category"><%= product.category_name || '' %></span>
-        <h3 class="ss-product-name"><%= product.name %></h3>
-        <div class="ss-product-pricing">
-          <span class="ss-product-price">&#8377;<%= product.price.toFixed(2) %></span>
-          <% if (product.mrp && product.mrp > product.price) { %>
-            <span class="ss-product-mrp">&#8377;<%= product.mrp.toFixed(2) %></span>
-          <% } %>
-        </div>
-      </div>
-    </a>
-    <% }); %>
+<section class="section">
+  <div class="parallax-orb orb-cyan" data-speed="0.35" style="top:12%;right:8%;"></div>
+  <div class="parallax-orb orb-purple" data-speed="0.2" style="bottom:8%;left:12%;"></div>
+  <div class="container" data-parallax="0.1">
+    <div class="section-header snap-reveal">
+      <span class="section-tag">New Arrivals</span>
+      <h2>Latest Products</h2>
+      <p>Check out our newest handcrafted pieces</p>
+    </div>
+    <div class="products-grid home-products-grid stagger-children">
+      <% latest.forEach(product => { %>
+        <a href="/product/<%= product.id %>" class="product-card snap-reveal">
+          <div class="product-image">
+            <% if (product.image) { %>
+              <img src="/images/<%= product.image %>" alt="<%= product.name %>">
+            <% } else { %>
+              <div class="product-placeholder"><i class="fas fa-image"></i></div>
+            <% } %>
+            <% if (product.discount_percent > 0) { %>
+              <span class="product-badge sale"><%= product.discount_percent %>% OFF</span>
+            <% } %>
+            <button class="card-share-btn" onclick="event.stopPropagation(); shareProduct(<%= product.id %>, '<%= product.name.replace(/'/g, "\\'") %>', <%= product.price %>)" title="Share">
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+          <div class="product-info">
+            <span class="product-category"><%= product.category_name || 'Uncategorized' %></span>
+            <h3 class="product-name"><%= product.name %></h3>
+            <div class="product-price">
+              <% if (product.discount_percent > 0) { %>
+                <span class="price-current">₹<%= product.price.toLocaleString() %></span>
+                <span class="price-old">₹<%= (product.mrp || product.price).toLocaleString() %></span>
+              <% } else { %>
+                <span class="price-current">₹<%= product.price.toLocaleString() %></span>
+              <% } %>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+    <div class="section-footer snap-reveal">
+      <a href="/shop" class="btn btn-primary">View All Products <i class="fas fa-arrow-right"></i></a>
+    </div>
   </div>
 </section>
 <% } %>
 
-<!-- ===== ABOUT PREVIEW ===== -->
-<section class="ss-section ss-section--split">
-  <div class="ss-split-left">
-    <h2 class="ss-section-title ss-section-title--large">Three Friends,<br>One Passion</h2>
-    <p class="ss-split-text">We are Anshuman, Sachin, and Sankalp &mdash; three friends who share a love for woodworking. Every piece we create tells a story of craftsmanship, sustainability, and love.</p>
-    <a href="/about" class="ss-btn ss-btn--outline">Learn More</a>
+<!-- Testimonials -->
+<section class="section" style="background: linear-gradient(180deg, transparent, rgba(201,169,110,0.02), transparent);">
+  <div class="parallax-orb orb-gold" data-speed="0.3" style="top:15%;left:6%;"></div>
+  <div class="parallax-shape shape-ring" data-speed="0.45" style="bottom:10%;right:8%;"></div>
+  <div class="container" data-parallax="0.12">
+    <div class="section-header snap-reveal">
+      <span class="section-tag">Testimonials</span>
+      <h2>What Our Customers Say</h2>
+      <p>Real reviews from real people</p>
+    </div>
+    <div class="stagger-children" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px;">
+      <div class="testimonial-card snap-reveal">
+        <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="testimonial-text">"The craftsmanship is outstanding. I ordered a custom nameplate and it exceeded my expectations. The attention to detail is remarkable."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">R</div>
+          <div>
+            <div class="testimonial-name">Rahul Sharma</div>
+            <div class="testimonial-location">Jaipur, Rajasthan</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card snap-reveal">
+        <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="testimonial-text">"Beautiful wooden furniture delivered right to my door. The coffee table is now the centerpiece of my living room. Highly recommended!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">P</div>
+          <div>
+            <div class="testimonial-name">Priya Patel</div>
+            <div class="testimonial-location">Mumbai, Maharashtra</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card snap-reveal">
+        <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="testimonial-text">"Amazing quality and fast delivery. The wooden chess board I bought is a work of art. Will definitely order again!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div>
+            <div class="testimonial-name">Amit Kumar</div>
+            <div class="testimonial-location">Delhi, NCR</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="ss-split-right">
-    <div class="ss-split-features">
-      <div class="ss-split-feature">
-        <div class="ss-split-feature-icon"><i class="fas fa-leaf"></i></div>
-        <div>
+</section>
+
+<!-- About -->
+<section class="section about-preview">
+  <div class="parallax-orb orb-purple" data-speed="0.25" style="top:10%;right:10%;"></div>
+  <div class="parallax-orb orb-cyan" data-speed="0.4" style="bottom:15%;left:5%;"></div>
+  <div class="container" data-parallax="0.1">
+    <div class="about-grid">
+      <div class="about-content snap-reveal-left">
+        <span class="section-tag">Our Story</span>
+        <h2>Three Friends, One Passion</h2>
+        <p>Trinity Woodenworks was born from a shared dream between three friends — <strong>Anshuman</strong>, <strong>Sachin</strong>, and <strong>Sankalp</strong> — who found their calling in the art of woodworking.</p>
+        <p>What started as a hobby in a small workshop has grown into a brand known for its quality craftsmanship, attention to detail, and unique designs.</p>
+        <p>We believe in sustainable practices, supporting local communities, and creating products that bring warmth and character to every home.</p>
+        <a href="/about" class="btn btn-primary btn-glow">Read Our Full Story <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="about-visual snap-reveal-right">
+        <div class="about-card">
+          <div class="about-icon"><i class="fas fa-tree"></i></div>
           <h4>Sustainable Wood</h4>
-          <p>Ethically sourced materials</p>
+          <p>Ethically sourced from local forests</p>
         </div>
-      </div>
-      <div class="ss-split-feature">
-        <div class="ss-split-feature-icon"><i class="fas fa-hammer"></i></div>
-        <div>
+        <div class="about-card">
+          <div class="about-icon"><i class="fas fa-hammer"></i></div>
           <h4>Traditional Techniques</h4>
-          <p>Time-honored craftsmanship</p>
+          <p>Time-honored joinery methods</p>
         </div>
-      </div>
-      <div class="ss-split-feature">
-        <div class="ss-split-feature-icon"><i class="fas fa-heart"></i></div>
-        <div>
+        <div class="about-card">
+          <div class="about-icon"><i class="fas fa-heart"></i></div>
           <h4>Made with Love</h4>
-          <p>Every piece, handcrafted</p>
+          <p>Every piece has a personal touch</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== CUSTOM ORDER ===== -->
-<section class="ss-section ss-section--accent">
-  <div class="ss-custom-header">
-    <h2 class="ss-section-title ss-section-title--large">Your Vision,<br>Our Craft</h2>
-    <p class="ss-custom-desc">Tell us your dream and we'll bring it to life with wood.</p>
-    <a href="/custom-order" class="ss-btn ss-btn--primary">Start Custom Order</a>
-  </div>
-  <div class="ss-custom-grid">
-    <div class="ss-custom-item">
-      <div class="ss-custom-item-num">01</div>
-      <h4>Share Your Idea</h4>
-      <p>Tell us what you want &mdash; size, wood, style, everything.</p>
-    </div>
-    <div class="ss-custom-item">
-      <div class="ss-custom-item-num">02</div>
-      <h4>We Design</h4>
-      <p>Our team creates a design and shares a quote.</p>
-    </div>
-    <div class="ss-custom-item">
-      <div class="ss-custom-item-num">03</div>
-      <h4>We Build</h4>
-      <p>Handcrafted with precision using premium wood.</p>
-    </div>
-    <div class="ss-custom-item">
-      <div class="ss-custom-item-num">04</div>
-      <h4>Delivered</h4>
-      <p>Free delivery to your doorstep, tracked and insured.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ===== TESTIMONIALS ===== -->
-<section class="ss-section">
-  <div class="ss-section-header">
-    <h2 class="ss-section-title">What People Say</h2>
-  </div>
-  <div class="ss-testimonial-grid">
-    <div class="ss-testimonial">
-      <div class="ss-testimonial-stars">
-        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-      </div>
-      <p class="ss-testimonial-text">"Absolutely stunning craftsmanship! The coffee table we ordered is the centerpiece of our living room. Trinity Woodenworks truly understands quality."</p>
-      <div class="ss-testimonial-author">
-        <div class="ss-testimonial-avatar">R</div>
-        <div>
-          <div class="ss-testimonial-name">Rahul Sharma</div>
-          <div class="ss-testimonial-role">Mumbai</div>
+<!-- Custom Order -->
+<section class="section custom-order-section" style="background: linear-gradient(180deg, transparent, rgba(201,169,110,0.03), transparent);">
+  <div class="parallax-shape shape-diamond" data-speed="0.35" style="top:12%;left:8%;"></div>
+  <div class="parallax-orb orb-gold" data-speed="0.5" style="bottom:10%;right:6%;"></div>
+  <div class="container" data-parallax="0.1">
+    <div class="custom-order-grid">
+      <div class="custom-order-content snap-reveal-left">
+        <span class="section-tag">Custom Orders</span>
+        <h2>Your Vision, Our Craft</h2>
+        <p>Have a unique idea? We bring your imagination to life. From custom furniture to personalized gifts, we craft wooden pieces tailored exactly to your specifications.</p>
+        <div class="custom-order-features">
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-pencil-ruler"></i></div>
+            <div>
+              <h4>Design Consultation</h4>
+              <p>Free consultation to refine your idea</p>
+            </div>
+          </div>
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-ruler-combined"></i></div>
+            <div>
+              <h4>Precise Measurements</h4>
+              <p>Perfect fit for your space</p>
+            </div>
+          </div>
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-palette"></i></div>
+            <div>
+              <h4>Any Finish You Want</h4>
+              <p>Stains, paints, natural, or lacquer</p>
+            </div>
+          </div>
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-rupee-sign"></i></div>
+            <div>
+              <h4>50% Advance Payment</h4>
+              <p>Pay 50% to start, 50% on completion</p>
+            </div>
+          </div>
         </div>
+        <a href="/custom-order" class="btn btn-primary btn-lg btn-glow">Start Your Custom Order <i class="fas fa-arrow-right"></i></a>
       </div>
-    </div>
-    <div class="ss-testimonial">
-      <div class="ss-testimonial-stars">
-        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-      </div>
-      <p class="ss-testimonial-text">"The custom bookshelf exceeded my expectations. The attention to detail and the quality of wood used is remarkable. Highly recommended!"</p>
-      <div class="ss-testimonial-author">
-        <div class="ss-testimonial-avatar">P</div>
-        <div>
-          <div class="ss-testimonial-name">Priya Patel</div>
-          <div class="ss-testimonial-role">Delhi</div>
-        </div>
-      </div>
-    </div>
-    <div class="ss-testimonial">
-      <div class="ss-testimonial-stars">
-        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-      </div>
-      <p class="ss-testimonial-text">"I've ordered multiple times and each piece is better than the last. The kitchen set I received was perfect for our new home."</p>
-      <div class="ss-testimonial-author">
-        <div class="ss-testimonial-avatar">A</div>
-        <div>
-          <div class="ss-testimonial-name">Amit Kumar</div>
-          <div class="ss-testimonial-role">Bangalore</div>
+      <div class="custom-order-visual snap-reveal-right">
+        <div class="custom-order-showcase">
+          <div class="showcase-item"><i class="fas fa-chair"></i><span>Furniture</span></div>
+          <div class="showcase-item"><i class="fas fa-plate-wheat"></i><span>Kitchenware</span></div>
+          <div class="showcase-item"><i class="fas fa-gift"></i><span>Gifts</span></div>
+          <div class="showcase-item"><i class="fas fa-nameplate"></i><span>Nameplates</span></div>
+          <div class="showcase-item"><i class="fas fa-image"></i><span>Frames</span></div>
+          <div class="showcase-item"><i class="fas fa-puzzle-piece"></i><span>Toys & Games</span></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== NEWSLETTER ===== -->
-<section class="ss-section ss-section--newsletter">
-  <div class="ss-newsletter-content">
-    <h2 class="ss-section-title">Stay in the Loop</h2>
-    <p class="ss-newsletter-desc">Get updates on new arrivals, exclusive offers, and behind-the-scenes craftsmanship.</p>
-    <form class="ss-newsletter-form" onsubmit="submitNewsletter(event)">
-      <input type="email" name="email" placeholder="Enter your email" required class="ss-newsletter-input">
-      <button type="submit" class="ss-btn ss-btn--primary">Subscribe</button>
+<!-- Newsletter -->
+<section class="newsletter-section">
+  <div class="parallax-orb orb-cyan" data-speed="0.3" style="top:20%;left:10%;"></div>
+  <div class="parallax-orb orb-purple" data-speed="0.45" style="bottom:15%;right:8%;"></div>
+  <div class="container" data-parallax="0.1">
+    <div class="section-header snap-reveal">
+      <span class="section-tag">Stay Connected</span>
+      <h2>Join Our Newsletter</h2>
+      <p>Get updates on new arrivals, offers, and woodworking tips</p>
+    </div>
+    <form class="newsletter-form snap-reveal" onsubmit="return submitNewsletter(this)">
+      <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+      <button type="submit" class="btn btn-primary btn-glow"><i class="fas fa-paper-plane"></i> Subscribe</button>
     </form>
   </div>
 </section>
 
-<!-- ===== CTA ===== -->
-<section class="ss-cta">
-  <h2 class="ss-cta-title">Ready to Transform<br>Your Space?</h2>
-  <div class="ss-cta-buttons">
-    <a href="/shop" class="ss-btn ss-btn--primary">Shop Now</a>
-    <a href="/contact" class="ss-btn ss-btn--outline">Get in Touch</a>
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-card snap-reveal">
+      <h2>Ready to Transform Your Space?</h2>
+      <p>Browse our collection of handcrafted wooden items and find the perfect piece for your home.</p>
+      <div class="cta-actions">
+        <a href="/shop" class="btn btn-primary btn-lg btn-glow">Shop Now</a>
+        <a href="/contact" class="btn btn-outline-light btn-lg">Get in Touch</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Back to Top -->
-<button id="backToTop" class="ss-back-to-top" title="Back to top">
+<button id="backToTop" class="back-to-top" title="Back to top">
   <i class="fas fa-arrow-up"></i>
 </button>
 
 <script>
-function submitNewsletter(e) {
-  e.preventDefault();
-  var form = e.target;
-  var input = form.querySelector('input[type="email"]');
-  var btn = form.querySelector('button');
-  var email = input.value.trim();
-  if (!email) return;
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  fetch('/api/newsletter', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.success) {
-      input.value = '';
-      showToast('Subscribed successfully!', 'success');
-    } else {
-      showToast(data.error || 'Something went wrong', 'error');
-    }
-  })
-  .catch(function() { showToast('Network error', 'error'); })
-  .finally(function() {
-    btn.disabled = false;
-    btn.innerHTML = 'Subscribe';
-  });
-  return false;
+function shareProduct(id, name, price) {
+  const url = window.location.origin + '/product/' + id;
+  const text = 'Check out ' + name + ' at \u20B9' + price.toLocaleString() + '\n\n' + url;
+  if (navigator.share) {
+    navigator.share({ title: name, text: text, url: url });
+  } else {
+    const popup = document.createElement('div');
+    popup.className = 'share-popup';
+    popup.innerHTML = '<div class="share-popup-content"><h4>Share Product</h4><p>' + name + '</p><div class="share-popup-buttons"><a href="https://wa.me/?text=' + encodeURIComponent(text) + '" target="_blank" class="share-popup-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank" class="share-popup-btn facebook"><i class="fab fa-facebook-f"></i> Facebook</a><a href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(name + ' ₹' + price.toLocaleString()) + '&url=' + encodeURIComponent(url) + '" target="_blank" class="share-popup-btn twitter"><i class="fab fa-twitter"></i> Twitter</a><button onclick="navigator.clipboard.writeText(\'' + url + '\'); this.innerHTML=\'<i class=fas fa-check></i> Copied!\'; setTimeout(()=>this.closest(\'.share-popup\').remove(), 1500)" class="share-popup-btn copy"><i class="fas fa-link"></i> Copy Link</button></div><button class="share-popup-close" onclick="this.closest(\'.share-popup\').remove()">&times;</button></div>';
+    document.body.appendChild(popup);
+  }
 }
 
 function showToast(msg, type) {
-  var toast = document.createElement('div');
-  toast.textContent = msg;
-  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 24px;border-radius:4px;font-size:14px;z-index:9999;animation:ss-fadeIn .3s ease;color:#fff;background:' + (type === 'error' ? '#e74c3c' : '#C9A96E');
-  document.body.appendChild(toast);
-  setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(function() { toast.remove(); }, 300); }, 3000);
+  var t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.innerHTML = msg;
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;z-index:99999;font-size:0.95rem;background:' + (type === 'error' ? 'rgba(220,50,50,0.92)' : 'rgba(34,180,80,0.92)') + ';color:#fff;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:fadeInUp 0.3s ease';
+  document.body.appendChild(t);
+  setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(function() { t.remove(); }, 300); }, 3000);
+}
+
+function submitNewsletter(form) {
+  var btn = form.querySelector('button'), input = form.querySelector('input'), email = input.value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Please enter a valid email', 'error'); return false; }
+  fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) { btn.innerHTML = '<i class="fas fa-check"></i> Subscribed!'; input.value = ''; showToast('Thanks for subscribing!', 'success'); }
+      else { showToast(d.error || 'Failed', 'error'); }
+    }).catch(function() { showToast('Something went wrong', 'error'); });
+  return false;
 }
 </script>
 
 <style>
-@keyframes ss-fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+/* ---- Back to Top ---- */
+.back-to-top {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s var(--ease-out);
+  z-index: 999;
+  box-shadow: var(--shadow-glass);
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover {
+  background: rgba(201,169,110,0.15);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+}
+
+/* ---- Scroll Progress ---- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--neon));
+  width: 0%;
+  z-index: 10000;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ---- Parallax Orbs ---- */
+.parallax-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 0;
+}
+.orb-gold {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, transparent 70%);
+  filter: blur(40px);
+}
+.orb-cyan {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(0,240,255,0.06) 0%, transparent 70%);
+  filter: blur(35px);
+}
+.orb-purple {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(180,74,255,0.06) 0%, transparent 70%);
+  filter: blur(38px);
+}
+
+/* ---- Parallax Shapes ---- */
+.parallax-shape {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 0;
+}
+.shape-ring {
+  width: 120px;
+  height: 120px;
+  border: 1.5px solid rgba(201,169,110,0.08);
+  border-radius: 50%;
+  animation: shapeSpin 20s linear infinite;
+}
+.shape-ring::after {
+  content: '';
+  position: absolute;
+  inset: 15px;
+  border: 1px solid rgba(0,240,255,0.06);
+  border-radius: 50%;
+  animation: shapeSpin 15s linear infinite reverse;
+}
+@keyframes shapeSpin {
+  to { transform: rotate(360deg); }
+}
+.shape-diamond {
+  width: 80px;
+  height: 80px;
+  border: 1.5px solid rgba(201,169,110,0.06);
+  transform: rotate(45deg);
+  animation: shapeFloat 8s ease-in-out infinite;
+}
+@keyframes shapeFloat {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50% { transform: rotate(45deg) translateY(-15px); }
+}
+
+/* ---- Snap Reveal Animations ---- */
+.snap-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+.snap-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.snap-reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+.snap-reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+.snap-reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+.snap-reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+.stagger-children .snap-reveal:nth-child(1) { transition-delay: 0s; }
+.stagger-children .snap-reveal:nth-child(2) { transition-delay: 0.1s; }
+.stagger-children .snap-reveal:nth-child(3) { transition-delay: 0.2s; }
+.stagger-children .snap-reveal:nth-child(4) { transition-delay: 0.3s; }
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  .parallax-orb, .parallax-shape { display: none; }
+}
 </style>
 
+<!-- Scroll Engine -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var progressBar = document.getElementById('scrollProgress');
   var backToTop = document.getElementById('backToTop');
   var countersAnimated = false;
 
+  // ---- Progress Bar ----
   function updateProgress() {
     var scrollTop = window.scrollY;
     var docHeight = document.documentElement.scrollHeight - window.innerHeight;
     var progress = docHeight > 0 ? scrollTop / docHeight : 0;
     progressBar.style.transform = 'scaleX(' + progress + ')';
+    progressBar.style.width = '100%';
   }
 
+  // ---- Back to Top ----
   function updateBackToTop() {
     if (backToTop) backToTop.classList.toggle('visible', window.scrollY > 400);
   }
 
+  // ---- Reveal Elements ----
+  function revealElements() {
+    var viewportH = window.innerHeight;
+    document.querySelectorAll('.snap-reveal, .snap-reveal-left, .snap-reveal-right').forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < viewportH * 0.85) {
+        el.classList.add('revealed');
+      }
+    });
+  }
+
+  // ---- Counter Animation ----
   function animateCounters() {
     if (countersAnimated) return;
     document.querySelectorAll('.counter-value').forEach(function(counter) {
@@ -361,19 +606,54 @@ document.addEventListener('DOMContentLoaded', function() {
         var increment = target / 60;
         var timer = setInterval(function() {
           current += increment;
-          if (current >= target) { counter.textContent = target.toLocaleString(); clearInterval(timer); }
-          else { counter.textContent = Math.floor(current).toLocaleString(); }
+          if (current >= target) {
+            counter.textContent = target.toLocaleString();
+            clearInterval(timer);
+          } else {
+            counter.textContent = Math.floor(current).toLocaleString();
+          }
         }, 25);
       }
     });
   }
 
+  // ---- Parallax Engine ----
+  function updateParallax() {
+    var scrollY = window.scrollY;
+    var vh = window.innerHeight;
+
+    document.querySelectorAll('.parallax-orb, .parallax-shape').forEach(function(el) {
+      var speed = parseFloat(el.getAttribute('data-speed')) || 0.3;
+      var section = el.parentElement;
+      if (!section) return;
+      var sectionTop = section.offsetTop;
+      var offset = (scrollY - sectionTop) * speed;
+      el.style.transform = 'translate3d(0, ' + offset + 'px, 0)';
+    });
+
+    document.querySelectorAll('[data-parallax]').forEach(function(el) {
+      var speed = parseFloat(el.getAttribute('data-parallax')) || 0.1;
+      var section = el.closest('section') || el.parentElement;
+      if (!section) return;
+      var sectionTop = section.offsetTop;
+      var sectionH = section.offsetHeight;
+      var progress = (scrollY - sectionTop + vh) / (sectionH + vh);
+      progress = Math.max(0, Math.min(1, progress));
+      var offset = (progress - 0.5) * sectionH * speed;
+      el.style.transform = 'translate3d(0, ' + (-offset) + 'px, 0)';
+    });
+  }
+
+  // ---- Scroll Handler ----
   function onScroll() {
     updateProgress();
     updateBackToTop();
+    revealElements();
     animateCounters();
+    updateParallax();
   }
 
+  // ---- Back to Top Click ----
   if (backToTop) {
     backToTop.addEventListener('click', function() {
       if (typeof gsap !== 'undefined' && gsap.to) {
@@ -384,8 +664,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // ---- Arrow Key Scrolling ----
+  document.addEventListener('keydown', function(e) {
+    var scrollAmount = 80;
+    if (e.key === 'ArrowDown') { e.preventDefault(); window.scrollBy(0, scrollAmount); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); window.scrollBy(0, -scrollAmount); }
+    else if (e.key === 'PageDown') { e.preventDefault(); window.scrollBy(0, window.innerHeight * 0.85); }
+    else if (e.key === 'PageUp') { e.preventDefault(); window.scrollBy(0, -window.innerHeight * 0.85); }
+    else if (e.key === 'Home') { e.preventDefault(); window.scrollTo(0, 0); }
+    else if (e.key === 'End') { e.preventDefault(); window.scrollTo(0, document.documentElement.scrollHeight); }
+  });
+
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+  revealElements();
 });
 </script>
 
