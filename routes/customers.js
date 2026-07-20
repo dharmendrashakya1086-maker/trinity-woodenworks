@@ -44,11 +44,11 @@ function clearFailedAttempts(customer) {
   updateOne('customers', { id: customer.id }, { failed_attempts: 0, locked_until: null });
 }
 
-function findCustomerByLogin(login) {
+async function findCustomerByLogin(login) {
   const trimmed = login.trim();
-  let customer = findByKey('customers', { email: trimmed.toLowerCase() });
+  let customer = await findByKey('customers', { email: trimmed.toLowerCase() });
   if (customer) return customer;
-  customer = findByKey('customers', { username: trimmed.toLowerCase() });
+  customer = await findByKey('customers', { username: trimmed.toLowerCase() });
   return customer;
 }
 
@@ -86,10 +86,10 @@ router.post('/signup', async (req, res) => {
     return res.render('signup', { title: 'Sign Up', error: 'Please enter a valid 6-digit pincode', name, username, email, address, city, state, pincode });
   }
 
-  if (findByKey('customers', { email: email.toLowerCase().trim() })) {
+  if (await findByKey('customers', { email: email.toLowerCase().trim() })) {
     return res.render('signup', { title: 'Sign Up', error: 'Email already registered', name, username, email, address, city, state, pincode });
   }
-  if (findByKey('customers', { username: username.toLowerCase().trim() })) {
+  if (await findByKey('customers', { username: username.toLowerCase().trim() })) {
     return res.render('signup', { title: 'Sign Up', error: 'Username already taken', name, username, email, address, city, state, pincode });
   }
 
@@ -121,7 +121,7 @@ router.get('/verify-email', (req, res) => {
   res.render('verify-email', { title: 'Verify Email', email: ps.email, error: null, codeSent: true });
 });
 
-router.post('/verify-email', (req, res) => {
+router.post('/verify-email', async (req, res) => {
   if (!req.session.pendingSignup) return res.redirect('/signup');
   const { code } = req.body;
   const ps = req.session.pendingSignup;
@@ -134,7 +134,7 @@ router.post('/verify-email', (req, res) => {
     return res.render('verify-email', { title: 'Verify Email', email: ps.email, error: 'Invalid verification code', codeSent: true });
   }
 
-  const customer = insertOne('customers', {
+  const customer = await insertOne('customers', {
     name: ps.name,
     username: ps.username,
     email: ps.email,
@@ -176,7 +176,7 @@ router.post('/forgot-password', async (req, res) => {
     return res.render('forgot-password', { title: 'Forgot Password', error: 'Please enter a valid email address', success: null, email });
   }
 
-  const customer = findByKey('customers', { email: email.toLowerCase().trim() });
+  const customer = await findByKey('customers', { email: email.toLowerCase().trim() });
   if (!customer) {
     return res.render('forgot-password', { title: 'Forgot Password', error: 'No account found with that email', success: null, email });
   }
@@ -233,14 +233,14 @@ router.post('/reset-password', async (req, res) => {
   res.render('login', { title: 'Login', error: null, login: null, successMsg: 'Password reset successfully! Please login with your new password.' });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { login, password } = req.body;
 
   if (!login || !password) {
     return res.render('login', { title: 'Login', error: 'Please fill in all fields', login });
   }
 
-  const customer = findCustomerByLogin(login);
+  const customer = await findCustomerByLogin(login);
   if (!customer) {
     return res.render('login', { title: 'Login', error: 'No account found with that email or username', login });
   }
@@ -269,7 +269,7 @@ router.post('/login', (req, res) => {
 // ==================== ACCOUNT ====================
 router.get('/account', requireCustomer, async (req, res) => {
   try {
-    const customer = findById('customers', req.session.customer.id);
+    const customer = await findById('customers', req.session.customer.id);
     const { data: allMessages } = await findAll('messages');
     const messages = allMessages
       .filter(m => m.customer_id === customer.id)
@@ -287,9 +287,9 @@ router.get('/account', requireCustomer, async (req, res) => {
   }
 });
 
-router.post('/account', requireCustomer, (req, res) => {
+router.post('/account', requireCustomer, async (req, res) => {
   const { name, email, phone, address, city, state, pincode, current_password, new_password } = req.body;
-  const customer = findById('customers', req.session.customer.id);
+  const customer = await findById('customers', req.session.customer.id);
 
   const updates = {
     name: name.trim(),
@@ -314,18 +314,18 @@ router.post('/account', requireCustomer, (req, res) => {
     updates.password = bcrypt.hashSync(new_password, 10);
   }
 
-  updateOne('customers', { id: customer.id }, updates);
+  await updateOne('customers', { id: customer.id }, updates);
   req.session.customer.name = updates.name;
   req.session.customer.email = updates.email;
 
-  const updatedCustomer = findById('customers', customer.id);
+  const updatedCustomer = await findById('customers', customer.id);
   res.render('account', { title: 'My Account', customer: updatedCustomer, success: 'Profile updated successfully!', error: null });
 });
 
 // ==================== ORDERS ====================
 router.get('/orders', requireCustomer, async (req, res) => {
   try {
-    const customer = findById('customers', req.session.customer.id);
+    const customer = await findById('customers', req.session.customer.id);
     const { data: allOrders } = await findAll('orders');
     const orders = allOrders
       .filter(o => o.customer_id === req.session.customer.id || o.customer_email === customer.email)
