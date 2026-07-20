@@ -51,7 +51,8 @@
     <a href="/categories" class="nav-link <%= currentPath === '/categories' || currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>">Shop</a>
     <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
     <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
-    <a href="/track-order" class="nav-link <%= currentPath === '/track-order' || currentPath === '/track-custom-order' ? 'active' : '' %>">Track Order</a>
+        <a href="/track-order" class="nav-link <%= currentPath === '/track-order' || currentPath === '/track-custom-order' ? 'active' : '' %>">Track Order <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:4px;opacity:0.5;"></i></a>
+        <a href="/track-custom-order" class="nav-link nav-link-sub <%= currentPath === '/track-custom-order' ? 'active' : '' %>"><i class="fas fa-pencil-ruler" style="font-size:0.75rem;"></i> Track Custom Order</a>
   </div>
   <nav class="navbar">
     <div class="container nav-container">
@@ -69,7 +70,8 @@
         <a href="/categories" class="nav-link <%= currentPath === '/categories' || currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>">Shop</a>
         <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
         <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
-        <a href="/track-order" class="nav-link <%= currentPath === '/track-order' || currentPath === '/track-custom-order' ? 'active' : '' %>">Track Order</a>
+    <a href="/track-order" class="nav-link <%= currentPath === '/track-order' || currentPath === '/track-custom-order' ? 'active' : '' %>">Track Order <i class="fas fa-chevron-down" style="font-size:0.6rem;margin-left:4px;opacity:0.5;"></i></a>
+    <a href="/track-custom-order" class="nav-link nav-link-sub <%= currentPath === '/track-custom-order' ? 'active' : '' %>"><i class="fas fa-pencil-ruler" style="font-size:0.75rem;"></i> Track Custom Order</a>
       </div>
       <div class="nav-actions">
         <a href="/cart" class="nav-icon cart-icon" title="Cart">
