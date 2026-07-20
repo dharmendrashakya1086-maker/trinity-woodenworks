@@ -7191,3 +7191,19 @@ textarea:focus-visible {
   }
 }
 
+/* ---- Card Reveal Animation (shop + categories) ---- */
+.category-tile,
+.product-card,
+.products-grid > div {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.category-tile.revealed,
+.product-card.revealed,
+.products-grid > div.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
