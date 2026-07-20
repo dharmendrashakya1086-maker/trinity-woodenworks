@@ -88,12 +88,9 @@
   </nav>
   <script>
   if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'auto';
+    history.scrollRestoration = 'manual';
   }
-  if (!performance.getEntriesByType('navigation')[0].type.includes('back_forward')) {
-    if (window.smoothScroll) window.smoothScroll.scrollTo(0);
-    else window.scrollTo(0, 0);
-  }
+  window.scrollTo(0, 0);
 
   function toggleMenu() {
     const menu = document.getElementById('navMenu');
