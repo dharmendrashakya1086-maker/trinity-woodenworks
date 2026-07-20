@@ -55,7 +55,9 @@ function findCustomerByLogin(login) {
 // ==================== SIGNUP ====================
 router.get('/signup', (req, res) => {
   if (req.session.customer) return res.redirect('/account');
-  if (req.query.returnTo) req.session.returnTo = req.query.returnTo;
+  try {
+    if (req.query && req.query.returnTo) req.session.returnTo = req.query.returnTo;
+  } catch(e) {}
   res.render('signup', { title: 'Sign Up', error: null });
 });
 
@@ -148,7 +150,7 @@ router.post('/verify-email', (req, res) => {
 
   delete req.session.pendingSignup;
   req.session.customer = { id: customer.id, name: customer.name, email: customer.email };
-  const returnTo = req.session.returnTo || req.query.returnTo || '/';
+  const returnTo = req.session.returnTo || '/';
   delete req.session.returnTo;
   res.redirect(returnTo);
 });
@@ -156,7 +158,9 @@ router.post('/verify-email', (req, res) => {
 // ==================== LOGIN ====================
 router.get('/login', (req, res) => {
   if (req.session.customer) return res.redirect('/account');
-  if (req.query.returnTo) req.session.returnTo = req.query.returnTo;
+  try {
+    if (req.query && req.query.returnTo) req.session.returnTo = req.query.returnTo;
+  } catch(e) {}
   res.render('login', { title: 'Login', error: req.query.error || null, login: null });
 });
 
@@ -257,7 +261,7 @@ router.post('/login', (req, res) => {
 
   clearFailedAttempts(customer);
   req.session.customer = { id: customer.id, name: customer.name, email: customer.email || '' };
-  const returnTo = req.session.returnTo || req.query.returnTo || '/';
+  const returnTo = req.session.returnTo || '/';
   delete req.session.returnTo;
   res.redirect(returnTo);
 });
