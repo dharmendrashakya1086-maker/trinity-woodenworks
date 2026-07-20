@@ -270,5 +270,106 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   })();
 
+  // ---- Nebula Clouds ----
+  (function() {
+    var c = document.createElement('div');
+    c.className = 'nebula-clouds';
+    for (var i = 0; i < 3; i++) {
+      var cloud = document.createElement('div');
+      cloud.className = 'nebula-cloud';
+      c.appendChild(cloud);
+    }
+    document.body.appendChild(c);
+  })();
+
+  // ---- DNA Helix ----
+  (function() {
+    var h = document.createElement('div');
+    h.className = 'dna-helix';
+    var strand = document.createElement('div');
+    strand.className = 'dna-strand';
+    for (var i = 0; i < 20; i++) {
+      var node = document.createElement('div');
+      node.className = 'dna-node';
+      node.style.top = (i * 5) + '%';
+      node.style.animationDelay = (i * 0.4) + 's';
+      strand.appendChild(node);
+    }
+    h.appendChild(strand);
+    document.body.appendChild(h);
+  })();
+
+  // ---- Bokeh Lights ----
+  (function() {
+    var b = document.createElement('div');
+    b.className = 'bokeh-lights';
+    for (var i = 0; i < 5; i++) {
+      var dot = document.createElement('div');
+      dot.className = 'bokeh-dot';
+      b.appendChild(dot);
+    }
+    document.body.appendChild(b);
+  })();
+
+  // ---- Light Rays ----
+  (function() {
+    var r = document.createElement('div');
+    r.className = 'light-rays';
+    for (var i = 0; i < 5; i++) {
+      var ray = document.createElement('div');
+      ray.className = 'light-ray';
+      r.appendChild(ray);
+    }
+    document.body.appendChild(r);
+  })();
+
+  // ---- Hexagonal Mesh ----
+  (function() {
+    var h = document.createElement('div');
+    h.className = 'hex-mesh';
+    document.body.appendChild(h);
+  })();
+
+  // ---- Vortex Ring ----
+  (function() {
+    var v = document.createElement('div');
+    v.className = 'vortex-ring';
+    document.body.appendChild(v);
+  })();
+
+  // ---- Digital Rain ----
+  (function() {
+    var d = document.createElement('div');
+    d.className = 'digital-rain';
+    for (var i = 0; i < 15; i++) {
+      var line = document.createElement('div');
+      line.className = 'rain-line';
+      line.style.left = (5 + Math.random() * 90) + '%';
+      line.style.animationDelay = (Math.random() * 4) + 's';
+      line.style.animationDuration = (3 + Math.random() * 3) + 's';
+      d.appendChild(line);
+    }
+    document.body.appendChild(d);
+  })();
+
+  // ---- Energy Field ----
+  (function() {
+    var e = document.createElement('div');
+    e.className = 'energy-field';
+    for (var i = 0; i < 3; i++) {
+      var zone = document.createElement('div');
+      zone.className = 'energy-zone';
+      e.appendChild(zone);
+    }
+    document.body.appendChild(e);
+  })();
+
+  // ---- Radar Sweep ----
+  (function() {
+    var r = document.createElement('div');
+    r.className = 'radar-sweep';
+    document.body.appendChild(r);
+  })();
+
   console.log('%c✨ 3D Futuristic UI loaded', 'color: #C9A96E; font-size: 14px; font-weight: bold;');
 });
