@@ -1,101 +1,76 @@
 /* ================================================================
    SECTION-SNAP SMOOTH SCROLL — GSAP Powered
    Every scroll action snaps to the next/previous section.
-   Falls back to smooth lerp scrolling on non-snap pages.
+   Falls back to smooth lerp on non-snap pages.
    ================================================================ */
 
 (function() {
   'use strict';
 
-  // Skip on touch devices — native momentum is better
   if ('ontouchstart' in window) return;
-  // Skip if user prefers reduced motion
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const LERP = 0.1;
-  const THRESHOLD = 2;
-  const SNAP_COOLDOWN = 800;
+  const LERP = 0.08;
+  const SNAP_COOLDOWN = 900;
 
   let targetScroll = 0;
   let currentScroll = 0;
   let enabled = true;
-  let snapping = false;
   let lastSnapTime = 0;
-  let sections = [];
+  let snapPoints = [];
   let isSnapPage = false;
-
-  const body = document.body;
-  const html = document.documentElement;
+  let scrollLocked = false;
 
   function getMaxScroll() {
     return Math.max(
-      body.scrollHeight, body.offsetHeight,
-      html.clientHeight, html.scrollHeight, html.offsetHeight
+      document.body.scrollHeight, document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight, document.documentElement.offsetHeight
     ) - window.innerHeight;
   }
 
-  function lerp(start, end, factor) {
-    return start + (end - start) * factor;
-  }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
 
-  function clamp(val, min, max) {
-    return Math.min(Math.max(val, min), max);
-  }
-
-  function setScroll(val) {
-    window.scrollTo(0, val);
-  }
-
-  // ---- Detect sections for snap scrolling ----
-  function detectSections() {
-    sections = [];
-    var els = document.querySelectorAll('section, .hero, .newsletter-section, .cta-section, footer');
-    els.forEach(function(el) {
-      // Skip tiny sections (badges, etc.)
-      if (el.offsetHeight < window.innerHeight * 0.3) return;
-      sections.push({
-        el: el,
-        top: el.offsetTop,
-        height: el.offsetHeight
-      });
-    });
-    // Sort by position
-    sections.sort(function(a, b) { return a.top - b.top; });
-  }
-
-  function getCurrentSectionIndex() {
-    var scrollY = window.scrollY;
-    var vh = window.innerHeight;
-    for (var i = 0; i < sections.length; i++) {
-      var s = sections[i];
-      if (scrollY >= s.top - vh * 0.5 && scrollY < s.top + s.height - vh * 0.5) {
-        return i;
-      }
+  // ---- Build snap points from sections ----
+  function buildSnapPoints() {
+    snapPoints = [0]; // Always include top
+    var els = document.querySelectorAll('section');
+    for (var i = 0; i < els.length; i++) {
+      var top = els[i].offsetTop;
+      // Skip if too close to previous point (within 100px)
+      if (snapPoints.length > 0 && top - snapPoints[snapPoints.length - 1] < 100) continue;
+      snapPoints.push(top);
     }
-    // If between sections, find closest
-    var closest = 0;
-    var minDist = Infinity;
-    for (var i = 0; i < sections.length; i++) {
-      var dist = Math.abs(scrollY - sections[i].top);
-      if (dist < minDist) { minDist = dist; closest = i; }
+    // Add bottom
+    var max = getMaxScroll();
+    if (max - snapPoints[snapPoints.length - 1] > 100) {
+      snapPoints.push(max);
     }
-    return closest;
   }
 
-  function snapToSection(index) {
-    if (index < 0 || index >= sections.length) return;
-    targetScroll = clamp(sections[index].top, 0, getMaxScroll());
-    snapping = true;
-    lastSnapTime = Date.now();
+  function getNearestSnapIndex(scrollY) {
+    var best = 0;
+    var bestDist = Infinity;
+    for (var i = 0; i < snapPoints.length; i++) {
+      var dist = Math.abs(scrollY - snapPoints[i]);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    }
+    return best;
   }
 
-  // ---- Wheel Event Interceptor ----
+  function getNextSnapIndex(scrollY, direction) {
+    var current = getNearestSnapIndex(scrollY);
+    var next = current + direction;
+    return clamp(next, 0, snapPoints.length - 1);
+  }
+
+  // ---- Wheel ----
   function onWheel(e) {
     if (!enabled) return;
     if (e.ctrlKey || e.metaKey) return;
-
-    var target = e.target;
-    if (target.closest('input') || target.closest('textarea') || target.closest('select')) return;
+    var t = e.target;
+    if (t.closest('input') || t.closest('textarea') || t.closest('select') || t.closest('.shop-section')) return;
 
     e.preventDefault();
 
@@ -103,34 +78,27 @@
       var now = Date.now();
       if (now - lastSnapTime < SNAP_COOLDOWN) return;
 
-      var delta = e.deltaY || e.detail;
-      var direction = delta > 0 ? 1 : -1;
-      var currentIdx = getCurrentSectionIndex();
-      var nextIdx = clamp(currentIdx + direction, 0, sections.length - 1);
+      var delta = e.deltaY;
+      if (Math.abs(delta) < 10) return; // Ignore tiny scrolls
 
-      if (nextIdx !== currentIdx) {
-        snapToSection(nextIdx);
-      } else if (direction === 1 && currentIdx === sections.length - 1) {
-        // At last section, allow normal scroll to footer
-        targetScroll = clamp(targetScroll + delta * 0.5, 0, getMaxScroll());
-      } else if (direction === -1 && currentIdx === 0) {
-        // At first section, allow normal scroll to top
-        targetScroll = clamp(targetScroll + delta * 0.5, 0, getMaxScroll());
+      var dir = delta > 0 ? 1 : -1;
+      var nextIdx = getNextSnapIndex(window.scrollY, dir);
+
+      // Only snap if we're not already at that point
+      if (Math.abs(window.scrollY - snapPoints[nextIdx]) > 5) {
+        targetScroll = snapPoints[nextIdx];
+        lastSnapTime = now;
       }
     } else {
-      // Free scroll mode for non-snap pages
-      var delta = e.deltaY || e.detail;
-      var scrollAmount = delta * 1.2;
-      targetScroll = clamp(targetScroll + scrollAmount, 0, getMaxScroll());
+      targetScroll = clamp(targetScroll + e.deltaY * 1.2, 0, getMaxScroll());
     }
   }
 
-  // ---- Keyboard Support ----
+  // ---- Keyboard ----
   function onKeyDown(e) {
     if (!enabled) return;
-
-    var scrollKeys = { ArrowDown: 1, ArrowUp: -1, PageDown: 1, PageUp: -1, Home: -2, End: 2 };
-    if (!(e.key in scrollKeys)) return;
+    var keys = { ArrowDown: 1, ArrowUp: -1, PageDown: 1, PageUp: -1 };
+    if (!(e.key in keys) && e.key !== 'Home' && e.key !== 'End') return;
 
     e.preventDefault();
 
@@ -138,94 +106,74 @@
       var now = Date.now();
       if (now - lastSnapTime < SNAP_COOLDOWN) return;
 
-      var direction = scrollKeys[e.key];
-      if (e.key === 'Home') { snapToSection(0); return; }
-      if (e.key === 'End') { snapToSection(sections.length - 1); return; }
+      if (e.key === 'Home') { targetScroll = snapPoints[0]; lastSnapTime = now; return; }
+      if (e.key === 'End') { targetScroll = snapPoints[snapPoints.length - 1]; lastSnapTime = now; return; }
 
-      var currentIdx = getCurrentSectionIndex();
-      var nextIdx = clamp(currentIdx + direction, 0, sections.length - 1);
-      if (nextIdx !== currentIdx) snapToSection(nextIdx);
-    } else {
-      var maxScroll = getMaxScroll();
-      if (e.key === 'Home') { targetScroll = 0; }
-      else if (e.key === 'End') { targetScroll = maxScroll; }
-      else if (e.key === 'PageDown' || e.key === 'PageUp') {
-        targetScroll = clamp(targetScroll + window.innerHeight * scrollKeys[e.key], 0, maxScroll);
-      } else {
-        targetScroll = clamp(targetScroll + scrollKeys[e.key] * 80, 0, maxScroll);
+      var nextIdx = getNextSnapIndex(window.scrollY, keys[e.key]);
+      if (Math.abs(window.scrollY - snapPoints[nextIdx]) > 5) {
+        targetScroll = snapPoints[nextIdx];
+        lastSnapTime = now;
       }
+    } else {
+      var max = getMaxScroll();
+      if (e.key === 'Home') targetScroll = 0;
+      else if (e.key === 'End') targetScroll = max;
+      else if (e.key === 'PageDown' || e.key === 'PageUp')
+        targetScroll = clamp(targetScroll + window.innerHeight * keys[e.key], 0, max);
+      else
+        targetScroll = clamp(targetScroll + keys[e.key] * 80, 0, max);
     }
   }
 
-  // ---- Touch Support for Snap ----
+  // ---- Touch ----
   var touchStartY = 0;
-  var touchStartTime = 0;
-
-  function onTouchStart(e) {
-    touchStartY = e.touches[0].clientY;
-    touchStartTime = Date.now();
-  }
-
+  function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
   function onTouchEnd(e) {
     if (!isSnapPage || !enabled) return;
-
     var now = Date.now();
     if (now - lastSnapTime < SNAP_COOLDOWN) return;
-
-    var touchEndY = e.changedTouches[0].clientY;
-    var diff = touchStartY - touchEndY;
-    var elapsed = now - touchStartTime;
-
-    // Quick swipe or significant movement
-    if (Math.abs(diff) > 50 || (Math.abs(diff) > 20 && elapsed < 300)) {
-      var direction = diff > 0 ? 1 : -1;
-      var currentIdx = getCurrentSectionIndex();
-      var nextIdx = clamp(currentIdx + direction, 0, sections.length - 1);
-      if (nextIdx !== currentIdx) snapToSection(nextIdx);
-    }
+    var diff = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(diff) < 30) return;
+    var dir = diff > 0 ? 1 : -1;
+    var nextIdx = getNextSnapIndex(window.scrollY, dir);
+    targetScroll = snapPoints[nextIdx];
+    lastSnapTime = now;
   }
 
-  // ---- Sync on native scroll ----
+  // ---- Scroll sync ----
   function onScroll() {
-    if (!snapping) {
+    // Let user drag scrollbar freely, but re-lock on snap
+    if (!scrollLocked) {
       var diff = Math.abs(window.scrollY - currentScroll);
-      if (diff > 50) {
-        targetScroll = window.scrollY;
+      if (diff > 100) {
         currentScroll = window.scrollY;
+        targetScroll = window.scrollY;
       }
     }
   }
 
-  // ---- Animation Loop ----
+  // ---- Animation loop ----
   function tick() {
     if (!enabled) return;
-
-    var maxScroll = getMaxScroll();
-    targetScroll = clamp(targetScroll, 0, maxScroll);
-
-    // Lerp toward target
+    targetScroll = clamp(targetScroll, 0, getMaxScroll());
     currentScroll = lerp(currentScroll, targetScroll, LERP);
 
-    // Snap when close enough
-    if (Math.abs(currentScroll - targetScroll) < THRESHOLD) {
+    if (Math.abs(currentScroll - targetScroll) < 1) {
       currentScroll = targetScroll;
-      snapping = false;
+      scrollLocked = false;
     }
 
-    // Sync native scroll
-    var scrollDiff = Math.abs(window.scrollY - currentScroll);
-    if (scrollDiff > 0.5) {
-      setScroll(currentScroll);
+    if (Math.abs(window.scrollY - currentScroll) > 0.5) {
+      scrollLocked = true;
+      window.scrollTo(0, currentScroll);
     }
   }
 
-  // ---- Resize handler ----
   function onResize() {
-    if (isSnapPage) detectSections();
+    if (isSnapPage) buildSnapPoints();
     targetScroll = clamp(targetScroll, 0, getMaxScroll());
   }
 
-  // ---- Public API ----
   window.smoothScroll = {
     scrollTo: function(target, offset) {
       offset = offset || 0;
@@ -241,16 +189,13 @@
     disable: function() { enabled = false; }
   };
 
-  // ---- Init ----
   function init() {
     currentScroll = window.scrollY || 0;
     targetScroll = currentScroll;
-
-    // Detect if this is a snap page (home page with hero)
     isSnapPage = !!document.querySelector('.hero-3d');
 
     if (isSnapPage) {
-      detectSections();
+      buildSnapPoints();
       window.addEventListener('touchstart', onTouchStart, { passive: true });
       window.addEventListener('touchend', onTouchEnd, { passive: true });
     }
@@ -263,7 +208,7 @@
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    console.log('%c🍎 Smooth scroll active' + (isSnapPage ? ' (snap mode)' : ''), 'color: #C9A96E; font-size: 12px;');
+    console.log('%c' + (isSnapPage ? '🧲 Snap scroll active (' + snapPoints.length + ' points)' : '🍎 Smooth scroll active'), 'color: #C9A96E; font-size: 12px;');
   }
 
   if (document.readyState === 'loading') {
