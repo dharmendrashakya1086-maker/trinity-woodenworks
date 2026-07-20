@@ -664,17 +664,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ---- Arrow Key Scrolling ----
-  document.addEventListener('keydown', function(e) {
-    var scrollAmount = 80;
-    if (e.key === 'ArrowDown') { e.preventDefault(); window.scrollBy(0, scrollAmount); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); window.scrollBy(0, -scrollAmount); }
-    else if (e.key === 'PageDown') { e.preventDefault(); window.scrollBy(0, window.innerHeight * 0.85); }
-    else if (e.key === 'PageUp') { e.preventDefault(); window.scrollBy(0, -window.innerHeight * 0.85); }
-    else if (e.key === 'Home') { e.preventDefault(); window.scrollTo(0, 0); }
-    else if (e.key === 'End') { e.preventDefault(); window.scrollTo(0, document.documentElement.scrollHeight); }
-  });
-
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   revealElements();
