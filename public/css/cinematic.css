@@ -3,9 +3,6 @@
    Animations & Decorations ONLY — Layout lives in style.css
    ================================================================ */
 
-/* ---- Smooth Scrolling ---- */
-html { scroll-behavior: smooth; }
-
 /* ---- Scroll Progress Bar ---- */
 .scroll-progress {
   position: fixed;

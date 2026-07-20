@@ -199,10 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- SMOOTH SCROLL FOR ANCHOR LINKS ----
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        e.preventDefault();
+        if (window.smoothScroll) {
+          window.smoothScroll.scrollTo(target);
+        } else {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        history.pushState(null, '', href);
       }
     });
   });
@@ -322,7 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
       backToTop.classList.toggle('visible', window.scrollY > 400);
     });
     backToTop.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.smoothScroll) window.smoothScroll.scrollTo(0);
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 });
