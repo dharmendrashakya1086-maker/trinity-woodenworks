@@ -62,6 +62,16 @@
         </form>
       <% } %>
 
+      <!-- Track Custom Order CTA -->
+      <div class="track-co-cta">
+        <div class="track-co-cta-icon"><i class="fas fa-pencil-ruler"></i></div>
+        <div class="track-co-cta-text">
+          <h3>Have a Custom Order?</h3>
+          <p>Track your custom furniture or decor order status here.</p>
+        </div>
+        <a href="/track-custom-order" class="btn btn-primary btn-glow btn-sm"><i class="fas fa-search"></i> Track Custom Order</a>
+      </div>
+
       <% if (order) { %>
         <div class="order-tracking-result">
           <div class="order-header-card">
@@ -219,6 +229,49 @@
 @keyframes pendingGlow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,171,0,0.3); }
   50% { box-shadow: 0 0 0 10px rgba(255,171,0,0); }
+}
+
+.track-co-cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 20px 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius);
+}
+.track-co-cta-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(201,169,110,0.08);
+  border: 1px solid rgba(201,169,110,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.track-co-cta-text { flex: 1; }
+.track-co-cta-text h3 {
+  font-size: 0.95rem;
+  color: #fff;
+  margin: 0 0 2px;
+}
+.track-co-cta-text p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .track-co-cta {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 </style>
 
