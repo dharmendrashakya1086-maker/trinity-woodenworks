@@ -10,6 +10,8 @@
   if ('ontouchstart' in window) return;
   // Skip if user prefers reduced motion
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Skip if page uses scroll-snap (home page handles its own snap scrolling)
+  if (document.querySelector('.snap-panel')) return;
 
   const LERP = 0.12;
   const SCROLL_SPEED = 1.2;
