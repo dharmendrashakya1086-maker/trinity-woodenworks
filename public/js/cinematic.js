@@ -248,5 +248,84 @@ document.addEventListener('DOMContentLoaded', function() {
     );
   }
 
+  // ================================================================
+  // BACKGROUND PARALLAX — Layers move at different speeds on scroll
+  // ================================================================
+
+  // ---- Aurora (deepest layer, slowest) ----
+  var aurora = document.querySelector('.aurora-bg');
+  if (aurora) {
+    gsap.to(aurora, {
+      y: 120,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1
+      }
+    });
+  }
+
+  // ---- Stars (mid layer) ----
+  var starfield = document.querySelector('.starfield');
+  if (starfield) {
+    gsap.to(starfield, {
+      y: 80,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.8
+      }
+    });
+  }
+
+  // ---- Floating Shapes (wrap in parallax containers in JS) ----
+  var shapesContainer = document.querySelector('.floating-shapes');
+  if (shapesContainer) {
+    gsap.to(shapesContainer, {
+      y: 100,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1
+      }
+    });
+  }
+
+  // ---- Glass Orbs (move container, not individual orbs) ----
+  var orbsContainer = document.querySelector('.glass-orbs');
+  if (orbsContainer) {
+    gsap.to(orbsContainer, {
+      y: 70,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.8
+      }
+    });
+  }
+
+  // ---- Grid Overlay ----
+  var gridOverlay = document.querySelector('.grid-overlay');
+  if (gridOverlay) {
+    gsap.to(gridOverlay, {
+      y: 60,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.5
+      }
+    });
+  }
+
   console.log('%c🎬 Cinematic loaded — scroll effects active', 'color: #C9A96E; font-size: 14px; font-weight: bold;');
 });
