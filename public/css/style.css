@@ -34,7 +34,7 @@
 
   /* === Backgrounds === */
   --bg: transparent;
-  --bg-card: rgba(8,8,12,0.85);
+  --bg-card: rgba(8,8,12,0.6);
 
   /* === Borders === */
   --border: #1a1a24;
@@ -79,8 +79,8 @@
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* === Glassmorphism (Frosted Glass) === */
-  --glass-bg: rgba(10,10,14,0.2);
-  --glass-bg-light: rgba(16,16,22,0.15);
+  --glass-bg: rgba(10,10,14,0.35);
+  --glass-bg-light: rgba(16,16,22,0.25);
   --glass-border: rgba(201,169,110,0.15);
   --glass-blur: blur(16px) saturate(180%);
   --glass-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
