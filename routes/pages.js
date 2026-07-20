@@ -197,6 +197,10 @@ router.get('/contact', (req, res) => {
   res.render('contact');
 });
 
+router.get('/custom-order', (req, res) => {
+  res.render('custom-order');
+});
+
 router.get('/track-order', async (req, res) => {
   try {
     let myOrders = [];
