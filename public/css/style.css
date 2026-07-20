@@ -139,7 +139,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Navbar (Premium Frosted) ---- */
 .navbar {
-  background: rgba(4,4,6,0.2) !important;
+  background: rgba(8,8,12,0.75) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border-bottom: 1px solid rgba(201,169,110,0.06) !important;
@@ -148,7 +148,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Footer ---- */
 .footer {
-  background: rgba(4,4,6,0.25) !important;
+  background: rgba(8,8,12,0.8) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-top: 1px solid rgba(201,169,110,0.06) !important;
@@ -189,9 +189,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Auth Card ---- */
 .auth-card {
-  background: rgba(10,10,14,0.3) !important;
-  border: 1px solid rgba(201,169,110,0.08) !important;
-  box-shadow: 0 25px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
 }
 
 /* ---- Buttons (Glass Style) ---- */
@@ -208,11 +210,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Shop Grid Product Cards ---- */
 .shop-grid .product-card {
-  background: rgba(10,10,14,0.25) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(201,169,110,0.06) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
   transition: var(--transition) !important;
 }
 .shop-grid .product-card:hover {
@@ -225,11 +227,11 @@ img { max-width: 100%; height: auto; }
 .category-grid .category-card,
 .categories-grid .category-card,
 .categories-grid .category-tile {
-  background: rgba(10,10,14,0.2) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(201,169,110,0.06) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
 }
 
 /* ---- Cart Page ---- */
@@ -263,10 +265,11 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Filter Bar ---- */
 .filter-bar {
-  background: rgba(10,10,14,0.2) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(201,169,110,0.06) !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-glass) !important;
 }
 
 /* ---- Stats / Trust Badges Glass ---- */
@@ -4869,7 +4872,7 @@ img { max-width: 100%; height: auto; }
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, rgba(12,12,18,0.2) 0%, rgba(8,8,12,0.3) 100%);
+  background: linear-gradient(180deg, rgba(10,10,14,0.85) 0%, rgba(8,8,12,0.92) 100%);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-top: 1px solid rgba(201,169,110,0.08);
