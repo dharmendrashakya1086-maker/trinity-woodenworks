@@ -270,7 +270,7 @@
       <h2>Join Our Newsletter</h2>
       <p>Get updates on new arrivals, offers, and woodworking tips</p>
     </div>
-    <form class="newsletter-form reveal" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML='<i class=\"fas fa-check\"></i> Subscribed!'; this.querySelector('input').value='';">
+    <form class="newsletter-form reveal" onsubmit="event.preventDefault(); var btn=this.querySelector('button'), input=this.querySelector('input'), email=input.value.trim(); if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('Please enter a valid email','error');return;} fetch('/api/newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){return r.json()}).then(function(d){if(d.success){btn.innerHTML='<i class=\"fas fa-check\"></i> Subscribed!'; input.value=''; showToast('Thanks for subscribing!','success');}else{showToast(d.error||'Failed','error');}}).catch(function(){showToast('Something went wrong','error');});">
       <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
       <button type="submit" class="btn btn-primary btn-glow"><i class="fas fa-paper-plane"></i> Subscribe</button>
     </form>

@@ -6068,9 +6068,9 @@ textarea:focus-visible {
 
 /* ---- Newsletter Section ---- */
 .newsletter-section {
-  background: transparent !important;
-  border-top: 1px solid rgba(201,169,110,0.1);
-  border-bottom: 1px solid rgba(201,169,110,0.1);
+  background: linear-gradient(180deg, transparent 0%, rgba(201,169,110,0.02) 50%, transparent 100%) !important;
+  border-top: 1px solid rgba(201,169,110,0.08);
+  border-bottom: 1px solid rgba(201,169,110,0.08);
   padding: 80px 0;
 }
 

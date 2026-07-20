@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { connectDB } = require('./database');
+const { connectDB, getDB } = require('./database');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,6 +50,21 @@ app.use('/admin', require('./routes/admin'));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// ---- Newsletter ----
+app.post('/api/newsletter', (req, res) => {
+  var email = (req.body.email || '').trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.json({ success: false, error: 'Valid email required' });
+  }
+  try {
+    var db = getDB();
+    if (db) {
+      db.collection('newsletter').insertOne({ email: email, subscribed_at: new Date() }).catch(function(){});
+    }
+  } catch(e) {}
+  res.json({ success: true });
 });
 
 app.use((req, res) => {
