@@ -6222,8 +6222,340 @@ textarea:focus-visible {
   transform: translateY(-4px);
 }
 
+/* ================================================================
+   CREATIVE UI ENHANCEMENTS
+   ================================================================ */
+
+/* ---- Hero Badge Floating Animation ---- */
+.hero .floating {
+  animation: floatBadge 3s ease-in-out infinite;
+}
+@keyframes floatBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ---- Section Header with Animated Gold Line ---- */
+.section-header {
+  position: relative;
+}
+.section-header::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  margin: 16px auto 0;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  animation: headerLine 3s ease-in-out infinite;
+}
+@keyframes headerLine {
+  0%, 100% { width: 60px; opacity: 0.5; }
+  50% { width: 100px; opacity: 1; }
+}
+
+/* ---- Gradient Text Animation ---- */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary), var(--gold), var(--primary-light));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease-in-out infinite;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ---- Category Tile Creative Hover ---- */
+.category-tile {
+  position: relative;
+  overflow: hidden;
+}
+.category-tile .category-tile-image img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.category-tile:hover .category-tile-image img {
+  transform: scale(1.08);
+}
+.category-tile .category-tile-overlay {
+  background: linear-gradient(to top, rgba(2,2,3,0.8) 0%, rgba(2,2,3,0.2) 50%, transparent 100%) !important;
+}
+.category-tile .category-tile-content {
+  transition: transform 0.4s var(--ease-out);
+}
+.category-tile:hover .category-tile-content {
+  transform: translateY(-4px);
+}
+.category-tile .category-tile-btn {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s var(--ease-out);
+}
+.category-tile:hover .category-tile-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Product Card Creative Hover ---- */
+.product-card .product-image img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.product-card:hover .product-image img {
+  transform: scale(1.06);
+}
+.product-card .product-badge.sale {
+  animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(201,169,110,0.2); }
+  50% { box-shadow: 0 0 20px rgba(201,169,110,0.4); }
+}
+.product-card .product-info {
+  position: relative;
+}
+.product-card .product-info::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: all 0.4s var(--ease-out);
+  transform: translateX(-50%);
+}
+.product-card:hover .product-info::after {
+  width: 80%;
+}
+
+/* ---- Product Card Share Button Reveal ---- */
+.card-share-btn {
+  opacity: 0;
+  transform: scale(0.8) translateY(-10px);
+}
+.product-card:hover .card-share-btn,
+.category-tile:hover .card-share-btn {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ---- Testimonial Card Creative ---- */
+.testimonial-card {
+  position: relative;
+  overflow: hidden;
+}
+.testimonial-card::before {
+  content: '\201C';
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  font-size: 5rem;
+  color: rgba(201,169,110,0.06);
+  font-family: Georgia, serif;
+  line-height: 1;
+  pointer-events: none;
+}
+.testimonial-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  transition: width 0.5s var(--ease-out);
+  transform: translateX(-50%);
+}
+.testimonial-card:hover::after {
+  width: 80%;
+}
+.testimonial-card .testimonial-stars {
+  color: var(--primary);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+.testimonial-card .testimonial-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--dark);
+  flex-shrink: 0;
+}
+
+/* ---- Feature Card Icon Animation ---- */
+.feature-card .feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(201,169,110,0.06);
+  transition: all 0.4s var(--ease-out);
+  font-size: 1.3rem;
+  color: var(--primary);
+}
+.feature-card:hover .feature-icon {
+  background: rgba(201,169,110,0.12);
+  transform: scale(1.1) rotateY(10deg);
+  box-shadow: 0 0 30px rgba(201,169,110,0.1);
+}
+
+/* ---- Trust Badge Creative Hover ---- */
+.trust-badge {
+  position: relative;
+  overflow: hidden;
+}
+.trust-badge .trust-badge-icon {
+  font-size: 1.8rem;
+  color: var(--primary);
+  transition: all 0.4s var(--ease-out);
+}
+.trust-badge:hover .trust-badge-icon {
+  transform: scale(1.15);
+  text-shadow: 0 0 15px rgba(201,169,110,0.2);
+}
+.trust-badge .trust-badge-title {
+  font-weight: 600;
+  margin-top: 8px;
+}
+.trust-badge .trust-badge-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ---- Counter Value Creative ---- */
+.counter-value {
+  position: relative;
+  display: inline-block;
+}
+.counter-value::after {
+  content: '+';
+  font-size: 1.2rem;
+  color: var(--primary);
+  position: absolute;
+  right: -16px;
+  top: 2px;
+  opacity: 0.6;
+}
+
+/* ---- Newsletter Form Creative Focus ---- */
+.newsletter-form {
+  position: relative;
+}
+.newsletter-form:focus-within {
+  box-shadow: 0 0 40px rgba(201,169,110,0.06);
+}
+
+/* ---- CTA Card Creative ---- */
+.cta-card {
+  position: relative;
+  overflow: hidden;
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 50%, rgba(201,169,110,0.02), transparent 60%);
+  animation: ctaGlow 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ctaGlow {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+  50% { transform: scale(1.1) rotate(180deg); opacity: 0.6; }
+}
+
+/* ---- About Cards Creative ---- */
+.about-card {
+  position: relative;
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  transition: all 0.4s var(--ease-out);
+}
+.about-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201,169,110,0.2);
+}
+.about-card .about-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 12px;
+  transition: transform 0.4s var(--ease-out);
+}
+.about-card:hover .about-icon {
+  transform: scale(1.2);
+}
+
+/* ---- Navbar Link Creative Underline ---- */
+.navbar .nav-link {
+  position: relative;
+}
+.navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--primary);
+  transition: all 0.3s var(--ease-out);
+  transform: translateX(-50%);
+}
+.navbar .nav-link:hover::after {
+  width: 80%;
+}
+
+/* ---- Section Tag Decorative ---- */
+.section-tag {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: rgba(201,169,110,0.06);
+  border: 1px solid rgba(201,169,110,0.1);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+/* ---- Button Glow Animation ---- */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.btn-glow:hover::after {
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .newsletter-form { flex-direction: column; }
   .testimonial-card { padding: 24px; }
+  .counter-value::after { display: none; }
 }
