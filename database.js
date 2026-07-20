@@ -62,7 +62,7 @@ function initLowdb() {
   lowdb.defaults({
     admin: [], customers: [], categories: [], products: [],
     product_images: [], orders: [], order_items: [],
-    site_settings: [], messages: [], custom_orders: []
+    site_settings: [], messages: [], custom_orders: [], contact_messages: []
   }).write();
 
   database = lowdb;
@@ -74,7 +74,7 @@ function initLowdb() {
 // SEED FUNCTIONS
 // ============================================================
 async function seedMongoDB(db) {
-  const collections = ['admin', 'customers', 'categories', 'products', 'orders', 'order_items', 'site_settings', 'messages', 'custom_orders'];
+  const collections = ['admin', 'customers', 'categories', 'products', 'orders', 'order_items', 'site_settings', 'messages', 'custom_orders', 'contact_messages'];
   for (const col of collections) {
     const count = await db.collection(col).countDocuments();
     if (col === 'admin' && count === 0) {
