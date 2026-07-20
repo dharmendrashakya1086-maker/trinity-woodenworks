@@ -10,8 +10,8 @@
 body::before {
   content: '';
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
   z-index: -2;
   background:
     radial-gradient(ellipse 70% 50% at 15% 25%, rgba(201,169,110,0.08) 0%, transparent 60%),
@@ -264,6 +264,238 @@ body::before {
   transition: left 0.15s ease-out, top 0.15s ease-out;
 }
 
+/* ---- Shooting Stars ---- */
+.shooting-star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: 0 0 2px rgba(255,255,255,0.3);
+}
+
+.shooting-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(to left, rgba(201,169,110,0.2), transparent);
+}
+
+@keyframes shoot {
+  0% { transform: translateX(0) translateY(0); opacity: 0; }
+  5% { opacity: 1; }
+  30% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { transform: translateX(-500px) translateY(300px); opacity: 0; }
+}
+
+/* ---- Floating 3D Shapes ---- */
+.floating-shapes {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-shape {
+  position: absolute;
+  opacity: 0.08;
+  transform-style: preserve-3d;
+}
+
+.shape-cube {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(201,169,110,0.2);
+  background: rgba(201,169,110,0.03);
+  animation: floatCube 20s ease-in-out infinite;
+  top: 20%; left: 10%;
+  animation-delay: 0s;
+}
+
+.shape-diamond {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(88,60,180,0.2);
+  background: rgba(88,60,180,0.03);
+  transform: rotate(45deg);
+  animation: floatDiamond 25s ease-in-out infinite;
+  top: 60%; right: 15%;
+  animation-delay: -5s;
+}
+
+.shape-ring {
+  width: 50px; height: 50px;
+  border: 1px solid rgba(0,180,220,0.15);
+  border-radius: 50%;
+  animation: floatRing 18s ease-in-out infinite;
+  top: 30%; right: 30%;
+  animation-delay: -10s;
+}
+
+.shape-hex {
+  width: 35px; height: 60px;
+  border: 1px solid rgba(140,60,200,0.15);
+  background: rgba(140,60,200,0.02);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: floatHex 22s ease-in-out infinite;
+  bottom: 25%; left: 25%;
+  animation-delay: -7s;
+}
+
+.shape-cube2 {
+  width: 25px; height: 25px;
+  border: 1px solid rgba(201,169,110,0.15);
+  background: rgba(201,169,110,0.02);
+  animation: floatCube 15s ease-in-out infinite reverse;
+  bottom: 40%; right: 35%;
+  animation-delay: -3s;
+}
+
+.shape-ring2 {
+  width: 35px; height: 35px;
+  border: 1px solid rgba(0,200,160,0.12);
+  border-radius: 50%;
+  animation: floatRing 20s ease-in-out infinite reverse;
+  top: 70%; left: 40%;
+  animation-delay: -12s;
+}
+
+@keyframes floatCube {
+  0%, 100% { transform: translate(0, 0) rotateX(0deg) rotateZ(0deg); }
+  25% { transform: translate(40px, -30px) rotateX(90deg) rotateZ(45deg); }
+  50% { transform: translate(-20px, 40px) rotateX(180deg) rotateZ(90deg); }
+  75% { transform: translate(30px, 20px) rotateX(270deg) rotateZ(135deg); }
+}
+
+@keyframes floatDiamond {
+  0%, 100% { transform: translate(0, 0) rotate(45deg) scale(1); }
+  33% { transform: translate(-30px, -40px) rotate(65deg) scale(1.1); }
+  66% { transform: translate(35px, 20px) rotate(25deg) scale(0.9); }
+}
+
+@keyframes floatRing {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(50px, -20px) scale(1.15); }
+  50% { transform: translate(-30px, 40px) scale(0.9); }
+  75% { transform: translate(20px, -30px) scale(1.05); }
+}
+
+@keyframes floatHex {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-40px, -30px) rotate(120deg); }
+  66% { transform: translate(40px, 20px) rotate(240deg); }
+}
+
+/* ---- Pulse Waves ---- */
+.pulse-waves {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pulse-wave {
+  position: absolute;
+  border: 1px solid rgba(201,169,110,0.04);
+  border-radius: 50%;
+  animation: pulseExpand 8s ease-out infinite;
+}
+
+.pulse-wave:nth-child(1) {
+  width: 10px; height: 10px;
+  top: 30%; left: 50%;
+  animation-delay: 0s;
+}
+
+.pulse-wave:nth-child(2) {
+  width: 10px; height: 10px;
+  top: 60%; left: 25%;
+  animation-delay: -2.7s;
+  border-color: rgba(88,60,180,0.03);
+}
+
+.pulse-wave:nth-child(3) {
+  width: 10px; height: 10px;
+  top: 40%; left: 75%;
+  animation-delay: -5.3s;
+  border-color: rgba(0,180,220,0.03);
+}
+
+@keyframes pulseExpand {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(40); opacity: 0; }
+}
+
+/* ---- Energy Light Beams ---- */
+.energy-beams {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.energy-beam {
+  position: absolute;
+  width: 200%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.02), transparent);
+  animation: beamSweep 12s linear infinite;
+}
+
+.energy-beam:nth-child(1) { top: 25%; animation-delay: 0s; }
+.energy-beam:nth-child(2) { top: 50%; animation-delay: -4s; }
+.energy-beam:nth-child(3) { top: 75%; animation-delay: -8s; }
+
+@keyframes beamSweep {
+  0% { transform: translateX(-100%) rotate(-2deg); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translateX(50%) rotate(2deg); opacity: 0; }
+}
+
+/* ---- Hero Glow Background ---- */
+.hero-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 600px; height: 600px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(201,169,110,0.03) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: heroGlowPulse 6s ease-in-out infinite;
+}
+
+@keyframes heroGlowPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.6; }
+}
+
+/* ---- Scanline Overlay ---- */
+.scanlines {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.02) 2px,
+    rgba(0,0,0,0.02) 4px
+  );
+}
+
 /* ================================================================
    3D CARD EFFECTS
    ================================================================ */
@@ -471,6 +703,9 @@ body::before {
   .perspective-grid { display: none; }
   .mouse-spotlight { display: none; }
   .cursor-glow { display: none; }
+  .floating-shapes { display: none; }
+  .energy-beams { display: none; }
+  .shooting-star { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -483,4 +718,9 @@ body::before {
   .particle { animation: none; }
   .holo-card::before { animation: none; }
   .glow-ring::after { animation: none; }
+  .floating-shape { animation: none; }
+  .pulse-wave { animation: none; }
+  .energy-beam { animation: none; }
+  .shooting-star { animation: none; }
+  .hero-glow { animation: none; }
 }
