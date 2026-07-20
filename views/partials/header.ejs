@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %>Trinity Woodenworks</title>
+  <meta name="description" content="Trinity Woodenworks - Premium handcrafted wooden items. Crafted with Passion, Built to Last.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/3d-effects.css">
+  <link rel="stylesheet" href="/css/cinematic.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <style>
+    .page-loader{position:fixed;inset:0;background:#0a0a0f;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease;}
+    .page-loader.hidden{opacity:0;pointer-events:none;}
+    .loader-logo{width:70px;height:70px;border:3px solid rgba(201,169,110,0.15);border-top-color:#C9A96E;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+    .loader-text{color:#C9A96E;font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:2px;}
+    .loader-sub{color:#666;font-size:0.75rem;margin-top:8px;letter-spacing:1px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-logo"></div>
+    <div class="loader-text">TRINITY WOODENWORKS</div>
+    <div class="loader-sub">Loading...</div>
+  </div>
+  <script>
+    window.addEventListener('load', function() {
+      var loader = document.getElementById('pageLoader');
+      if (loader) { loader.classList.add('hidden'); setTimeout(function(){ loader.remove(); }, 500); }
+    });
+  </script>
+  <div class="nav-overlay" id="navOverlay" onclick="closeMenu()"></div>
+  <div class="nav-menu" id="navMenu">
+    <div class="nav-menu-header">
+      <div class="logo-circle">
+        <img src="/images/Trinity Woodenworks Logo.png" alt="Trinity Woodenworks">
+      </div>
+      <span class="logo-text">
+        <span class="logo-trinity">Trinity</span>
+        <span class="logo-woodenworks">Woodenworks</span>
+      </span>
+    </div>
+    <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">Home</a>
+    <a href="/categories" class="nav-link <%= currentPath === '/categories' || currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>">Shop</a>
+    <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
+    <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
+    <a href="/track-order" class="nav-link <%= currentPath === '/track-order' ? 'active' : '' %>">Track Order</a>
+  </div>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="nav-logo">
+        <div class="logo-circle">
+          <img src="/images/Trinity Woodenworks Logo.png" alt="Trinity Woodenworks">
+        </div>
+        <span class="logo-text">
+          <span class="logo-trinity">Trinity</span>
+          <span class="logo-woodenworks">Woodenworks</span>
+        </span>
+      </a>
+      <div class="nav-desktop-links">
+        <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">Home</a>
+        <a href="/categories" class="nav-link <%= currentPath === '/categories' || currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>">Shop</a>
+        <a href="/about" class="nav-link <%= currentPath === '/about' ? 'active' : '' %>">About</a>
+        <a href="/contact" class="nav-link <%= currentPath === '/contact' ? 'active' : '' %>">Contact</a>
+        <a href="/track-order" class="nav-link <%= currentPath === '/track-order' ? 'active' : '' %>">Track Order</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/cart" class="nav-icon cart-icon" title="Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <% if (typeof cartCount !== 'undefined' && cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+          <% } %>
+        </a>
+        <a href="/account" class="nav-icon nav-account-desktop" title="Account"><i class="fas fa-user"></i></a>
+        <button class="nav-toggle" id="navToggle" onclick="toggleMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <script>
+  if (performance.getEntriesByType('navigation')[0].type === 'reload' && window.location.pathname !== '/') {
+    window.location.href = '/';
+  }
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+
+  function toggleMenu() {
+    const menu = document.getElementById('navMenu');
+    const overlay = document.getElementById('navOverlay');
+    const toggle = document.getElementById('navToggle');
+    const isOpen = menu.classList.contains('active');
+    if (isOpen) {
+      menu.classList.remove('active');
+      overlay.classList.remove('active');
+      toggle.classList.remove('active');
+      document.body.style.overflow = '';
+    } else {
+      menu.classList.add('active');
+      overlay.classList.add('active');
+      toggle.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+  function closeMenu() {
+    const menu = document.getElementById('navMenu');
+    const overlay = document.getElementById('navOverlay');
+    const toggle = document.getElementById('navToggle');
+    menu.classList.remove('active');
+    overlay.classList.remove('active');
+    toggle.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  </script>
+
+  <% if (!customer) { %>
+  <!-- Auth Required Modal -->
+  <div class="auth-modal-overlay" id="authModal" onclick="closeAuthModal(event)">
+    <div class="auth-modal" onclick="event.stopPropagation()">
+      <button class="auth-modal-close" onclick="document.getElementById('authModal').classList.remove('active')">&times;</button>
+      <div class="auth-modal-logo">
+        <div class="logo-circle">
+          <img src="/images/Trinity Woodenworks Logo.png" alt="Trinity Woodenworks">
+        </div>
+      </div>
+      <h2>Welcome!</h2>
+      <p class="auth-modal-subtitle">Login or Sign up to continue shopping</p>
+      <div class="auth-modal-actions">
+        <a href="/login" class="btn btn-primary btn-lg btn-block btn-glow">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a href="/signup" class="btn btn-outline-light btn-lg btn-block">
+          <i class="fas fa-user-plus"></i> Sign Up
+        </a>
+      </div>
+      <p class="auth-modal-note"><i class="fas fa-lock"></i> Secure checkout &middot; Track orders &middot; Save address</p>
+    </div>
+  </div>
+  <script>
+  const isLoggedIn = false;
+  function closeAuthModal(e) {
+    if (e.target === e.currentTarget) {
+      document.getElementById('authModal').classList.remove('active');
+    }
+  }
+  function showAuthModal() {
+    document.getElementById('authModal').classList.add('active');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-auth-required="true"]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        if (!isLoggedIn) {
+          e.preventDefault();
+          e.stopPropagation();
+          showAuthModal();
+        }
+      });
+    });
+  });
+  </script>
+  <% } else { %>
+  <script>const isLoggedIn = true;</script>
+  <% } %>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="bottom-nav" id="bottomNav">
+    <a href="/" class="bottom-nav-item <%= currentPath === '/' ? 'active' : '' %>">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/cart" class="bottom-nav-item bottom-nav-cart <%= currentPath === '/cart' ? 'active' : '' %>">
+      <div class="bottom-nav-cart-circle">
+        <i class="fas fa-shopping-bag"></i>
+        <% if (typeof cartCount !== 'undefined' && cartCount > 0) { %>
+          <span class="bottom-nav-badge"><%= cartCount %></span>
+        <% } %>
+      </div>
+      <span>Cart</span>
+    </a>
+    <a href="<%= customer ? '/account' : '/login' %>" class="bottom-nav-item <%= currentPath === '/account' || currentPath === '/login' ? 'active' : '' %>">
+      <i class="fas fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>

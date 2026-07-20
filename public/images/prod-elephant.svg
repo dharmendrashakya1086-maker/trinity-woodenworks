@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0c0c10"/>
+      <stop offset="100%" style="stop-color:#141418"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C9A96E"/>
+      <stop offset="100%" style="stop-color:#a8863e"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <ellipse cx="300" cy="350" rx="100" ry="60" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.4"/>
+  <circle cx="260" cy="260" r="50" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.35"/>
+  <path d="M220 280 Q200 320 220 360" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.3"/>
+  <circle cx="245" cy="250" r="5" fill="url(#gold)" opacity="0.5"/>
+  <path d="M310 310 Q340 290 360 310 Q340 330 310 310" fill="url(#gold)" opacity="0.2"/>
+  <rect x="270" y="350" width="12" height="50" rx="3" fill="url(#gold)" opacity="0.25"/>
+  <rect x="300" y="350" width="12" height="50" rx="3" fill="url(#gold)" opacity="0.25"/>
+  <rect x="330" y="350" width="12" height="50" rx="3" fill="url(#gold)" opacity="0.25"/>
+</svg>

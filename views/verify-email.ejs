@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<section class="page-header">
+  <div class="container">
+    <h1>Verify Your Email</h1>
+    <p>Check your inbox for the verification code</p>
+    <div class="breadcrumb">
+      <a href="/">Home</a> <i class="fas fa-chevron-right"></i>
+      <a href="/signup">Sign Up</a> <i class="fas fa-chevron-right"></i>
+      <span>Verify Email</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="logo-circle">
+            <img src="/images/Trinity Woodenworks Logo.png" alt="Trinity Woodenworks">
+          </div>
+        </div>
+        <h2>Check Your Email</h2>
+        <p class="auth-subtitle">We sent a 6-digit verification code to<br><strong style="color:var(--primary)"><%= email %></strong></p>
+
+        <% if (error) { %>
+          <div class="auth-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+        <% } %>
+
+        <% if (typeof codeSent !== 'undefined' && codeSent) { %>
+          <div class="auth-success"><i class="fas fa-check-circle"></i> Verification code sent! Check your inbox (and spam folder).</div>
+        <% } %>
+
+        <form action="/verify-email" method="POST" class="auth-form">
+          <div class="form-group">
+            <label><i class="fas fa-key"></i> Enter Verification Code</label>
+            <input type="text" name="code" required placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" class="otp-input">
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="fas fa-check-circle"></i> Verify & Complete</button>
+        </form>
+
+        <div class="auth-footer">
+          <a href="/signup"><i class="fas fa-arrow-left"></i> Back to Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+

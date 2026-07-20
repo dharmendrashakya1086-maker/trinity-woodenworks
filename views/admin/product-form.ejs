@@ -1,0 +1,126 @@
+<%- include('admin-header') %>
+
+<div class="page-title">
+  <h1><%= product ? 'Edit Product' : 'Add Product' %></h1>
+  <a href="/admin/products" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Products</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form action="<%= product ? '/admin/products/edit/' + product.id : '/admin/products/add' %>" method="POST" enctype="multipart/form-data" class="admin-form">
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Product Name *</label>
+          <input type="text" name="name" value="<%= product ? product.name : '' %>" required placeholder="e.g., Wooden Flower Vase">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category_id">
+            <option value="">Select Category</option>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat.id %>" <%= product && product.category_id == cat.id ? 'selected' : '' %>><%= cat.name %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="4" placeholder="Describe your product..."><%= product ? product.description || '' : '' %></textarea>
+      </div>
+
+      <div class="grid-3">
+        <div class="form-group">
+          <label>MRP (₹) *</label>
+          <input type="number" name="mrp" id="inputMrp" value="<%= product ? (product.mrp || product.price) : '' %>" required min="0" step="0.01" placeholder="e.g., 1999" oninput="calcSalePrice()">
+        </div>
+        <div class="form-group">
+          <label>Discount (%) *</label>
+          <input type="number" name="discount_percent" id="inputDiscount" value="<%= product ? (product.discount_percent || 0) : 0 %>" required min="0" max="90" step="1" placeholder="e.g., 20" oninput="calcSalePrice()">
+        </div>
+        <div class="form-group">
+          <label>Sale Price (₹) — Auto calculated</label>
+          <input type="number" id="inputSalePrice" readonly placeholder="Auto calculated" style="background:var(--dark-4);color:var(--primary);font-weight:700;cursor:not-allowed;">
+          <input type="hidden" name="price" id="hiddenSalePrice">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Stock Quantity *</label>
+          <input type="number" name="stock" value="<%= product ? product.stock : 0 %>" required min="0" placeholder="e.g., 50">
+        </div>
+        <div class="form-group" style="display:flex;align-items:end;">
+          <div id="discountBadgePreview" style="display:none;background:var(--danger);color:#fff;padding:6px 14px;border-radius:6px;font-weight:700;font-size:0.85rem;"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Main Product Image</label>
+          <input type="file" name="image" accept="image/*" class="file-input">
+          <% if (product && product.image) { %>
+            <div class="current-image">
+              <img src="/images/<%= product.image %>" alt="Current image" style="max-width:100px;margin-top:8px;border-radius:8px">
+              <label><input type="checkbox" name="remove_image" value="1"> Remove image</label>
+              <input type="hidden" name="existing_image" value="<%= product.image %>">
+            </div>
+          <% } %>
+        </div>
+        <div class="form-group">
+          <label>Gallery Images (multiple)</label>
+          <input type="file" name="gallery" accept="image/*" multiple class="file-input">
+          <% if (typeof images !== 'undefined' && images && images.length > 0) { %>
+            <div class="current-gallery">
+              <% images.forEach(img => { %>
+                <div class="gallery-thumb">
+                  <img src="/images/<%= img.image %>" alt="Gallery">
+                  <a href="/admin/products/delete-image/<%= img.id %>" class="remove-img" onclick="return confirm('Remove this image?')"><i class="fas fa-times"></i></a>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <% if (product) { %>
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="active" <%= product.status === 'active' ? 'selected' : '' %>>Active</option>
+            <option value="inactive" <%= product.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+          </select>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> <%= product ? 'Update Product' : 'Add Product' %></button>
+        <a href="/admin/products" class="btn btn-outline btn-lg">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function calcSalePrice() {
+  const mrp = parseFloat(document.getElementById('inputMrp').value) || 0;
+  const disc = parseFloat(document.getElementById('inputDiscount').value) || 0;
+  const salePrice = mrp > 0 ? Math.round(mrp * (1 - disc / 100)) : 0;
+  document.getElementById('inputSalePrice').value = salePrice > 0 ? salePrice : '';
+  document.getElementById('hiddenSalePrice').value = salePrice > 0 ? salePrice : '';
+
+  const badge = document.getElementById('discountBadgePreview');
+  if (disc > 0 && mrp > 0) {
+    badge.style.display = 'inline-block';
+    badge.textContent = disc + '% OFF — ₹' + salePrice;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+calcSalePrice();
+</script>
+
+<%- include('admin-footer') %>

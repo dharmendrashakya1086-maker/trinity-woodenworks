@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0c0c10"/>
+      <stop offset="100%" style="stop-color:#1a1a22"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C9A96E"/>
+      <stop offset="100%" style="stop-color:#a8863e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="400" cy="240" r="80" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.3"/>
+  <circle cx="400" cy="240" r="60" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.2"/>
+  <path d="M370 220 L400 180 L430 220 L420 220 L420 260 L380 260 L380 220 Z" fill="url(#gold)" opacity="0.8"/>
+  <circle cx="385" cy="245" r="4" fill="#0c0c10"/>
+  <circle cx="415" cy="245" r="4" fill="#0c0c10"/>
+  <path d="M390 255 Q400 265 410 255" fill="none" stroke="#0c0c10" stroke-width="2"/>
+  <text x="400" y="360" text-anchor="middle" font-family="Georgia,serif" font-size="28" fill="#C9A96E" font-weight="600">Wooden Decor</text>
+  <text x="400" y="395" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#6a6260">Handcrafted with Passion</text>
+  <line x1="340" y1="420" x2="460" y2="420" stroke="url(#gold)" stroke-width="1" opacity="0.3"/>
+</svg>
