@@ -146,6 +146,28 @@
 </section>
 
 <script>
+(function() {
+  var STORAGE_KEY = 'co_pending_order';
+
+  // On page load: check if we just logged in and have pending data
+  var pending = null;
+  try { pending = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+  if (pending) {
+    localStorage.removeItem(STORAGE_KEY);
+    // Restore form fields
+    document.getElementById('co-name').value = pending.name || '';
+    document.getElementById('co-email').value = pending.email || '';
+    document.getElementById('co-phone').value = pending.phone || '';
+    document.getElementById('co-category').value = pending.category || '';
+    document.getElementById('co-wood').value = pending.wood || '';
+    document.getElementById('co-budget').value = pending.budget || '';
+    document.getElementById('co-dimensions').value = pending.dimensions || '';
+    document.getElementById('co-description').value = pending.description || '';
+    // Auto submit
+    setTimeout(function() { document.querySelector('.contact-form').dispatchEvent(new Event('submit', { cancelable: true })); }, 300);
+  }
+})();
+
 function handleCustomOrder(e) {
   e.preventDefault();
   var form = e.target;
@@ -176,6 +198,10 @@ function handleCustomOrder(e) {
         form.style.display = 'none';
         document.getElementById('customOrderSuccess').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (d.needLogin) {
+        // Save form data to localStorage before redirect
+        localStorage.setItem('co_pending_order', JSON.stringify(data));
+        window.location.href = '/login?returnTo=/custom-order';
       } else {
         alert(d.error || 'Failed to submit');
         btn.disabled = false;

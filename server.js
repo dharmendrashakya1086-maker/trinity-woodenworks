@@ -69,9 +69,6 @@ app.post('/api/newsletter', (req, res) => {
 
 // ---- Custom Order ----
 app.post('/api/custom-order', (req, res) => {
-  if (!req.session || !req.session.customer) {
-    return res.json({ success: false, error: 'Please sign in to place a custom order' });
-  }
   var b = req.body;
   var name = (b.name || '').trim();
   var email = (b.email || '').trim();
@@ -80,6 +77,9 @@ app.post('/api/custom-order', (req, res) => {
   var description = (b.description || '').trim();
   if (!name || !email || !phone || !category || !description) {
     return res.json({ success: false, error: 'All required fields must be filled' });
+  }
+  if (!req.session || !req.session.customer) {
+    return res.json({ success: false, needLogin: true, error: 'Please sign in or sign up to submit your custom order' });
   }
   try {
     var db = getDB();
@@ -94,6 +94,10 @@ app.post('/api/custom-order', (req, res) => {
     }
   } catch(e) {}
   res.json({ success: true });
+});
+
+app.post('/api/check-auth', (req, res) => {
+  res.json({ loggedIn: !!(req.session && req.session.customer) });
 });
 
 app.use((req, res) => {
