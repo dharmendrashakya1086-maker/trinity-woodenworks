@@ -201,6 +201,17 @@ router.get('/custom-order', (req, res) => {
   res.render('custom-order');
 });
 
+router.get('/track-custom-order', (req, res) => {
+  res.render('track-custom-order', { order: null, searched: false });
+});
+
+router.post('/track-custom-order', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.render('track-custom-order', { order: null, searched: true });
+  const { data: orders } = await findAll('custom_orders', { email: email.trim() }, { created_at: 'desc' });
+  res.render('track-custom-order', { orders, searched: true });
+});
+
 router.get('/track-order', async (req, res) => {
   try {
     let myOrders = [];

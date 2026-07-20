@@ -1,0 +1,123 @@
+<%- include('partials/header') %>
+
+<section class="page-header">
+  <div class="container">
+    <h1>Track Custom Order</h1>
+    <p>Enter your email to view your custom orders</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width: 800px;">
+    <form class="contact-form" action="/track-custom-order" method="POST" style="margin-bottom: 40px;">
+      <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" required placeholder="Enter your email" style="width: 100%;">
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+          <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i> Track</button>
+        </div>
+      </div>
+    </form>
+
+    <% if (searched) { %>
+      <% if (typeof orders !== 'undefined' && orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+          <div class="track-co-card" style="margin-bottom: 24px; padding: 24px; border-radius: 16px; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <h3 style="margin: 0; font-size: 1.1rem;"><%= order.category %> — Custom Order #<%= order.id %></h3>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Ordered <%= new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+              </div>
+              <span class="badge badge-<%= order.status %>" style="padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; text-transform: capitalize;"><%= order.status %></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; color: var(--text-muted);">
+                <span style="<%= ['new','contacted','confirmed','crafting','completed'].includes(order.status) ? 'color: var(--primary); font-weight: 600;' : '' %>">Submitted</span>
+                <span style="<%= ['contacted','confirmed','crafting','completed'].includes(order.status) ? 'color: var(--primary); font-weight: 600;' : '' %>">Contacted</span>
+                <span style="<%= ['confirmed','crafting','completed'].includes(order.status) ? 'color: var(--primary); font-weight: 600;' : '' %>">Confirmed</span>
+                <span style="<%= ['crafting','completed'].includes(order.status) ? 'color: var(--primary); font-weight: 600;' : '' %>">Crafting</span>
+                <span style="<%= order.status === 'completed' ? 'color: var(--success); font-weight: 600;' : '' %>">Completed</span>
+              </div>
+              <div style="height: 4px; background: var(--dark-4); border-radius: 2px; overflow: hidden;">
+                <div style="height: 100%; border-radius: 2px; transition: width 0.5s; background: linear-gradient(90deg, var(--primary), var(--neon)); width: <%= order.status === 'new' ? '10' : order.status === 'contacted' ? '30' : order.status === 'confirmed' ? '50' : order.status === 'crafting' ? '75' : order.status === 'completed' ? '100' : order.status === 'cancelled' ? '0' : '10' %>%;"></div>
+              </div>
+            </div>
+
+            <!-- Order Details -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">Product Type</div>
+                <div style="font-size: 0.95rem; text-transform: capitalize;"><%= order.category %></div>
+              </div>
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">Wood Type</div>
+                <div style="font-size: 0.95rem;"><%= order.wood || 'No preference' %></div>
+              </div>
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">Dimensions</div>
+                <div style="font-size: 0.95rem;"><%= order.dimensions || 'Not specified' %></div>
+              </div>
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">Status</div>
+                <div style="font-size: 0.95rem; text-transform: capitalize;"><%= order.status %></div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">Your Description</div>
+              <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.6; margin: 0;"><%= order.description %></p>
+            </div>
+
+            <!-- Payment Info (only if amount is set) -->
+            <% if (order.amount) { %>
+              <div style="padding: 16px; background: rgba(201,169,110,0.05); border: 1px solid rgba(201,169,110,0.12); border-radius: 12px;">
+                <h4 style="margin: 0 0 12px 0; color: var(--primary); font-size: 0.95rem;"><i class="fas fa-rupee-sign"></i> Payment Details</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Total Amount</div>
+                    <div style="font-size: 1.2rem; font-weight: 700;">₹<%= order.amount.toLocaleString() %></div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Advance (<%= order.advance_percent || 50 %>%)</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary);">₹<%= Math.round(order.amount * (order.advance_percent || 50) / 100).toLocaleString() %></div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Remaining</div>
+                    <div style="font-size: 1.2rem; font-weight: 700;">₹<%= (order.amount - Math.round(order.amount * (order.advance_percent || 50) / 100)).toLocaleString() %></div>
+                  </div>
+                </div>
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(201,169,110,0.08); display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">Advance Payment</span>
+                  <span style="padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: <%= order.advance_paid ? 'rgba(0,230,118,0.1)' : 'rgba(255,23,68,0.1)' %>; color: <%= order.advance_paid ? 'var(--success)' : 'var(--danger)' %>;"><%= order.advance_paid ? 'Paid' : 'Pending' %></span>
+                </div>
+                <% if (!order.advance_paid && order.status === 'confirmed') { %>
+                  <div style="margin-top: 12px; padding: 12px; background: rgba(255,171,0,0.08); border: 1px solid rgba(255,171,0,0.15); border-radius: 8px; font-size: 0.85rem; color: var(--warning);">
+                    <i class="fas fa-exclamation-triangle"></i> Please pay the advance of <strong>₹<%= Math.round(order.amount * (order.advance_percent || 50) / 100).toLocaleString() %></strong> to begin work on your order.
+                  </div>
+                <% } %>
+              </div>
+            <% } else { %>
+              <div style="padding: 12px; background: rgba(201,169,110,0.05); border: 1px solid rgba(201,169,110,0.1); border-radius: 8px; font-size: 0.85rem; color: var(--text-muted);">
+                <i class="fas fa-clock"></i> Price will be set after our team reviews your order.
+              </div>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div style="text-align: center; padding: 48px 24px;">
+          <i class="fas fa-pencil-ruler" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 16px; display: block;"></i>
+          <h3 style="margin-bottom: 8px;">No Custom Orders Found</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">No custom orders were found for this email address.</p>
+          <a href="/custom-order" class="btn btn-primary">Place a Custom Order</a>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -297,6 +297,16 @@ router.post('/custom-orders/:id/status', requireAdmin, async (req, res) => {
   res.redirect('/admin/custom-orders/' + req.params.id);
 });
 
+router.post('/custom-orders/:id/confirm', requireAdmin, async (req, res) => {
+  const { amount, advance_percent, advance_paid } = req.body;
+  await updateOne('custom_orders', { id: parseInt(req.params.id) }, {
+    amount: parseFloat(amount) || 0,
+    advance_percent: parseFloat(advance_percent) || 50,
+    advance_paid: advance_paid === '1' ? 1 : 0
+  });
+  res.redirect('/admin/custom-orders/' + req.params.id);
+});
+
 router.post('/custom-orders/:id/delete', requireAdmin, async (req, res) => {
   await removeOne('custom_orders', { id: parseInt(req.params.id) });
   res.redirect('/admin/custom-orders');

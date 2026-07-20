@@ -30,7 +30,51 @@
   </div>
 </div>
 
-<div class="card">
+<div class="card" style="margin-bottom: 24px;">
+  <div class="card-body">
+    <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-rupee-sign"></i> Set Price & Advance Payment</h3>
+    <form action="/admin/custom-orders/<%= order.id %>/confirm" method="POST" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;">
+      <div class="form-group" style="flex:1; min-width: 200px;">
+        <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">Total Amount (₹) *</label>
+        <input type="number" name="amount" value="<%= order.amount || '' %>" min="0" required placeholder="e.g. 5000" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--dark-3); color: var(--text);">
+      </div>
+      <div class="form-group" style="flex:1; min-width: 200px;">
+        <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">Advance Payment (%) *</label>
+        <input type="number" name="advance_percent" value="<%= order.advance_percent || 50 %>" min="0" max="100" required placeholder="e.g. 50" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--dark-3); color: var(--text);">
+      </div>
+      <div class="form-group" style="flex:1; min-width: 200px;">
+        <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; display: block;">Advance Paid?</label>
+        <select name="advance_paid" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--dark-3); color: var(--text);">
+          <option value="0" <%= !order.advance_paid ? 'selected' : '' %>>Not Paid</option>
+          <option value="1" <%= order.advance_paid ? 'selected' : '' %>>Paid</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="height: 42px;"><i class="fas fa-save"></i> Save</button>
+    </form>
+    <% if (order.amount) { %>
+      <div style="margin-top: 16px; padding: 16px; background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.1); border-radius: 12px; display: flex; gap: 32px; flex-wrap: wrap;">
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Total Amount</div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: var(--text);">₹<%= order.amount.toLocaleString() %></div>
+        </div>
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Advance (<%= order.advance_percent || 50 %>%)</div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary);">₹<%= Math.round(order.amount * (order.advance_percent || 50) / 100).toLocaleString() %></div>
+        </div>
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Remaining</div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: var(--text);">₹<%= (order.amount - Math.round(order.amount * (order.advance_percent || 50) / 100)).toLocaleString() %></div>
+        </div>
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Advance Status</div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: <%= order.advance_paid ? 'var(--success)' : 'var(--danger)' %>;"><%= order.advance_paid ? 'Paid' : 'Pending' %></div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 24px;">
   <div class="card-body">
     <h3 style="margin-bottom: 16px; color: var(--primary);">Update Status</h3>
     <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
@@ -58,7 +102,7 @@
   <div class="card-body">
     <h3 style="margin-bottom: 12px; color: var(--primary);"><i class="fas fa-rupee-sign"></i> Payment Info</h3>
     <div style="padding: 16px; background: rgba(201,169,110,0.05); border: 1px solid rgba(201,169,110,0.1); border-radius: 12px; color: var(--text-light); line-height: 1.7; font-size: 0.9rem;">
-      <p style="margin: 0 0 8px 0;"><strong>Policy:</strong> 50% advance payment required after design approval. Remaining 50% due before delivery.</p>
+      <p style="margin: 0 0 8px 0;"><strong>Policy:</strong> Advance payment required after design approval. Remaining due before delivery.</p>
       <p style="margin: 0;"><strong>Accepted:</strong> UPI, Bank Transfer, Cash on Delivery</p>
     </div>
   </div>
