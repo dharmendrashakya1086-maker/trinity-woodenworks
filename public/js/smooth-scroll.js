@@ -10,8 +10,8 @@
   if ('ontouchstart' in window) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var LERP = 0.08;
-  var SNAP_COOLDOWN = 900;
+  var LERP = 0.1;
+  var SNAP_COOLDOWN = 500;
 
   var targetScroll = 0;
   var currentScroll = 0;
@@ -95,7 +95,6 @@
       var now = Date.now();
       if (now - lastSnapTime < SNAP_COOLDOWN) return;
       var delta = e.deltaY;
-      if (Math.abs(delta) < 10) return;
       var dir = delta > 0 ? 1 : -1;
       var nextIdx = getNextSnapIndex(window.scrollY, dir);
       if (Math.abs(window.scrollY - snapPoints[nextIdx]) > 5) {
