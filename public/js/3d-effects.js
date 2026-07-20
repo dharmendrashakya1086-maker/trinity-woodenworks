@@ -270,5 +270,107 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   })();
 
-  console.log('%c✨ 3D Futuristic UI loaded', 'color: #C9A96E; font-size: 14px; font-weight: bold;');
+  // ---- Cyber Grid ----
+  (function() {
+    var cg = document.createElement('div');
+    cg.className = 'cyber-grid';
+    document.body.appendChild(cg);
+  })();
+
+  // ---- Data Stream ----
+  (function() {
+    var ds = document.createElement('div');
+    ds.className = 'data-stream';
+    document.body.appendChild(ds);
+  })();
+
+  // ---- Ambient Pulse ----
+  (function() {
+    var ap = document.createElement('div');
+    ap.className = 'ambient-pulse';
+    ap.style.top = (20 + Math.random() * 60) + '%';
+    ap.style.left = (10 + Math.random() * 80) + '%';
+    document.body.appendChild(ap);
+  })();
+
+  // ---- Scroll Progress Bar ----
+  (function() {
+    var bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.appendChild(bar);
+    window.addEventListener('scroll', function() {
+      var h = document.documentElement;
+      var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      bar.style.width = pct + '%';
+    });
+  })();
+
+  // ---- Scroll Reveal (IntersectionObserver) ----
+  (function() {
+    var els = document.querySelectorAll('.reveal-up, .reveal-scale, .reveal-left, .reveal-right');
+    if (!els.length) return;
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function(el) { obs.observe(el); });
+  })();
+
+  // ---- Magnetic Hover on Buttons ----
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.querySelectorAll('.btn, .magnetic-btn').forEach(function(btn) {
+      btn.classList.add('magnetic-btn');
+      btn.addEventListener('mousemove', function(e) {
+        var rect = btn.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = 'translate(' + (x * 0.15) + 'px, ' + (y * 0.15) + 'px)';
+      });
+      btn.addEventListener('mouseleave', function() {
+        btn.style.transform = 'translate(0, 0)';
+      });
+    });
+  }
+
+  // ---- Particle Trail on Mouse ----
+  if (window.matchMedia('(pointer: fine)').matches) {
+    var trailThrottle = 0;
+    document.addEventListener('mousemove', function(e) {
+      if (Date.now() - trailThrottle < 50) return;
+      trailThrottle = Date.now();
+      var p = document.createElement('div');
+      p.className = 'particle-trail';
+      p.style.left = e.clientX + 'px';
+      p.style.top = e.clientY + 'px';
+      document.body.appendChild(p);
+      setTimeout(function() { p.remove(); }, 800);
+    });
+  }
+
+  // ---- Glitch Text on Headings ----
+  document.querySelectorAll('h1, h2, h3').forEach(function(h) {
+    h.classList.add('glitch-text');
+  });
+
+  // ---- Neon Underline on Links ----
+  document.querySelectorAll('.nav-link, .section-tag').forEach(function(l) {
+    l.classList.add('neon-underline');
+  });
+
+  // ---- Holographic Shimmer on Cards ----
+  document.querySelectorAll('.product-card, .category-card, .cta-card').forEach(function(c) {
+    c.classList.add('holo-shimmer', 'neon-border', 'float-platform');
+  });
+
+  // ---- Frosted Panel on Forms & Modals ----
+  document.querySelectorAll('input, textarea, select, .modal, .auth-modal').forEach(function(f) {
+    f.classList.add('frosted-panel');
+  });
+
+  // ---- 3D Classes for existing elements ----
+  document.querySelectorAll('.stat-card').forEach(function(c) { c.classList.add('float-platform'); });
+  document.querySelectorAll('.feature-card, .value-card').forEach(function(c) { c.classList.add('holo-shimmer', 'neon-border'); });
+
+  console.log('%c✨ 3D Futuristic UI v2 loaded', 'color: #C9A96E; font-size: 14px; font-weight: bold;');
 });

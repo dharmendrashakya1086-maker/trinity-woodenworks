@@ -691,6 +691,344 @@ body::before {
 }
 
 /* ================================================================
+   ENHANCED FUTURISTIC UI — v2
+   ================================================================ */
+
+/* ---- Cyber Grid Background ---- */
+.cyber-grid {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -3;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(201,169,110,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,169,110,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 10%, transparent 70%);
+  animation: cyberPulse 10s ease-in-out infinite;
+}
+
+@keyframes cyberPulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+/* ---- Holographic Shimmer Card ---- */
+.holo-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.holo-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 40%,
+    rgba(201,169,110,0.03) 42%,
+    rgba(0,240,255,0.02) 44%,
+    rgba(180,74,255,0.02) 46%,
+    transparent 48%
+  );
+  animation: shimmerMove 6s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes shimmerMove {
+  0% { transform: translateX(-30%) translateY(-30%) rotate(0deg); }
+  100% { transform: translateX(30%) translateY(30%) rotate(0deg); }
+}
+
+/* ---- Neon Border Glow ---- */
+.neon-border {
+  position: relative;
+}
+
+.neon-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(201,169,110,0.15),
+    rgba(0,240,255,0.08),
+    rgba(180,74,255,0.08),
+    rgba(201,169,110,0.15)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: neonSpin 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes neonSpin {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* ---- 3D Floating Platform ---- */
+.float-platform {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.float-platform:hover {
+  transform: perspective(800px) translateY(-12px) rotateX(2deg);
+}
+
+.float-platform::after {
+  content: '';
+  position: absolute;
+  bottom: -8px; left: 10%; right: 10%;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(201,169,110,0.08) 0%, transparent 70%);
+  filter: blur(8px);
+  transform: translateZ(-20px);
+  transition: all 0.4s ease;
+}
+
+.float-platform:hover::after {
+  bottom: -16px;
+  opacity: 0.6;
+}
+
+/* ---- Frosted Panel ---- */
+.frosted-panel {
+  background: rgba(10,10,16,0.4) !important;
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.1) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.1) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    inset 0 -1px 0 rgba(0,0,0,0.2) !important;
+}
+
+/* ---- Glitch Text Effect ---- */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text:hover {
+  animation: glitch 0.3s ease-in-out;
+}
+
+@keyframes glitch {
+  0%, 100% { text-shadow: none; transform: translate(0); }
+  10% { text-shadow: -2px 0 rgba(0,240,255,0.5), 2px 0 rgba(180,74,255,0.5); transform: translate(-1px, 1px); }
+  20% { text-shadow: 2px 0 rgba(201,169,110,0.5), -2px 0 rgba(0,240,255,0.5); transform: translate(1px, -1px); }
+  30% { text-shadow: -1px 0 rgba(180,74,255,0.5), 1px 0 rgba(201,169,110,0.5); transform: translate(0); }
+  40% { text-shadow: none; transform: translate(0); }
+}
+
+/* ---- Magnetic Button ---- */
+.magnetic-btn {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.magnetic-btn:hover {
+  box-shadow: 0 0 30px rgba(201,169,110,0.15), 0 10px 40px rgba(0,0,0,0.3);
+}
+
+/* ---- Particle Trail ---- */
+.particle-trail {
+  position: fixed;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  background: rgba(201,169,110,0.4);
+  box-shadow: 0 0 6px rgba(201,169,110,0.2);
+  animation: trailFade 0.8s ease-out forwards;
+}
+
+@keyframes trailFade {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+/* ---- Scroll Reveal ---- */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-up.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---- Cyber Line Divider ---- */
+.cyber-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.1), rgba(0,240,255,0.05), rgba(201,169,110,0.1), transparent);
+  margin: 3rem 0;
+}
+
+.cyber-divider::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: 50%;
+  width: 8px; height: 8px;
+  background: rgba(201,169,110,0.3);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px rgba(201,169,110,0.2);
+}
+
+/* ---- Data Stream Effect ---- */
+.data-stream {
+  position: fixed;
+  top: 0; right: 0;
+  width: 1px; height: 100%;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(0,240,255,0.05), transparent);
+  animation: streamFlow 3s linear infinite;
+}
+
+@keyframes streamFlow {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100vh; }
+}
+
+/* ---- Depth Layers ---- */
+.depth-layer {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+}
+
+.depth-layer > * {
+  transform: translateZ(0);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.depth-layer:hover > *:nth-child(1) { transform: translateZ(20px); }
+.depth-layer:hover > *:nth-child(2) { transform: translateZ(40px); }
+.depth-layer:hover > *:nth-child(3) { transform: translateZ(60px); }
+
+/* ---- Neon Glow Underline ---- */
+.neon-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.neon-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, rgba(201,169,110,0.6), rgba(0,240,255,0.4), rgba(180,74,255,0.4));
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 8px rgba(201,169,110,0.3);
+}
+
+.neon-underline:hover::after {
+  width: 100%;
+}
+
+/* ---- 3D Card Flip ---- */
+.flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner,
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%; height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* ---- Scroll Progress Bar ---- */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--neon), var(--neon-purple));
+  z-index: 10001;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px rgba(201,169,110,0.3);
+}
+
+/* ---- Ambient Orb Pulse ---- */
+.ambient-pulse {
+  position: fixed;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -2;
+  background: radial-gradient(circle, rgba(201,169,110,0.02) 0%, transparent 70%);
+  animation: ambientPulse 8s ease-in-out infinite;
+}
+
+@keyframes ambientPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+/* ================================================================
    RESPONSIVE & ACCESSIBILITY
    ================================================================ */
 
@@ -706,21 +1044,15 @@ body::before {
   .floating-shapes { display: none; }
   .energy-beams { display: none; }
   .shooting-star { display: none; }
+  .cyber-grid { display: none; }
+  .data-stream { display: none; }
+  .ambient-pulse { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body::before { animation: none; }
-  .aurora-bg::before { animation: none; }
-  .star { animation: none; }
-  .grid-overlay { animation: none; }
-  .perspective-grid::after { animation: none; }
-  .glass-orb { animation: none; }
-  .particle { animation: none; }
-  .holo-card::before { animation: none; }
-  .glow-ring::after { animation: none; }
-  .floating-shape { animation: none; }
-  .pulse-wave { animation: none; }
-  .energy-beam { animation: none; }
-  .shooting-star { animation: none; }
-  .hero-glow { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
