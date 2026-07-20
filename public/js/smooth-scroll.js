@@ -10,6 +10,8 @@
   if ('ontouchstart' in window) return;
   // Skip if user prefers reduced motion
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Skip home page — parallax engine handles scroll there
+  if (document.querySelector('.hero-3d')) return;
 
   const LERP = 0.12;
   const SCROLL_SPEED = 1.2;
