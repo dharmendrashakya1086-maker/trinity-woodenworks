@@ -10,14 +10,14 @@
 body::before {
   content: '';
   position: fixed;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: -2;
   background:
-    radial-gradient(ellipse 70% 50% at 15% 25%, rgba(201,169,110,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 70% at 85% 60%, rgba(88,60,180,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(0,180,220,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 40% at 60% 20%, rgba(140,60,200,0.03) 0%, transparent 50%);
+    radial-gradient(ellipse 70% 50% at 15% 25%, rgba(201,169,110,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 70% at 85% 60%, rgba(88,60,180,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(0,180,220,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 60% 20%, rgba(140,60,200,0.06) 0%, transparent 50%);
   animation: meshDrift 25s ease-in-out infinite alternate;
 }
 
@@ -44,11 +44,11 @@ body::before {
   top: -50%; left: -50%;
   width: 200%; height: 200%;
   background:
-    radial-gradient(ellipse 35% 25% at 25% 35%, rgba(88,60,180,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 30% 20% at 75% 55%, rgba(0,180,220,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 50% 25%, rgba(201,169,110,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 25% 35% at 65% 70%, rgba(140,60,200,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 20% 25% at 35% 75%, rgba(0,200,160,0.03) 0%, transparent 50%);
+    radial-gradient(ellipse 35% 25% at 25% 35%, rgba(88,60,180,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 20% at 75% 55%, rgba(0,180,220,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 25%, rgba(201,169,110,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 25% 35% at 65% 70%, rgba(140,60,200,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 20% 25% at 35% 75%, rgba(0,200,160,0.05) 0%, transparent 50%);
   animation: auroraShift 30s ease-in-out infinite alternate;
 }
 
