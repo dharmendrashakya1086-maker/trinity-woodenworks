@@ -12,6 +12,7 @@
 
   var LERP = 0.1;
   var SNAP_COOLDOWN = 500;
+  var HEADER_OFFSET = 80;
 
   var targetScroll = 0;
   var currentScroll = 0;
@@ -36,7 +37,8 @@
     snapPoints = [0];
     var els = document.querySelectorAll('section');
     for (var i = 0; i < els.length; i++) {
-      var top = els[i].offsetTop;
+      var top = els[i].offsetTop - HEADER_OFFSET;
+      if (top < 0) top = 0;
       if (snapPoints.length > 0 && top - snapPoints[snapPoints.length - 1] < 100) continue;
       snapPoints.push(top);
     }
@@ -78,6 +80,28 @@
     }, { rootMargin: '0px 0px -60px 0px', threshold: 0.05 });
 
     cards.forEach(function(card) { observer.observe(card); });
+  }
+
+  // ---- Section Reveal Animation ----
+  function initSectionReveal() {
+    var sections = document.querySelectorAll('section');
+    sections.forEach(function(s) {
+      s.style.opacity = '0';
+      s.style.transform = 'translateY(30px)';
+      s.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    });
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.05 });
+
+    sections.forEach(function(s) { observer.observe(s); });
   }
 
   // ---- Wheel ----
@@ -193,6 +217,7 @@
 
     if (!isGalleryPage) buildSnapPoints();
     if (isGalleryPage) initCardReveal();
+    initSectionReveal();
 
     window.addEventListener('wheel', onWheel, { passive: false, capture: true });
     window.addEventListener('keydown', onKeyDown, { passive: false });
