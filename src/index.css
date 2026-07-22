@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark: #020203;
+  --color-dark-card: #08080c;
+  --color-dark-border: rgba(201,169,110,0.12);
+  --color-gold: #C9A96E;
+  --color-gold-dim: rgba(201,169,110,0.15);
+  --color-gold-glow: rgba(201,169,110,0.25);
+  --color-text: #e8e8ec;
+  --color-text-muted: #8888a0;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-dark);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--color-gold-dim); border-radius: 3px; }
+}
+
+@layer components {
+  .glass {
+    background: var(--color-dark-card);
+    border: 1px solid var(--color-dark-border);
+    backdrop-filter: blur(20px);
+  }
+
+  .glass-hover:hover {
+    border-color: var(--color-gold-dim);
+    box-shadow: 0 0 30px rgba(201,169,110,0.08);
+  }
+
+  .gold-text {
+    background: linear-gradient(135deg, var(--color-gold), #e8d5a3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--color-gold), #b8944f);
+    color: var(--color-dark);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+  }
+
+  .btn-gold:hover {
+    box-shadow: 0 0 30px rgba(201,169,110,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-gold);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-gold-dim);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+  }
+
+  .btn-outline:hover {
+    background: var(--color-gold-dim);
+    border-color: var(--color-gold);
+  }
+
+  .input-field {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--color-dark-border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+
+  .input-field:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 2px var(--color-gold-dim);
+  }
+
+  .input-field::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .section-padding {
+    padding: 5rem 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-padding {
+      padding: 6rem 2rem;
+    }
+  }
+}
