@@ -26,6 +26,7 @@ import TrackCustomOrder from './pages/TrackCustomOrder'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminProducts from './pages/admin/Products'
 import AdminOrders from './pages/admin/Orders'
+import AdminSeedData from './pages/admin/SeedData'
 import AdminLogin from './pages/admin/Login'
 
 export default function App() {
@@ -62,6 +63,7 @@ export default function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="orders" element={<AdminOrders />} />
+        <Route path="seed" element={<AdminSeedData />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />
