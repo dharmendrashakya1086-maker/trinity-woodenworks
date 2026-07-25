@@ -27,36 +27,45 @@ export default function Login() {
   }
 
   return (
-    <div className="pt-24 pb-16 min-h-screen flex items-center justify-center px-4">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
-        <div className="text-center mb-8">
+    <div className="pt-20 pb-16 min-h-screen flex items-center justify-center px-4">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
+        <div className="text-center mb-6">
           <h1 className="text-2xl font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>Welcome Back</h1>
-          <p className="text-text-muted text-sm mt-2">Sign in to your account</p>
+          <p className="text-text-muted text-[13px] mt-1">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 space-y-4">
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-            <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required className="input-field pl-10" />
+          <div>
+            <label className="text-[11px] text-text-muted mb-1.5 block font-medium">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim" size={15} />
+              <input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)}
+                required className="input-field pl-10 text-sm" />
+            </div>
           </div>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-            <input type={showPw ? 'text' : 'password'} placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className="input-field pl-10 pr-10" />
-            <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted bg-transparent border-none cursor-pointer">
-              {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+          <div>
+            <label className="text-[11px] text-text-muted mb-1.5 block font-medium">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim" size={15} />
+              <input type={showPw ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)}
+                required className="input-field pl-10 pr-10 text-sm" />
+              <button type="button" onClick={() => setShowPw(!showPw)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-dim bg-transparent border-none">
+                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
           </div>
 
           <div className="text-right">
-            <Link to="/forgot-password" className="text-xs text-gold hover:underline no-underline">Forgot Password?</Link>
+            <Link to="/forgot-password" className="text-[11px] text-gold hover:underline no-underline">Forgot Password?</Link>
           </div>
 
-          <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-50">
+          <button type="submit" disabled={loading} className="btn-gold w-full text-sm disabled:opacity-50">
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
 
-          <p className="text-center text-sm text-text-muted">
-            Don't have an account? <Link to="/signup" className="text-gold hover:underline no-underline">Sign Up</Link>
+          <p className="text-center text-[13px] text-text-muted">
+            Don't have an account? <Link to="/signup" className="text-gold hover:underline no-underline font-medium">Sign Up</Link>
           </p>
         </form>
       </motion.div>

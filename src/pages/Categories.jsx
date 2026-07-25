@@ -19,34 +19,26 @@ export default function Categories() {
   }, [])
 
   return (
-    <div className="pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-10">
-        <h1 className="text-3xl font-bold gold-text mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
-          Categories
-        </h1>
+    <div className="pt-20 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold gold-text mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Categories</h1>
         <p className="text-text-muted text-sm">Browse by category</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {categories.map((c, i) => (
-          <motion.div
-            key={c.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <Link to={`/shop/${c.id}`} className="block glass glass-hover rounded-2xl overflow-hidden no-underline group relative">
-              <div className="aspect-[4/3] overflow-hidden bg-dark">
-                <img src={c.image || '/placeholder.jpg'} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+            <Link to={`/shop/${c.id}`} className="block product-card no-underline group relative">
+              <div className="aspect-[4/3] overflow-hidden">
+                <img src={c.image || '/placeholder.svg'} alt={c.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
-              <div className="p-5">
-                <h3 className="text-lg font-semibold text-text">{c.name}</h3>
-                <p className="text-sm text-text-muted mt-1">{c.description || 'Explore collection'}</p>
+              <div className="p-3 text-center">
+                <h3 className="text-sm font-semibold text-text">{c.name}</h3>
+                <p className="text-[11px] text-text-muted mt-0.5">{c.description || 'Explore collection'}</p>
               </div>
               {isAdmin && (
-                <div className="absolute top-3 right-3 p-2 glass rounded-lg hover:bg-gold-dim transition-colors">
-                  <Edit size={14} className="text-gold" />
+                <div className="absolute top-2 right-2 p-1.5 glass rounded-lg hover:bg-gold-dim transition-all">
+                  <Edit size={12} className="text-gold" />
                 </div>
               )}
             </Link>

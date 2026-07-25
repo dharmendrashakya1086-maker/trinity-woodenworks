@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
-import { Menu, X, ShoppingBag, User, LogOut, ChevronDown } from 'lucide-react'
+import { ShoppingBag, User, LogOut, Menu, X, Search, Heart, Eye, Store } from 'lucide-react'
 
 export default function Header() {
   const { user, logout } = useAuth()
@@ -29,36 +29,63 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-dark-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f] border-b border-white/[0.04]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 no-underline">
+        <Link to="/" className="flex items-center gap-2 no-underline shrink-0">
           <span className="text-xl font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>
-            Trinity Woodenworks
+            Trinity
+          </span>
+          <span className="text-[10px] text-text-muted tracking-widest uppercase hidden sm:block mt-0.5">
+            Woodenworks
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Nav Links */}
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map(l => (
             <Link
               key={l.to}
               to={l.to}
-              className={`text-sm no-underline transition-colors ${isActive(l.to) ? 'text-gold' : 'text-text-muted hover:text-text'}`}
+              className={`px-3 py-1.5 text-[13px] font-medium rounded-lg no-underline transition-all ${
+                isActive(l.to)
+                  ? 'text-gold bg-gold-dim'
+                  : 'text-text-muted hover:text-text hover:bg-white/[0.03]'
+              }`}
             >
               {l.label}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-3">
+        {/* Right Icons */}
+        <div className="flex items-center gap-1">
+          <Link
+            to="/shop"
+            className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all"
+            title="Browse Products"
+          >
+            <Store size={18} />
+          </Link>
+
           {user ? (
             <>
-              <Link to="/cart" className="relative p-2 text-text-muted hover:text-gold transition-colors">
-                <ShoppingBag size={20} />
+              <Link
+                to="/orders"
+                className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all hidden sm:flex"
+                title="My Orders"
+              >
+                <Eye size={18} />
+              </Link>
+
+              <Link
+                to="/cart"
+                className="relative p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all"
+                title="Cart"
+              >
+                <ShoppingBag size={18} />
                 {count > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-gold text-dark text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 bg-gold text-dark text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {count}
                   </span>
                 )}
@@ -67,65 +94,69 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-1 text-sm text-text-muted hover:text-gold transition-colors bg-transparent border-none cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold cursor-pointer hover:bg-gold/30 transition-all"
                 >
-                  <User size={18} />
-                  <ChevronDown size={14} />
+                  {user.email?.[0]?.toUpperCase() || <User size={14} />}
                 </button>
 
                 {userMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-48 glass rounded-xl p-2 shadow-xl">
-                    <Link to="/account" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg no-underline transition-all">
-                      My Account
-                    </Link>
-                    <Link to="/orders" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg no-underline transition-all">
-                      My Orders
-                    </Link>
-                    <Link to="/track-order" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg no-underline transition-all">
-                      Track Order
-                    </Link>
-                    <Link to="/custom-order" onClick={() => setUserMenuOpen(false)} className="block px-3 py-2 text-sm text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg no-underline transition-all">
-                      Custom Order
-                    </Link>
-                    <hr className="border-dark-border my-1" />
-                    <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg border-none bg-transparent cursor-pointer transition-all">
-                      <LogOut size={14} /> Logout
-                    </button>
-                  </div>
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-48 glass rounded-xl p-1.5 z-50 shadow-2xl">
+                      <div className="px-3 py-2 border-b border-white/[0.05] mb-1">
+                        <p className="text-[11px] text-text-muted truncate">{user.email}</p>
+                      </div>
+                      <Link to="/account" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 text-[13px] text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg transition-all">
+                        <User size={14} /> My Account
+                      </Link>
+                      <Link to="/orders" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 text-[13px] text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg transition-all">
+                        <Eye size={14} /> My Orders
+                      </Link>
+                      <Link to="/custom-order" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 text-[13px] text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg transition-all">
+                        <Store size={14} /> Custom Order
+                      </Link>
+                      <div className="border-t border-white/[0.05] mt-1 pt-1">
+                        <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-red-400 hover:bg-red-500/10 rounded-lg bg-transparent transition-all">
+                          <LogOut size={14} /> Logout
+                        </button>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             </>
           ) : (
-            <Link to="/login" className="btn-gold text-sm no-underline px-4 py-2">
+            <Link to="/login" className="btn-gold text-xs px-4 py-2 no-underline rounded-lg">
               Sign In
             </Link>
           )}
 
-          {/* Mobile menu toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 text-text-muted bg-transparent border-none cursor-pointer"
+            className="md:hidden p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all bg-transparent"
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Nav */}
       {menuOpen && (
-        <div className="md:hidden glass border-t border-dark-border px-4 py-4 space-y-2">
+        <div className="md:hidden bg-[#0a0a0f] border-t border-white/[0.04] px-4 py-3 space-y-1">
           {navLinks.map(l => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setMenuOpen(false)}
-              className={`block py-2 text-sm no-underline ${isActive(l.to) ? 'text-gold' : 'text-text-muted'}`}
+              className={`block py-2.5 px-3 text-sm rounded-lg no-underline transition-all ${
+                isActive(l.to) ? 'text-gold bg-gold-dim' : 'text-text-muted hover:text-text'
+              }`}
             >
               {l.label}
             </Link>
           ))}
         </div>
       )}
-    </header>
+    </nav>
   )
 }

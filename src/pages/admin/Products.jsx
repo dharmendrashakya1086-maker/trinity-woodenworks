@@ -1,169 +1,156 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { motion, AnimatePresence } from 'framer-motion'
+import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import toast from 'react-hot-toast'
-import { Plus, Edit, Trash2, Save, X, Search } from 'lucide-react'
+import { Search, Edit, Trash2, Save, X, Upload, ChevronLeft, ChevronRight } from 'lucide-react'
 import ImageUpload from '../../components/ui/ImageUpload'
-
-const emptyProduct = { name: '', price: '', mrp: '', description: '', category: '', stock: '', image: '' }
 
 export default function Products() {
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
-  const [form, setForm] = useState(emptyProduct)
-  const [editingId, setEditingId] = useState(null)
-  const [adding, setAdding] = useState(false)
+  const [filtered, setFiltered] = useState([])
   const [search, setSearch] = useState('')
+  const [catFilter, setCatFilter] = useState('')
+  const [editing, setEditing] = useState(null)
+  const [editForm, setEditForm] = useState({})
+  const [page, setPage] = useState(1)
+  const perPage = 10
 
-  async function load() {
-    const [prodSnap, catSnap] = await Promise.all([
-      getDocs(collection(db, 'products')),
-      getDocs(collection(db, 'categories')),
-    ])
-    setProducts(prodSnap.docs.map(d => ({ id: d.id, ...d.data() })))
-    setCategories(catSnap.docs.map(d => ({ id: d.id, ...d.data() })))
-  }
-
-  useEffect(() => { load() }, [])
-
-  async function handleSave() {
-    const data = {
-      name: form.name,
-      price: Number(form.price),
-      mrp: Number(form.mrp) || 0,
-      description: form.description,
-      category: form.category,
-      stock: Number(form.stock) || 0,
-      image: form.image,
+  useEffect(() => {
+    async function load() {
+      const [prodSnap, catSnap] = await Promise.all([
+        getDocs(query(collection(db, 'products'), orderBy('createdAt', 'desc'))),
+        getDocs(collection(db, 'categories')),
+      ])
+      setProducts(prodSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+      setCategories(catSnap.docs.map(d => ({ id: d.id, ...d.data() })))
     }
-
-    if (editingId) {
-      await updateDoc(doc(db, 'products', editingId), data)
-      toast.success('Product updated!')
-    } else {
-      await addDoc(collection(db, 'products'), data)
-      toast.success('Product added!')
-    }
-    setEditingId(null)
-    setAdding(false)
-    setForm(emptyProduct)
     load()
+  }, [])
+
+  useEffect(() => {
+    let f = products
+    if (search) f = f.filter(p => p.name?.toLowerCase().includes(search.toLowerCase()))
+    if (catFilter) f = f.filter(p => p.categoryId === catFilter)
+    setFiltered(f); setPage(1)
+  }, [products, search, catFilter])
+
+  const totalPages = Math.ceil(filtered.length / perPage)
+  const paginated = filtered.slice((page - 1) * perPage, page * perPage)
+
+  function startEdit(p) { setEditing(p.id); setEditForm({ ...p }) }
+  function cancelEdit() { setEditing(null); setEditForm({}) }
+
+  async function saveEdit() {
+    const { id, ...data } = editForm
+    await updateDoc(doc(db, 'products', id), data)
+    setProducts(products.map(p => p.id === id ? { ...data, id } : p))
+    cancelEdit()
+    toast.success('Product updated')
   }
 
   async function handleDelete(id) {
     if (!confirm('Delete this product?')) return
     await deleteDoc(doc(db, 'products', id))
-    toast.success('Deleted!')
-    load()
+    setProducts(products.filter(p => p.id !== id))
+    toast.success('Product deleted')
   }
-
-  function startEdit(p) {
-    setForm({
-      name: p.name || '',
-      price: p.price || '',
-      mrp: p.mrp || '',
-      description: p.description || '',
-      category: p.category || '',
-      stock: p.stock || '',
-      image: p.image || '',
-    })
-    setEditingId(p.id)
-    setAdding(false)
-  }
-
-  const filtered = products.filter(p => p.name?.toLowerCase().includes(search.toLowerCase()))
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>Products</h1>
-        <button
-          onClick={() => { setAdding(true); setEditingId(null); setForm(emptyProduct) }}
-          className="btn-gold flex items-center gap-2 text-sm"
-        >
-          <Plus size={16} /> Add Product
-        </button>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h1 className="text-xl font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>Products</h1>
+        <span className="text-[11px] text-text-muted">{filtered.length} products</span>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6 max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-        <input placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} className="input-field pl-10" />
+      <div className="flex flex-wrap gap-2 mb-4">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim" size={14} />
+          <input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} className="input-field pl-9 text-xs w-full" />
+        </div>
+        <select value={catFilter} onChange={e => setCatFilter(e.target.value)} className="input-field text-xs w-auto">
+          <option value="">All Categories</option>
+          {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
       </div>
 
-      {/* Add/Edit Form */}
-      {(adding || editingId) && (
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-2xl p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-text">{editingId ? 'Edit Product' : 'Add Product'}</h2>
-            <button onClick={() => { setAdding(false); setEditingId(null) }} className="text-text-muted hover:text-text bg-transparent border-none cursor-pointer">
-              <X size={18} />
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input placeholder="Product Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="input-field" />
-            <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="input-field">
-              <option value="">Select Category</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <input type="number" placeholder="Price (₹)" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} className="input-field" />
-            <input type="number" placeholder="MRP (₹)" value={form.mrp} onChange={e => setForm({ ...form, mrp: e.target.value })} className="input-field" />
-            <input type="number" placeholder="Stock" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} className="input-field" />
-          </div>
-          <div className="mt-4">
-            <ImageUpload value={form.image} onChange={url => setForm({ ...form, image: url })} />
-          </div>
-          <textarea placeholder="Description" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="input-field mt-4 min-h-[80px]" />
-          <button onClick={handleSave} className="btn-gold mt-4 flex items-center gap-2 text-sm">
-            <Save size={16} /> {editingId ? 'Update' : 'Add'} Product
-          </button>
-        </motion.div>
-      )}
-
-      {/* Products Table */}
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-dark-border">
-                <th className="text-left p-4 text-text-muted font-medium">Product</th>
-                <th className="text-left p-4 text-text-muted font-medium">Category</th>
-                <th className="text-left p-4 text-text-muted font-medium">Price</th>
-                <th className="text-left p-4 text-text-muted font-medium">Stock</th>
-                <th className="text-right p-4 text-text-muted font-medium">Actions</th>
+              <tr className="border-b border-white/[0.06]">
+                <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Product</th>
+                <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Category</th>
+                <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Price</th>
+                <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Stock</th>
+                <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map(p => (
-                <tr key={p.id} className="border-b border-dark-border hover:bg-white/[0.02] transition-colors">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img src={p.image || '/placeholder.jpg'} alt="" className="w-10 h-10 rounded-lg object-cover" />
-                      <span className="text-text font-medium">{p.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-text-muted capitalize">{p.category || '—'}</td>
-                  <td className="p-4 text-gold font-semibold">₹{p.price?.toLocaleString()}</td>
-                  <td className="p-4">
-                    <span className={`font-medium ${p.stock > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {p.stock || 0}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <button onClick={() => startEdit(p)} className="p-2 text-text-muted hover:text-gold hover:bg-gold-dim rounded-lg bg-transparent border-none cursor-pointer transition-all mr-1">
-                      <Edit size={14} />
-                    </button>
-                    <button onClick={() => handleDelete(p.id)} className="p-2 text-text-muted hover:text-red-400 hover:bg-red-500/10 rounded-lg bg-transparent border-none cursor-pointer transition-all">
-                      <Trash2 size={14} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              <AnimatePresence>
+                {paginated.map(p => (
+                  <motion.tr key={p.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="border-b border-white/[0.04] hover:bg-white/[0.02]">
+                    <td className="py-2 px-3">
+                      {editing === p.id ? (
+                        <div className="space-y-2">
+                          <input value={editForm.name || ''} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="input-field text-xs w-full" placeholder="Name" />
+                          <textarea value={editForm.description || ''} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="input-field text-xs w-full min-h-[60px]" placeholder="Description" />
+                          <ImageUpload currentImage={editForm.image} onUpload={url => setEditForm({ ...editForm, image: url })} />
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2.5">
+                          <img src={p.image || '/placeholder.svg'} alt="" className="w-9 h-9 rounded-lg object-cover flex-shrink-0" />
+                          <span className="text-xs text-text font-medium line-clamp-1">{p.name}</span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-2 px-3">
+                      {editing === p.id ? (
+                        <select value={editForm.categoryId || ''} onChange={e => setEditForm({ ...editForm, categoryId: e.target.value })} className="input-field text-[10px] w-full">
+                          {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </select>
+                      ) : <span className="text-[11px] text-text-muted">{categories.find(c => c.id === p.categoryId)?.name || '—'}</span>}
+                    </td>
+                    <td className="py-2 px-3">
+                      {editing === p.id ? (
+                        <input type="number" value={editForm.price || ''} onChange={e => setEditForm({ ...editForm, price: Number(e.target.value) })} className="input-field text-xs w-20" />
+                      ) : <span className="text-xs text-gold">₹{p.price?.toLocaleString()}</span>}
+                    </td>
+                    <td className="py-2 px-3">
+                      {editing === p.id ? (
+                        <input type="number" value={editForm.stock || ''} onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })} className="input-field text-xs w-16" />
+                      ) : <span className={`badge ${p.stock > 0 ? 'badge-green' : 'badge-red'} text-[9px]`}>{p.stock}</span>}
+                    </td>
+                    <td className="py-2 px-3 text-right">
+                      {editing === p.id ? (
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button onClick={saveEdit} className="p-1.5 glass rounded-lg hover:bg-gold-dim"><Save size={12} className="text-gold" /></button>
+                          <button onClick={cancelEdit} className="p-1.5 glass rounded-lg hover:bg-red-dim"><X size={12} className="text-red-400" /></button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button onClick={() => startEdit(p)} className="p-1.5 glass rounded-lg hover:bg-gold-dim"><Edit size={12} className="text-gold" /></button>
+                          <button onClick={() => handleDelete(p.id)} className="p-1.5 glass rounded-lg hover:bg-red-dim"><Trash2 size={12} className="text-red-400" /></button>
+                        </div>
+                      )}
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
             </tbody>
           </table>
         </div>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-1.5 glass rounded-lg disabled:opacity-30"><ChevronLeft size={14} className="text-text-muted" /></button>
+          <span className="text-[11px] text-text-muted">{page}/{totalPages}</span>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-1.5 glass rounded-lg disabled:opacity-30"><ChevronRight size={14} className="text-text-muted" /></button>
+        </div>
+      )}
     </div>
   )
 }

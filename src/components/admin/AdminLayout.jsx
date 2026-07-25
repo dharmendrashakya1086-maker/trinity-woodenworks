@@ -1,60 +1,67 @@
-import { Outlet, Link, useLocation, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
-import { LayoutDashboard, Package, ShoppingCart, Database, LogOut, ArrowLeft } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, Database, LogOut, Menu, X } from 'lucide-react'
+
+const nav = [
+  { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+  { to: '/admin/products', icon: Package, label: 'Products' },
+  { to: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
+  { to: '/admin/seed', icon: Database, label: 'Seed Data' },
+]
 
 export default function AdminLayout() {
-  const { isAdmin, logout } = useAuth()
+  const { currentUser, logout } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
 
-  if (!isAdmin) return <Navigate to="/admin/login" />
+  useEffect(() => { setOpen(false) }, [location])
 
-  const links = [
-    { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/admin/products', icon: Package, label: 'Products' },
-    { to: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
-    { to: '/admin/seed', icon: Database, label: 'Seed Data' },
-  ]
+  function isActive(to) {
+    return to === '/admin' ? location.pathname === '/admin' : location.pathname.startsWith(to)
+  }
+
+  async function handleLogout() { await logout(); navigate('/') }
 
   return (
-    <div className="min-h-screen bg-dark flex">
-      {/* Sidebar */}
-      <aside className="w-64 glass border-r border-dark-border p-4 flex flex-col fixed h-full">
-        <h2 className="text-lg font-bold gold-text mb-6 px-2" style={{ fontFamily: 'var(--font-heading)' }}>
-          Admin Panel
-        </h2>
-
-        <nav className="flex-1 space-y-1">
-          {links.map(l => {
-            const active = location.pathname === l.to
-            return (
-              <Link
-                key={l.to}
-                to={l.to}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm no-underline transition-all ${
-                  active ? 'bg-gold-dim text-gold' : 'text-text-muted hover:text-text hover:bg-white/5'
-                }`}
-              >
-                <l.icon size={18} />
-                {l.label}
-              </Link>
-            )
-          })}
+    <div className="flex min-h-screen">
+      <aside className="w-60 bg-surface border-r border-white/[0.06] flex flex-col fixed inset-y-0 left-0 z-30
+        max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:w-60 max-lg:transform max-lg:transition-transform max-lg:duration-300
+        max-lg:data-[open=false]:-translate-x-full">
+        <div className="p-4 border-b border-white/[0.06]">
+          <Link to="/admin" className="text-sm font-bold gold-text no-underline" style={{ fontFamily: 'var(--font-heading)' }}>Trinity Admin</Link>
+        </div>
+        <nav className="flex-1 p-3 space-y-1">
+          {nav.map(n => (
+            <Link key={n.to} to={n.to} end={n.end}
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium no-underline transition-all
+                ${isActive(n.to) ? 'bg-gold-dim text-gold border border-gold/10' : 'text-text-muted hover:bg-white/[0.03] hover:text-text border border-transparent'}`}>
+              <n.icon size={15} /> {n.label}
+            </Link>
+          ))}
         </nav>
-
-        <div className="space-y-1 mt-auto">
-          <Link to="/" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-text-muted hover:text-text hover:bg-white/5 no-underline transition-all">
-            <ArrowLeft size={18} /> Back to Site
-          </Link>
-          <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 border-none bg-transparent cursor-pointer transition-all">
-            <LogOut size={18} /> Logout
+        <div className="p-3 border-t border-white/[0.06]">
+          <button onClick={handleLogout} className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium text-text-muted hover:text-red-400 hover:bg-white/[0.03] w-full transition-all">
+            <LogOut size={15} /> Logout
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 ml-64 p-8">
-        <Outlet />
-      </main>
+      <div className="flex-1 lg:ml-60">
+        <div className="lg:hidden p-3 border-b border-white/[0.06] flex items-center gap-3">
+          <button onClick={() => setOpen(!open)} className="p-1.5 glass rounded-lg">
+            {open ? <X size={16} className="text-text-muted" /> : <Menu size={16} className="text-text-muted" />}
+          </button>
+          <span className="text-sm font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>Trinity Admin</span>
+        </div>
+
+        <div className="p-5 max-w-6xl mx-auto">
+          <Outlet />
+        </div>
+      </div>
+
+      {open && <div className="fixed inset-0 bg-black/40 z-20 lg:hidden" onClick={() => setOpen(false)} />}
     </div>
   )
 }

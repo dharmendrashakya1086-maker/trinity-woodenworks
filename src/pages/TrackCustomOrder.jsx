@@ -3,72 +3,86 @@ import { motion } from 'framer-motion'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { useAuth } from '../contexts/AuthContext'
-import { Search, Package } from 'lucide-react'
+import { Search, Hammer } from 'lucide-react'
 
-const statusColors = {
-  new: 'text-blue-400',
-  reviewing: 'text-yellow-400',
-  quoted: 'text-purple-400',
-  in_progress: 'text-orange-400',
-  completed: 'text-green-400',
-  cancelled: 'text-red-400',
-}
+const steps = ['pending', 'reviewing', 'crafting', 'completed']
 
 export default function TrackCustomOrder() {
   const { user } = useAuth()
-  const [orders, setOrders] = useState(null)
+  const [orderId, setOrderId] = useState('')
+  const [order, setOrder] = useState(null)
+  const [searched, setSearched] = useState(false)
 
   async function handleSearch(e) {
     e.preventDefault()
+    setSearched(true)
     const q = query(collection(db, 'customOrders'), where('customer_id', '==', user.uid))
     const snap = await getDocs(q)
-    setOrders(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    const found = snap.docs.find(d => d.id === orderId || d.id.startsWith(orderId))
+    setOrder(found ? { id: found.id, ...found.data() } : null)
   }
 
   return (
-    <div className="pt-24 pb-16 max-w-3xl mx-auto px-4 sm:px-6">
-      <h1 className="text-2xl font-bold gold-text mb-8" style={{ fontFamily: 'var(--font-heading)' }}>Track Custom Orders</h1>
+    <div className="pt-20 pb-16 max-w-2xl mx-auto px-4 sm:px-6">
+      <h1 className="text-xl sm:text-2xl font-bold gold-text mb-6" style={{ fontFamily: 'var(--font-heading)' }}>Track Custom Order</h1>
 
-      <button onClick={handleSearch} className="btn-gold mb-6 flex items-center gap-2">
-        <Search size={16} /> Load My Custom Orders
-      </button>
-
-      {orders && orders.length === 0 && (
-        <p className="text-text-muted text-sm">No custom orders found</p>
-      )}
-
-      {orders && orders.length > 0 && (
-        <div className="space-y-4">
-          {orders.map((o, i) => (
-            <motion.div
-              key={o.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="glass rounded-2xl p-5"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-sm font-semibold text-text">{o.itemType} — {o.woodType}</h3>
-                  <p className="text-xs text-text-muted mt-1">{new Date(o.createdAt).toLocaleDateString()}</p>
-                </div>
-                <span className={`text-xs font-semibold uppercase ${statusColors[o.status] || 'text-text-muted'}`}>
-                  {o.status?.replace('_', ' ')}
-                </span>
-              </div>
-
-              {o.dimensions && <p className="text-xs text-text-muted mb-2">Dimensions: {o.dimensions}</p>}
-              {o.description && <p className="text-sm text-text-muted mb-3">{o.description}</p>}
-              {o.budget && (
-                <div className="flex items-center gap-2 text-xs text-text-muted">
-                  <span>Budget:</span>
-                  <span className="text-gold font-semibold">₹{Number(o.budget).toLocaleString()}</span>
-                </div>
-              )}
-            </motion.div>
-          ))}
+      <form onSubmit={handleSearch} className="glass rounded-xl p-4 mb-6">
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim" size={15} />
+            <input placeholder="Enter Order ID" value={orderId} onChange={e => setOrderId(e.target.value)} className="input-field pl-10 text-sm" />
+          </div>
+          <button type="submit" className="btn-gold text-sm px-5">Track</button>
         </div>
+      </form>
+
+      {order && (
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Hammer size={18} className="text-gold" />
+            <div>
+              <p className="text-sm font-semibold text-text">{order.title}</p>
+              <p className="text-[11px] text-text-dim">#{order.id.slice(0, 8).toUpperCase()} • {new Date(order.createdAt).toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 mb-5">
+            {steps.map((step, i) => {
+              const currentIdx = steps.indexOf(order.status)
+              const isActive = i <= currentIdx
+              return (
+                <div key={step} className="flex-1 flex flex-col items-center gap-1">
+                  <div className={`w-full h-1.5 rounded-full transition-all ${isActive ? 'bg-gold' : 'bg-white/[0.05]'}`} />
+                  <span className={`text-[9px] capitalize ${isActive ? 'text-gold' : 'text-text-dim'}`}>{step}</span>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="space-y-3">
+            <div className="bg-white/[0.02] rounded-lg p-3">
+              <p className="text-[11px] text-text-dim mb-1">Description</p>
+              <p className="text-sm text-text">{order.description}</p>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white/[0.02] rounded-lg p-3">
+                <p className="text-[11px] text-text-dim mb-1">Wood</p>
+                <p className="text-sm text-text">{order.woodType}</p>
+              </div>
+              <div className="bg-white/[0.02] rounded-lg p-3">
+                <p className="text-[11px] text-text-dim mb-1">Dimensions</p>
+                <p className="text-sm text-text">{order.dimensions || '—'}</p>
+              </div>
+              <div className="bg-white/[0.02] rounded-lg p-3">
+                <p className="text-[11px] text-text-dim mb-1">Budget</p>
+                <p className="text-sm text-gold">{order.budget ? `₹${Number(order.budget).toLocaleString()}` : '—'}</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       )}
+
+      {searched && !order && <p className="text-center text-text-muted text-sm">No custom order found</p>}
     </div>
   )
 }
