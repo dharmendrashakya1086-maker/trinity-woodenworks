@@ -12,14 +12,15 @@ export default function Dashboard() {
   const [publishing, setPublishing] = useState(false)
 
   useEffect(() => {
+    async function safeGet(q) { try { return await getDocs(q) } catch { return { docs: [], size: 0 } } }
     async function load() {
       const [dp, lp, dc, lc, orderSnap, customSnap] = await Promise.all([
-        getDocs(collection(db, 'products_draft')),
-        getDocs(collection(db, 'products')),
-        getDocs(collection(db, 'categories_draft')),
-        getDocs(collection(db, 'categories')),
-        getDocs(collection(db, 'orders')),
-        getDocs(collection(db, 'customOrders')),
+        safeGet(collection(db, 'products_draft')),
+        safeGet(collection(db, 'products')),
+        safeGet(collection(db, 'categories_draft')),
+        safeGet(collection(db, 'categories')),
+        safeGet(collection(db, 'orders')),
+        safeGet(collection(db, 'customOrders')),
       ])
       const orders = orderSnap.docs.map(d => d.data())
       setStats({
@@ -28,8 +29,7 @@ export default function Dashboard() {
         orders: orderSnap.size, customOrders: customSnap.size,
         totalRevenue: orders.reduce((sum, o) => sum + (o.total || 0), 0),
       })
-      const recentQ = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(5))
-      const recentSnap = await getDocs(recentQ)
+      const recentSnap = await safeGet(query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(5)))
       setRecentOrders(recentSnap.docs.map(d => ({ id: d.id, ...d.data() })))
     }
     load()

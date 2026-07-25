@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import toast from 'react-hot-toast'
-import { Search, Edit, Trash2, Save, X, Upload, ChevronLeft, ChevronRight, ArrowUpCircle } from 'lucide-react'
+import { Search, Edit, Trash2, Save, X, Upload, ChevronLeft, ChevronRight, ArrowUpCircle, RefreshCw } from 'lucide-react'
 import ImageUpload from '../../components/ui/ImageUpload'
 
 export default function Products() {
@@ -18,15 +18,17 @@ export default function Products() {
   const [editing, setEditing] = useState(null)
   const [editForm, setEditForm] = useState({})
   const [page, setPage] = useState(1)
+  const [syncing, setSyncing] = useState(false)
   const perPage = 10
 
   useEffect(() => {
+    async function safeGet(q) { try { return await getDocs(q) } catch { return { docs: [] } } }
     async function load() {
       const [draftSnap, liveSnap, catSnap, catDraftSnap] = await Promise.all([
-        getDocs(query(collection(db, 'products_draft'), orderBy('createdAt', 'desc'))),
-        getDocs(query(collection(db, 'products'), orderBy('createdAt', 'desc'))),
-        getDocs(collection(db, 'categories')),
-        getDocs(collection(db, 'categories_draft')),
+        safeGet(query(collection(db, 'products_draft'), orderBy('createdAt', 'desc'))),
+        safeGet(query(collection(db, 'products'), orderBy('createdAt', 'desc'))),
+        safeGet(collection(db, 'categories')),
+        safeGet(collection(db, 'categories_draft')),
       ])
       setDrafts(draftSnap.docs.map(d => ({ id: d.id, ...d.data() })))
       setLive(liveSnap.docs.map(d => ({ id: d.id, ...d.data() })))
@@ -89,6 +91,19 @@ export default function Products() {
     toast.success('Deleted')
   }
 
+  async function syncLiveToDrafts() {
+    if (!confirm('Copy all live products to drafts? This lets you edit them.')) return
+    setSyncing(true)
+    try {
+      for (const p of live) {
+        await setDoc(doc(db, 'products_draft', p.id), p)
+      }
+      setDrafts([...live])
+      toast.success(`Synced ${live.length} products to drafts`)
+    } catch (err) { toast.error('Sync failed') }
+    setSyncing(false)
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -96,6 +111,11 @@ export default function Products() {
           <h1 className="text-xl font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>Products</h1>
           <p className="text-[11px] text-text-muted mt-0.5">{drafts.length} drafts · {live.length} live</p>
         </div>
+        {live.length > 0 && drafts.length === 0 && (
+          <button onClick={syncLiveToDrafts} disabled={syncing} className="btn-gold text-xs inline-flex items-center gap-1.5 disabled:opacity-50">
+            <RefreshCw size={12} className={syncing ? 'animate-spin' : ''} /> {syncing ? 'Syncing...' : 'Sync Live to Drafts'}
+          </button>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
