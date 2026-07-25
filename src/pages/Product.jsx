@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
@@ -40,13 +40,20 @@ export default function Product() {
   }
 
   async function handleSave() {
-    await updateDoc(doc(db, 'products', id), {
+    const updates = {
       name: form.name, price: Number(form.price), mrp: Number(form.mrp) || 0,
       description: form.description, stock: Number(form.stock) || 0,
-    })
-    setProduct({ ...product, ...form })
+    }
+    if (isAdmin) {
+      // Admin edits go to draft only — publish to make live
+      await setDoc(doc(db, 'products_draft', id), { ...product, ...updates, updatedAt: new Date().toISOString() }, { merge: true })
+      toast.success('Draft saved — go to Dashboard → Publish to make live')
+    } else {
+      await updateDoc(doc(db, 'products', id), updates)
+      toast.success('Updated!')
+    }
+    setProduct({ ...product, ...updates })
     setEditing(false)
-    toast.success('Updated!')
   }
 
   if (loading) return (

@@ -1,86 +1,94 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper
     function isAdmin() {
       return exists(/databases/$(database)/documents/admin/$(request.auth.uid));
     }
 
-    function isOwner(uid) {
-      return request.auth != null && request.auth.uid == uid;
-    }
+    // ──────────── LIVE collections (public reads) ────────────
 
-    function hasEmail() {
-      return request.auth != null && request.auth.token.email != null;
-    }
-
-    // Products — public read, admin write only
-    match /products/{productId} {
-      allow read: if true;
-      allow create: if isAdmin()
-        && request.resource.data.keys().hasAll(['name', 'price', 'category'])
-        && request.resource.data.name is string
-        && request.resource.data.price is number
-        && request.resource.data.price > 0;
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    // Categories — public read, admin write only
     match /categories/{categoryId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // Customers — owner can read own, admin can read all
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ──────────── DRAFT collections (admin only) ────────────
+
+    match /categories_draft/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /products_draft/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ──────────── Customers ────────────
+
     match /customers/{customerId} {
-      allow read: if isOwner(customerId) || isAdmin();
-      allow create: if hasEmail() && isOwner(customerId);
-      allow update: if isOwner(customerId) || isAdmin();
+      allow read: if request.auth != null && (request.auth.uid == customerId || isAdmin());
+      allow create: if request.auth != null && request.auth.uid == customerId;
+      allow update: if request.auth != null && (request.auth.uid == customerId || isAdmin());
       allow delete: if false;
     }
 
-    // Orders — owner read own, admin read/write all, auth required to create
+    // ──────────── Orders ────────────
+
     match /orders/{orderId} {
-      allow read: if isOwner(resource.data.customer_id) || isAdmin();
-      allow create: if hasEmail()
+      allow read: if request.auth != null && (resource.data.customer_id == request.auth.uid || isAdmin());
+      allow create: if request.auth != null
+        && request.auth.email != null
         && request.resource.data.customer_id == request.auth.uid
         && request.resource.data.keys().hasAll(['items', 'total', 'shipping']);
       allow update: if isAdmin();
       allow delete: if false;
     }
 
-    // Custom Orders — owner read own, admin read/write all
+    // ──────────── Custom Orders ────────────
+
     match /customOrders/{orderId} {
-      allow read: if isOwner(resource.data.customer_id) || isAdmin();
-      allow create: if hasEmail()
+      allow read: if request.auth != null && (resource.data.customer_id == request.auth.uid || isAdmin());
+      allow create: if request.auth != null
+        && request.auth.email != null
         && request.resource.data.customer_id == request.auth.uid;
       allow update: if isAdmin();
       allow delete: if false;
     }
 
-    // Carts — owner only, no one else can touch
+    // ──────────── Carts (per-user, auth-required) ────────────
+
     match /carts/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Contact Messages — anyone authed can create, admin read/delete
+    // ──────────── Contact Messages ────────────
+
     match /contactMessages/{msgId} {
-      allow create: if hasEmail()
-        && request.resource.data.keys().hasAll(['name', 'email', 'message']);
       allow read: if isAdmin();
-      allow update: if false;
+      allow create: if request.auth != null
+        && request.auth.email != null
+        && request.resource.data.keys().hasAll(['name', 'email', 'message']);
       allow delete: if isAdmin();
     }
 
-    // Newsletter — anyone can subscribe
+    // ──────────── Newsletter ────────────
+
     match /newsletter/{docId} {
-      allow create: if hasEmail();
       allow read: if isAdmin();
-      allow update, delete: if false;
+      allow create: if request.auth != null && request.auth.email != null;
     }
 
-    // Admin — admin doc is read-only, never writable from client
+    // ──────────── Admin ────────────
+
     match /admin/{uid} {
       allow read: if isAdmin();
       allow write: if false;

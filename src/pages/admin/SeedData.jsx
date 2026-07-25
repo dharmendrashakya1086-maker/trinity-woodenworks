@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { collection, setDoc, doc } from 'firebase/firestore'
+import { collection, setDoc, doc, getDocs } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import toast from 'react-hot-toast'
-import { Database, CheckCircle, Loader } from 'lucide-react'
+import { Database, CheckCircle, Loader, ArrowUpCircle } from 'lucide-react'
 
 const categories = [
   { id: 'beds', name: 'Beds', description: 'Handcrafted wooden beds', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600' },
@@ -61,18 +61,19 @@ export default function SeedData() {
   const [done, setDone] = useState(false)
 
   async function handleSeed() {
-    if (!confirm('This will add 10 categories and 100 products to your database. Continue?')) return
+    if (!confirm('This will add 10 categories and 100 products to your DRAFT database. Click Publish to make them live. Continue?')) return
     setLoading(true)
     try {
+      // Write to draft collections only — nothing goes live until Publish
       for (const cat of categories) {
-        await setDoc(doc(db, 'categories', cat.id), cat)
+        await setDoc(doc(db, 'categories_draft', cat.id), cat)
       }
       const products = generateProducts()
       for (const p of products) {
-        await setDoc(doc(db, 'products', p.id), p)
+        await setDoc(doc(db, 'products_draft', p.id), p)
       }
       setDone(true)
-      toast.success('Database seeded!')
+      toast.success('Draft data seeded! Go to Dashboard → Publish All to make it live.')
     } catch (err) {
       toast.error('Seeding failed: ' + err.message)
     }
@@ -87,21 +88,26 @@ export default function SeedData() {
         </div>
         <h1 className="text-xl font-bold gold-text mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Seed Database</h1>
         <p className="text-text-muted text-sm mb-6">
-          Add sample data to your store: 10 categories and 100 products with realistic names, descriptions, and prices.
+          Add sample data to your store: 10 categories and 100 products. Data goes to <strong className="text-text">drafts</strong> first — nothing is live until you publish.
         </p>
 
         {done ? (
           <div className="flex flex-col items-center gap-4">
             <CheckCircle size={48} className="text-gold" />
             <div>
-              <p className="text-sm font-semibold text-text">Database Seeded!</p>
-              <p className="text-[11px] text-text-muted mt-1">10 categories and 100 products added</p>
+              <p className="text-sm font-semibold text-text">Drafts Seeded!</p>
+              <p className="text-[11px] text-text-muted mt-1">10 categories and 100 products added to drafts</p>
             </div>
-            <a href="/shop" className="btn-gold no-underline text-sm">View Shop →</a>
+            <div className="flex gap-3">
+              <a href="/admin" className="btn-gold no-underline text-sm inline-flex items-center gap-1.5">
+                <ArrowUpCircle size={14} /> Go to Dashboard → Publish
+              </a>
+              <a href="/admin/products" className="glass px-4 py-2 rounded-lg text-sm text-text-muted hover:text-text no-underline">View Drafts</a>
+            </div>
           </div>
         ) : (
           <button onClick={handleSeed} disabled={loading} className="btn-gold inline-flex items-center gap-2 text-sm disabled:opacity-50">
-            {loading ? <><Loader size={15} className="animate-spin" /> Seeding...</> : <><Database size={15} /> Seed Database</>}
+            {loading ? <><Loader size={15} className="animate-spin" /> Seeding...</> : <><Database size={15} /> Seed Draft Data</>}
           </button>
         )}
       </motion.div>
