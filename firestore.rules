@@ -3,24 +3,36 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper
     function isAdmin() {
       return exists(/databases/$(database)/documents/admin/$(request.auth.uid));
     }
 
-    // ──────────── LIVE collections (public reads) ────────────
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
 
-    match /categories/{categoryId} {
+    function hasEmail() {
+      return request.auth != null && request.auth.email != null;
+    }
+
+    // ──────────── LIVE Collections (public reads) ────────────
+
+    match /categories/{docId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    match /products/{productId} {
+    match /products/{docId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // ──────────── DRAFT collections (admin only) ────────────
+    match /collections/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ──────────── DRAFT Collections (admin only) ────────────
 
     match /categories_draft/{docId} {
       allow read: if isAdmin();
@@ -32,12 +44,33 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /collections_draft/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ──────────── VERSION HISTORY (admin only) ────────────
+
+    match /entity_versions/{docId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // ──────────── AUDIT LOG (admin only, immutable) ────────────
+
+    match /audit_log/{docId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+
     // ──────────── Customers ────────────
 
     match /customers/{customerId} {
-      allow read: if request.auth != null && (request.auth.uid == customerId || isAdmin());
-      allow create: if request.auth != null && request.auth.uid == customerId;
-      allow update: if request.auth != null && (request.auth.uid == customerId || isAdmin());
+      allow read: if isOwner(customerId) || isAdmin();
+      allow create: if hasEmail() && isOwner(customerId);
+      allow update: if isOwner(customerId) || isAdmin();
       allow delete: if false;
     }
 
@@ -45,8 +78,7 @@ service cloud.firestore {
 
     match /orders/{orderId} {
       allow read: if request.auth != null && (resource.data.customer_id == request.auth.uid || isAdmin());
-      allow create: if request.auth != null
-        && request.auth.email != null
+      allow create: if hasEmail()
         && request.resource.data.customer_id == request.auth.uid
         && request.resource.data.keys().hasAll(['items', 'total', 'shipping']);
       allow update: if isAdmin();
@@ -57,25 +89,22 @@ service cloud.firestore {
 
     match /customOrders/{orderId} {
       allow read: if request.auth != null && (resource.data.customer_id == request.auth.uid || isAdmin());
-      allow create: if request.auth != null
-        && request.auth.email != null
-        && request.resource.data.customer_id == request.auth.uid;
+      allow create: if hasEmail() && request.resource.data.customer_id == request.auth.uid;
       allow update: if isAdmin();
       allow delete: if false;
     }
 
-    // ──────────── Carts (per-user, auth-required) ────────────
+    // ──────────── Carts ────────────
 
     match /carts/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isOwner(userId);
     }
 
     // ──────────── Contact Messages ────────────
 
     match /contactMessages/{msgId} {
       allow read: if isAdmin();
-      allow create: if request.auth != null
-        && request.auth.email != null
+      allow create: if hasEmail()
         && request.resource.data.keys().hasAll(['name', 'email', 'message']);
       allow delete: if isAdmin();
     }
@@ -84,7 +113,7 @@ service cloud.firestore {
 
     match /newsletter/{docId} {
       allow read: if isAdmin();
-      allow create: if request.auth != null && request.auth.email != null;
+      allow create: if hasEmail();
     }
 
     // ──────────── Admin ────────────

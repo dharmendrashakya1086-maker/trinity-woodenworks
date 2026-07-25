@@ -1,24 +1,24 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { collection, setDoc, doc, getDocs } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { saveDraft } from '../../lib/firestore'
 import toast from 'react-hot-toast'
 import { Database, CheckCircle, Loader, ArrowUpCircle } from 'lucide-react'
 
 const categories = [
-  { id: 'beds', name: 'Beds', description: 'Handcrafted wooden beds', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600' },
-  { id: 'sofas', name: 'Sofas', description: 'Comfortable wooden sofas', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600' },
-  { id: 'dining', name: 'Dining Tables', description: 'Elegant dining tables', image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=600' },
-  { id: 'chairs', name: 'Chairs', description: 'Wooden chairs & rockers', image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600' },
-  { id: 'wardrobes', name: 'Wardrobes', description: 'Spacious wooden wardrobes', image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600' },
-  { id: 'desks', name: 'Desks', description: 'Work & study desks', image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600' },
-  { id: 'shelves', name: 'Shelves', description: 'Floating & standing shelves', image: 'https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=600' },
-  { id: 'tables', name: 'Coffee Tables', description: 'Center & side tables', image: 'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=600' },
-  { id: 'outdoor', name: 'Outdoor', description: 'Garden & patio furniture', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600' },
-  { id: 'decor', name: 'Decor', description: 'Wooden home decor items', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600' },
+  { id: 'beds', name: 'Beds', description: 'Handcrafted wooden beds', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600', slug: 'beds', displayOrder: 1, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Beds - Handcrafted Furniture', seoDescription: 'Premium handcrafted wooden beds from Trinity Woodenworks' },
+  { id: 'sofas', name: 'Sofas', description: 'Comfortable wooden sofas', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600', slug: 'sofas', displayOrder: 2, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Sofas - Handcrafted Furniture', seoDescription: 'Premium handcrafted wooden sofas from Trinity Woodenworks' },
+  { id: 'dining', name: 'Dining Tables', description: 'Elegant dining tables', image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=600', slug: 'dining-tables', displayOrder: 3, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Dining Tables', seoDescription: 'Handcrafted wooden dining tables for your home' },
+  { id: 'chairs', name: 'Chairs', description: 'Wooden chairs & rockers', image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600', slug: 'chairs', displayOrder: 4, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Chairs', seoDescription: 'Handcrafted wooden chairs and rockers' },
+  { id: 'wardrobes', name: 'Wardrobes', description: 'Spacious wooden wardrobes', image: 'https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=600', slug: 'wardrobes', displayOrder: 5, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Wardrobes', seoDescription: 'Spacious handcrafted wooden wardrobes' },
+  { id: 'desks', name: 'Desks', description: 'Work & study desks', image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600', slug: 'desks', displayOrder: 6, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Desks', seoDescription: 'Handcrafted work and study desks' },
+  { id: 'shelves', name: 'Shelves', description: 'Floating & standing shelves', image: 'https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=600', slug: 'shelves', displayOrder: 7, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Shelves', seoDescription: 'Floating and standing wooden shelves' },
+  { id: 'tables', name: 'Coffee Tables', description: 'Center & side tables', image: 'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=600', slug: 'coffee-tables', displayOrder: 8, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Coffee Tables', seoDescription: 'Center and side tables handcrafted in Varanasi' },
+  { id: 'outdoor', name: 'Outdoor', description: 'Garden & patio furniture', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600', slug: 'outdoor', displayOrder: 9, visibility: true, parentId: null, children: [], seoTitle: 'Outdoor Wooden Furniture', seoDescription: 'Garden and patio furniture handcrafted from solid wood' },
+  { id: 'decor', name: 'Decor', description: 'Wooden home decor items', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600', slug: 'decor', displayOrder: 10, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Home Decor', seoDescription: 'Handcrafted wooden home decor items' },
 ]
 
 const adjectives = ['Royal', 'Classic', 'Heritage', 'Modern', 'Rustic', 'Premium', 'Artisan', 'Elite', 'Grand', 'Majestic']
+const materials = ['Sheesham Wood', 'Teak Wood', 'Mango Wood', 'Oak Wood', 'Walnut Wood', 'Reclaimed Wood']
 const items = {
   beds: ['Queen Bed', 'King Bed', 'Single Bed', 'Bunk Bed', 'Canopy Bed', 'Platform Bed', 'Storage Bed', 'Poster Bed', 'Low Profile Bed', 'Trundle Bed'],
   sofas: ['3-Seater Sofa', 'L-Shape Sofa', 'Loveseat', 'Recliner Sofa', 'Sofa Cum Bed', 'Chesterfield Sofa', 'Mid-Century Sofa', 'Sectional Sofa', 'Tuxedo Sofa', 'Cabriole Sofa'],
@@ -39,15 +39,40 @@ function generateProducts() {
     const catItems = items[cat.id] || []
     for (const itemName of catItems) {
       const adj = adjectives[count % adjectives.length]
+      const material = materials[count % materials.length]
+      const name = `${adj} ${itemName}`
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      const price = Math.floor(Math.random() * 45000) + 5000
+      const stock = Math.floor(Math.random() * 20) + 1
+
       products.push({
         id: `${cat.id}_${count + 1}`,
-        name: `${adj} ${itemName}`,
-        description: `Handcrafted ${itemName.toLowerCase()} made from premium solid wood. Features traditional joinery and a rich natural finish that highlights the beauty of the grain.`,
-        price: Math.floor(Math.random() * 45000) + 5000,
+        name,
+        slug,
+        description: `Handcrafted ${itemName.toLowerCase()} made from premium ${material.toLowerCase()}. Features traditional joinery and a rich natural finish that highlights the beauty of the grain. Built to last generations with proper care.`,
+        shortDescription: `Premium ${itemName.toLowerCase()} handcrafted from ${material.toLowerCase()}`,
+        price,
+        compareAtPrice: Math.floor(price * 1.2),
+        sku: `TW-${cat.id.toUpperCase().slice(0, 3)}-${String(count + 1).padStart(4, '0')}`,
         categoryId: cat.id,
-        image: cat.image,
-        stock: Math.floor(Math.random() * 20) + 1,
+        categories: [cat.id],
+        collectionIds: [],
+        brand: 'Trinity Woodenworks',
+        materials: material,
+        dimensions: `${Math.floor(Math.random() * 100 + 60)} × ${Math.floor(Math.random() * 60 + 40)} × ${Math.floor(Math.random() * 40 + 30)} cm`,
+        weight: `${Math.floor(Math.random() * 30 + 5)} kg`,
+        warranty: '2 years manufacturer warranty',
+        careInstructions: 'Wipe with a dry cloth. Avoid direct sunlight. Use coasters for hot items.',
+        images: [cat.image],
+        gallery: [],
+        variants: [],
+        relatedProductIds: [],
+        seoTitle: `${name} - Trinity Woodenworks`,
+        seoDescription: `Buy ${name} online. Handcrafted from ${material.toLowerCase()} in Varanasi, India.`,
+        seoKeywords: `${itemName.toLowerCase()}, wooden ${itemName.toLowerCase()}, ${material.toLowerCase()}, trinity woodenworks`,
         featured: count % 5 === 0,
+        stock,
+        stockStatus: stock > 0 ? 'in_stock' : 'out_of_stock',
         createdAt: new Date().toISOString(),
       })
       count++
@@ -61,22 +86,19 @@ export default function SeedData() {
   const [done, setDone] = useState(false)
 
   async function handleSeed() {
-    if (!confirm('This will add 10 categories and 100 products to your DRAFT database. Click Publish to make them live. Continue?')) return
+    if (!confirm('Add 10 categories and 100 products to DRAFTS. Nothing goes live until you publish.')) return
     setLoading(true)
     try {
-      // Write to draft collections only — nothing goes live until Publish
       for (const cat of categories) {
-        await setDoc(doc(db, 'categories_draft', cat.id), cat)
+        await saveDraft('categories', cat.id, cat)
       }
       const products = generateProducts()
       for (const p of products) {
-        await setDoc(doc(db, 'products_draft', p.id), p)
+        await saveDraft('products', p.id, p)
       }
       setDone(true)
-      toast.success('Draft data seeded! Go to Dashboard → Publish All to make it live.')
-    } catch (err) {
-      toast.error('Seeding failed: ' + err.message)
-    }
+      toast.success('Drafts seeded! Go to Dashboard → Publish All')
+    } catch (err) { toast.error('Seeding failed: ' + err.message) }
     setLoading(false)
   }
 
@@ -88,7 +110,7 @@ export default function SeedData() {
         </div>
         <h1 className="text-xl font-bold gold-text mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Seed Database</h1>
         <p className="text-text-muted text-sm mb-6">
-          Add sample data to your store: 10 categories and 100 products. Data goes to <strong className="text-text">drafts</strong> first — nothing is live until you publish.
+          Add 10 categories and 100 products to drafts. PRD-compliant data with slugs, SKUs, materials, dimensions, SEO fields, and more.
         </p>
 
         {done ? (
@@ -98,12 +120,9 @@ export default function SeedData() {
               <p className="text-sm font-semibold text-text">Drafts Seeded!</p>
               <p className="text-[11px] text-text-muted mt-1">10 categories and 100 products added to drafts</p>
             </div>
-            <div className="flex gap-3">
-              <a href="/admin" className="btn-gold no-underline text-sm inline-flex items-center gap-1.5">
-                <ArrowUpCircle size={14} /> Go to Dashboard → Publish
-              </a>
-              <a href="/admin/products" className="glass px-4 py-2 rounded-lg text-sm text-text-muted hover:text-text no-underline">View Drafts</a>
-            </div>
+            <a href="/admin" className="btn-gold no-underline text-sm inline-flex items-center gap-1.5">
+              <ArrowUpCircle size={14} /> Go to Dashboard → Publish
+            </a>
           </div>
         ) : (
           <button onClick={handleSeed} disabled={loading} className="btn-gold inline-flex items-center gap-2 text-sm disabled:opacity-50">

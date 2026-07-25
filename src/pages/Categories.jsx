@@ -13,7 +13,7 @@ export default function Categories() {
   useEffect(() => {
     async function load() {
       const snap = await getDocs(collection(db, 'categories'))
-      setCategories(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+      setCategories(snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)))
     }
     load()
   }, [])
@@ -22,15 +22,15 @@ export default function Categories() {
     <div className="pt-20 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold gold-text mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Categories</h1>
-        <p className="text-text-muted text-sm">Browse by category</p>
+        <p className="text-text-muted text-sm">Browse our handcrafted collections</p>
       </motion.div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {categories.map((c, i) => (
+        {categories.filter(c => c.visibility !== false).map((c, i) => (
           <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
             <Link to={`/shop/${c.id}`} className="block product-card no-underline group relative">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src={c.image || '/placeholder.svg'} alt={c.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img src={c.image || '/placeholder.svg'} alt={c.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
               </div>
               <div className="p-3 text-center">
                 <h3 className="text-sm font-semibold text-text">{c.name}</h3>
