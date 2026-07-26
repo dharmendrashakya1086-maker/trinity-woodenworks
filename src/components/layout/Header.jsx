@@ -32,7 +32,7 @@ export default function Header() {
 
   return (
     <>
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f] border-b border-white/[0.04]">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f] border-b border-white/[0.04]" aria-label="Main navigation">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 no-underline shrink-0">
@@ -65,14 +65,14 @@ export default function Header() {
         <div className="flex items-center gap-1">
           <button onClick={() => setSearchOpen(true)}
             className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all bg-transparent border-none cursor-pointer"
-            title="Search">
+            aria-label="Search products">
             <Search size={18} />
           </button>
 
           <Link
             to="/shop"
             className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all"
-            title="Browse Products"
+            aria-label="Browse products"
           >
             <Store size={18} />
           </Link>
@@ -82,7 +82,7 @@ export default function Header() {
               <Link
                 to="/orders"
                 className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all hidden sm:flex"
-                title="My Orders"
+                aria-label="My orders"
               >
                 <Eye size={18} />
               </Link>
@@ -90,11 +90,12 @@ export default function Header() {
               <Link
                 to="/cart"
                 className="relative p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all"
-                title="Cart"
+                aria-label={`Shopping cart, ${count} items`}
+                aria-live="polite"
               >
                 <ShoppingBag size={18} />
                 {count > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-gold text-dark text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 bg-gold text-dark text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" aria-hidden="true">
                     {count}
                   </span>
                 )}
@@ -103,6 +104,8 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  aria-label="Account menu"
+                  aria-expanded={userMenuOpen}
                   className="w-8 h-8 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold text-xs font-bold cursor-pointer hover:bg-gold/30 transition-all"
                 >
                   {user.email?.[0]?.toUpperCase() || <User size={14} />}
@@ -142,6 +145,8 @@ export default function Header() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
             className="md:hidden p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all bg-transparent"
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}

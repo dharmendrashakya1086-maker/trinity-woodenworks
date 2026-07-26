@@ -135,6 +135,7 @@ export default function SearchOverlay({ open, onClose }) {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dim" size={18} />
             <input ref={inputRef} value={search} onChange={e => setSearch(e.target.value)} onKeyDown={handleKeyDown}
               placeholder="Search products, categories, collections..."
+              aria-label="Search products, categories, collections"
               className="w-full glass rounded-xl pl-12 pr-10 py-4 text-sm text-text bg-transparent border border-white/[0.08] focus:border-gold/40 outline-none transition-colors" />
             <button type="button" onClick={onClose}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-white/[0.05] bg-transparent border-none cursor-pointer">

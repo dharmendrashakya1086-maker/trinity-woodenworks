@@ -25,7 +25,7 @@ export default function Cart() {
         <h1 className="text-xl sm:text-2xl font-bold gold-text" style={{ fontFamily: 'var(--font-heading)' }}>
           Shopping Cart ({count})
         </h1>
-        <button onClick={clearCart} className="btn-danger text-xs">Clear Cart</button>
+        <button onClick={clearCart} aria-label="Clear all items from cart" className="btn-danger text-xs">Clear Cart</button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -45,11 +45,11 @@ export default function Cart() {
                 <p className="text-gold font-bold text-sm mt-0.5">₹{item.price?.toLocaleString()}</p>
                 <div className="flex items-center gap-3 mt-2">
                   <div className="qty-controls">
-                    <button onClick={() => updateQty(item.id, item.qty - 1)}><Minus size={12} /></button>
-                    <span className="text-xs">{item.qty}</span>
-                    <button onClick={() => updateQty(item.id, item.qty + 1)}><Plus size={12} /></button>
+                    <button onClick={() => updateQty(item.id, item.qty - 1)} aria-label={`Decrease quantity of ${item.name}`}><Minus size={12} /></button>
+                    <span className="text-xs" aria-label={`Quantity: ${item.qty}`}>{item.qty}</span>
+                    <button onClick={() => updateQty(item.id, item.qty + 1)} aria-label={`Increase quantity of ${item.name}`}><Plus size={12} /></button>
                   </div>
-                  <button onClick={() => removeItem(item.id)} className="text-text-dim hover:text-red-400 bg-transparent transition-colors">
+                  <button onClick={() => removeItem(item.id)} aria-label={`Remove ${item.name} from cart`} className="text-text-dim hover:text-red-400 bg-transparent transition-colors">
                     <Trash2 size={14} />
                   </button>
                 </div>

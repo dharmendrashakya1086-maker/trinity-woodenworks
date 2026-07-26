@@ -231,6 +231,8 @@ export default function Product() {
                       <div className="flex flex-wrap gap-2">
                         {variants.map(v => (
                           <button key={v.id} onClick={() => setSelectedVariant(selectedVariant?.id === v.id ? null : v)}
+                            aria-label={`Select ${type}: ${v.name}`}
+                            aria-pressed={selectedVariant?.id === v.id}
                             className={`px-3 py-1.5 rounded-lg text-xs border transition-all cursor-pointer
                               ${selectedVariant?.id === v.id
                                 ? 'border-gold bg-gold-dim text-gold'

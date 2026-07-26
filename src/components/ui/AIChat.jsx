@@ -124,7 +124,7 @@ export default function AIChat() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-[200px] max-h-[300px]">
+            <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-[200px] max-h-[300px]" role="log" aria-live="polite" aria-label="Chat messages">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'bot' && (
@@ -165,6 +165,7 @@ export default function AIChat() {
             <div className="p-3 border-t border-white/[0.06]">
               <form onSubmit={e => { e.preventDefault(); handleSend() }} className="flex gap-2">
                 <input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask about furniture..."
+                  aria-label="Ask about furniture, pricing, delivery, or custom orders"
                   className="flex-1 bg-white/[0.04] rounded-lg px-3 py-2 text-[11px] text-text border border-white/[0.06] focus:border-gold/30 outline-none" />
                 <button type="submit" disabled={!input.trim()}
                   className="w-8 h-8 rounded-lg bg-gold text-dark flex items-center justify-center disabled:opacity-40 border-none cursor-pointer">
