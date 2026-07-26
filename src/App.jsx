@@ -22,6 +22,7 @@ import Contact from './pages/Contact'
 import Categories from './pages/Categories'
 import CustomOrder from './pages/CustomOrder'
 import TrackCustomOrder from './pages/TrackCustomOrder'
+import AIChat from './components/ui/AIChat'
 
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminProducts from './pages/admin/Products'
@@ -78,6 +79,7 @@ function Layout({ children }) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <AIChat />
     </div>
   )
 }
