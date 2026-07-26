@@ -20,6 +20,8 @@ export default function Product() {
   const [form, setForm] = useState({})
   const [loading, setLoading] = useState(true)
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [similarProducts, setSimilarProducts] = useState([])
+  const [boughtTogether, setBoughtTogether] = useState([])
 
   useEffect(() => {
     async function load() {
@@ -36,11 +38,23 @@ export default function Product() {
         setProduct(data)
         setForm(data)
 
-        // Load related products
+        // Load related products (same category)
         if (data.categoryId) {
           const relQ = query(collection(db, 'products'), where('categoryId', '==', data.categoryId))
           const relSnap = await getDocs(relQ)
           setRelatedProducts(relSnap.docs.filter(d => d.id !== data.id).slice(0, 4).map(d => ({ id: d.id, ...d.data() })))
+        }
+
+        // Load similar products (by IDs)
+        if (data.similarProductIds?.length) {
+          const sims = await Promise.all(data.similarProductIds.map(pid => getDoc(doc(db, 'products', pid)).catch(() => null)))
+          setSimilarProducts(sims.filter(s => s?.exists()).map(s => ({ id: s.id, ...s.data() })).slice(0, 4))
+        }
+
+        // Load frequently bought together (by IDs)
+        if (data.frequentlyBoughtTogetherIds?.length) {
+          const bt = await Promise.all(data.frequentlyBoughtTogetherIds.map(pid => getDoc(doc(db, 'products', pid)).catch(() => null)))
+          setBoughtTogether(bt.filter(s => s?.exists()).map(s => ({ id: s.id, ...s.data() })).slice(0, 4))
         }
       }
       setLoading(false)
@@ -299,10 +313,50 @@ export default function Product() {
         </motion.div>
       </div>
 
-      {/* Related Products */}
+      {/* Similar Products */}
+      {similarProducts.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-lg font-bold gold-text mb-4" style={{ fontFamily: 'var(--font-heading)' }}>You May Also Like</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {similarProducts.map(p => (
+              <Link key={p.id} to={`/product/${p.slug || p.id}`} className="block product-card no-underline group">
+                <div className="aspect-square overflow-hidden">
+                  <img src={p.images?.[0] || p.image || '/placeholder.svg'} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-sm font-semibold text-text line-clamp-1">{p.name}</h3>
+                  <span className="text-sm font-bold text-gold">₹{p.price?.toLocaleString()}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Frequently Bought Together */}
+      {boughtTogether.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-lg font-bold gold-text mb-4" style={{ fontFamily: 'var(--font-heading)' }}>Frequently Bought Together</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {boughtTogether.map(p => (
+              <Link key={p.id} to={`/product/${p.slug || p.id}`} className="block product-card no-underline group">
+                <div className="aspect-square overflow-hidden">
+                  <img src={p.images?.[0] || p.image || '/placeholder.svg'} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-sm font-semibold text-text line-clamp-1">{p.name}</h3>
+                  <span className="text-sm font-bold text-gold">₹{p.price?.toLocaleString()}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Category Related Products */}
       {relatedProducts.length > 0 && (
         <section className="mt-12">
-          <h2 className="text-lg font-bold gold-text mb-4" style={{ fontFamily: 'var(--font-heading)' }}>Related Products</h2>
+          <h2 className="text-lg font-bold gold-text mb-4" style={{ fontFamily: 'var(--font-heading)' }}>More from this Category</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {relatedProducts.map(p => (
               <Link key={p.id} to={`/product/${p.slug || p.id}`} className="block product-card no-underline group">

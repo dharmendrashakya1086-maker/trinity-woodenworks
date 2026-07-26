@@ -6,19 +6,33 @@ import { db } from '../config/firebase'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 
 export default function Shop() {
-  const { categoryId } = useParams()
+  const { category, collectionId } = useParams()
+  const categoryId = category
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
+  const [collections, setCollections] = useState([])
   const [search, setSearch] = useState('')
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
     async function load() {
-      const catSnap = await getDocs(collection(db, 'categories'))
+      const [catSnap, colSnap] = await Promise.all([
+        getDocs(collection(db, 'categories')),
+        getDocs(collection(db, 'collections')),
+      ])
       setCategories(catSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+      setCollections(colSnap.docs.map(d => ({ id: d.id, ...d.data() })))
 
       let prodQuery
-      if (categoryId && categoryId !== 'all') {
+      if (collectionId) {
+        const col = colSnap.docs.find(d => d.id === collectionId)
+        const pIds = col?.data()?.productIds || []
+        if (pIds.length > 0) {
+          prodQuery = query(collection(db, 'products'), where('__name__', 'in', pIds.slice(0, 30)))
+        } else {
+          prodQuery = collection(db, 'products')
+        }
+      } else if (categoryId && categoryId !== 'all') {
         prodQuery = query(collection(db, 'products'), where('categoryId', '==', categoryId))
       } else {
         prodQuery = collection(db, 'products')
@@ -27,7 +41,7 @@ export default function Shop() {
       setProducts(prodSnap.docs.map(d => ({ id: d.id, ...d.data() })))
     }
     load()
-  }, [categoryId])
+  }, [categoryId, collectionId])
 
   const filtered = products.filter(p => {
     if (!search) return true
@@ -35,11 +49,14 @@ export default function Shop() {
     return p.name?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q) || p.materials?.toLowerCase().includes(q)
   })
 
+  const activeCollection = collections.find(c => c.id === collectionId)
+  const activeCategory = categories.find(c => c.id === categoryId)
+
   return (
     <div className="pt-20 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold gold-text mb-1" style={{ fontFamily: 'var(--font-heading)' }}>
-          {categoryId ? categories.find(c => c.id === categoryId)?.name || 'Shop' : 'All Products'}
+          {activeCollection ? activeCollection.name : activeCategory ? activeCategory.name : 'All Products'}
         </h1>
         <p className="text-text-muted text-sm">{filtered.length} products</p>
       </motion.div>
@@ -56,10 +73,21 @@ export default function Shop() {
         </button>
       </div>
 
+      {/* Collection chips */}
+      {collections.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          <Link to="/shop" className={`badge no-underline text-[11px] ${!collectionId ? 'badge-gold' : 'bg-white/[0.04] text-text-muted'}`}>All</Link>
+          {collections.filter(c => c.visibility !== false).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)).map(c => (
+            <Link key={c.id} to={`/shop/collection/${c.id}`} className={`badge no-underline text-[11px] ${collectionId === c.id ? 'badge-gold' : 'bg-white/[0.04] text-text-muted'}`}>
+              {c.name}
+            </Link>
+          ))}
+        </div>
+      )}
+
       {/* Category chips */}
       <div className="flex flex-wrap gap-2 mb-6">
-        <Link to="/shop" className={`badge no-underline text-[11px] ${!categoryId ? 'badge-gold' : 'bg-white/[0.04] text-text-muted'}`}>All</Link>
-        {categories.map(c => (
+        {categories.filter(c => c.visibility !== false).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)).map(c => (
           <Link key={c.id} to={`/shop/${c.id}`} className={`badge no-underline text-[11px] ${categoryId === c.id ? 'badge-gold' : 'bg-white/[0.04] text-text-muted'}`}>
             {c.name}
           </Link>

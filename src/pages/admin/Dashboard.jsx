@@ -6,11 +6,13 @@ import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import { Package, ShoppingCart, TrendingUp, ArrowUpCircle, Loader, Shield, FolderTree, Layers } from 'lucide-react'
 import CategoryManager from '../../components/admin/CategoryManager'
+import CollectionManager from '../../components/admin/CollectionManager'
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const [stats, setStats] = useState({ draftProducts: 0, liveProducts: 0, draftCategories: 0, liveCategories: 0, orders: 0, totalRevenue: 0 })
+  const [stats, setStats] = useState({ draftProducts: 0, liveProducts: 0, draftCategories: 0, liveCategories: 0, draftCollections: 0, liveCollections: 0, orders: 0, totalRevenue: 0 })
   const [categories, setCategories] = useState([])
+  const [collections, setCollections] = useState([])
   const [auditLog, setAuditLog] = useState([])
   const [publishing, setPublishing] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
@@ -18,31 +20,35 @@ export default function Dashboard() {
   useEffect(() => { load() }, [])
 
   async function load() {
-    const [dp, lp, dc, lc, orders, audit, cats] = await Promise.all([
+    const [dp, lp, dc, lc, dcol, lcol, orders, audit, cats, cols] = await Promise.all([
       getEntities('products_draft'), getEntities('products'),
       getEntities('categories_draft'), getEntities('categories'),
+      getEntities('collections_draft'), getEntities('collections'),
       getEntities('orders'), getAuditLog({ limit: 10 }),
       getEntities('categories'),
+      getEntities('collections'),
     ])
     setStats({
       draftProducts: dp.length, liveProducts: lp.length,
       draftCategories: dc.length, liveCategories: lc.length,
+      draftCollections: dcol.length, liveCollections: lcol.length,
       orders: orders.length,
       totalRevenue: orders.reduce((sum, o) => sum + (o.total || 0), 0),
     })
     setCategories(cats)
+    setCollections(cols)
     setAuditLog(audit)
   }
 
   async function handlePublishAll() {
-    const changes = stats.draftProducts + stats.draftCategories
+    const changes = stats.draftProducts + stats.draftCategories + stats.draftCollections
     if (changes === 0) { toast('Nothing to publish'); return }
-    if (!confirm(`Publish ${stats.draftProducts} products and ${stats.draftCategories} categories?`)) return
+    if (!confirm(`Publish ${stats.draftProducts} products, ${stats.draftCategories} categories, and ${stats.draftCollections} collections?`)) return
     setPublishing(true)
     try {
-      const [p, c] = await Promise.all([publishAll('products'), publishAll('categories')])
-      await logAudit({ userId: user.uid, action: 'publish_all', entityType: 'all', newValue: { products: p, categories: c } })
-      toast.success(`Published ${p} products and ${c} categories!`)
+      const [p, c, col] = await Promise.all([publishAll('products'), publishAll('categories'), publishAll('collections')])
+      await logAudit({ userId: user.uid, action: 'publish_all', entityType: 'all', newValue: { products: p, categories: c, collections: col } })
+      toast.success(`Published ${p} products, ${c} categories, ${col} collections!`)
       load()
     } catch (err) { toast.error(err.message) }
     setPublishing(false)
@@ -51,6 +57,7 @@ export default function Dashboard() {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Package },
     { id: 'categories', label: 'Categories', icon: FolderTree },
+    { id: 'collections', label: 'Collections', icon: Layers },
     { id: 'audit', label: 'Audit Log', icon: Shield },
   ]
 
@@ -58,12 +65,12 @@ export default function Dashboard() {
     <div>
       <h1 className="text-xl font-bold gold-text mb-5" style={{ fontFamily: 'var(--font-heading)' }}>Dashboard</h1>
 
-      {(stats.draftProducts > 0 || stats.draftCategories > 0) && (
+      {(stats.draftProducts > 0 || stats.draftCategories > 0 || stats.draftCollections > 0) && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
           className="glass rounded-xl p-4 mb-5 border border-gold/20 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-text">Unpublished changes ready</p>
-            <p className="text-[11px] text-text-muted">{stats.draftProducts} product drafts, {stats.draftCategories} category drafts</p>
+            <p className="text-[11px] text-text-muted">{stats.draftProducts} products, {stats.draftCategories} categories, {stats.draftCollections} collections</p>
           </div>
           <button onClick={handlePublishAll} disabled={publishing} className="btn-gold inline-flex items-center gap-2 text-sm disabled:opacity-50">
             {publishing ? <><Loader size={14} className="animate-spin" /> Publishing...</> : <><ArrowUpCircle size={14} /> Publish All</>}
@@ -72,10 +79,10 @@ export default function Dashboard() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-5 glass rounded-lg p-1">
+      <div className="flex gap-1 mb-5 glass rounded-lg p-1 overflow-x-auto">
         {tabs.map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all bg-transparent border-none cursor-pointer
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all bg-transparent border-none cursor-pointer whitespace-nowrap
               ${activeTab === t.id ? 'bg-gold-dim text-gold' : 'text-text-muted hover:text-text'}`}>
             <t.icon size={13} /> {t.label}
           </button>
@@ -89,6 +96,8 @@ export default function Dashboard() {
             { label: 'Products (Live)', value: stats.liveProducts, to: '/admin/products' },
             { label: 'Categories (Draft)', value: stats.draftCategories, to: '#', onClick: () => setActiveTab('categories') },
             { label: 'Categories (Live)', value: stats.liveCategories, to: '#', onClick: () => setActiveTab('categories') },
+            { label: 'Collections (Draft)', value: stats.draftCollections, to: '#', onClick: () => setActiveTab('collections') },
+            { label: 'Collections (Live)', value: stats.liveCollections, to: '#', onClick: () => setActiveTab('collections') },
             { label: 'Orders', value: stats.orders, to: '/admin/orders' },
             { label: 'Revenue', value: `₹${stats.totalRevenue.toLocaleString()}`, to: '/admin/orders' },
           ].map((c, i) => (
@@ -112,6 +121,12 @@ export default function Dashboard() {
       {activeTab === 'categories' && (
         <div className="glass rounded-xl p-4">
           <CategoryManager categories={categories} onUpdate={load} />
+        </div>
+      )}
+
+      {activeTab === 'collections' && (
+        <div className="glass rounded-xl p-4">
+          <CollectionManager collections={collections} onUpdate={load} />
         </div>
       )}
 

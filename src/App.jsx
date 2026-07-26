@@ -37,6 +37,7 @@ export default function App() {
       {/* Public routes with header/footer */}
       <Route path="/" element={<Layout><Home /></Layout>} />
       <Route path="/shop" element={<Layout><Shop /></Layout>} />
+      <Route path="/shop/collection/:collectionId" element={<Layout><Shop /></Layout>} />
       <Route path="/shop/:category" element={<Layout><Shop /></Layout>} />
       <Route path="/product/:id" element={<Layout><Product /></Layout>} />
       <Route path="/categories" element={<Layout><Categories /></Layout>} />

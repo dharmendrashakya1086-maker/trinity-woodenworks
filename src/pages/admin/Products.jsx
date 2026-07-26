@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import {
   Search, Edit, Trash2, Save, X, ChevronLeft, ChevronRight,
-  ArrowUpCircle, Plus, Eye, History, Loader, ChevronDown, ChevronUp
+  ArrowUpCircle, Plus, Eye, History, Loader, ChevronDown, ChevronUp, Link as LinkIcon, Unlink
 } from 'lucide-react'
 import ImageUpload from '../../components/ui/ImageUpload'
 import VariantManager from '../../components/admin/VariantManager'
@@ -21,7 +21,7 @@ const EMPTY_PRODUCT = {
   warranty: '', careInstructions: '',
   images: [], gallery: [],
   variants: [],
-  relatedProductIds: [],
+  relatedProductIds: [], similarProductIds: [], frequentlyBoughtTogetherIds: [], similarProductIds: [], frequentlyBoughtTogetherIds: [],
   seoTitle: '', seoDescription: '', seoKeywords: '',
   featured: false, stock: 0, stockStatus: 'in_stock',
 }
@@ -54,6 +54,7 @@ export default function Products() {
   const [syncing, setSyncing] = useState(false)
   const [publishing, setPublishing] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [allProducts, setAllProducts] = useState([])
   const perPage = 10
 
   useEffect(() => {
@@ -62,12 +63,14 @@ export default function Products() {
 
   async function load() {
     setLoading(true)
-    const [merged, cats] = await Promise.all([
+    const [merged, cats, prods] = await Promise.all([
       getMergedEntities('products'),
       getEntities('categories'),
+      getEntities('products'),
     ])
     setItems(merged)
     setCategories(cats)
+    setAllProducts(prods)
     setLoading(false)
   }
 
@@ -233,6 +236,40 @@ export default function Products() {
                               <input value={editForm.shortDescription} onChange={e => setEditForm({ ...editForm, shortDescription: e.target.value })} className="input-field text-xs w-full" placeholder="Short description" />
                               <ImageUpload currentImage={editForm.images?.[0]} onUpload={url => setEditForm({ ...editForm, images: [url, ...(editForm.images || []).slice(1)] })} />
                               <VariantManager variants={editForm.variants || []} onChange={variants => setEditForm({ ...editForm, variants })} />
+
+                              {/* Product Relationships */}
+                              <div className="space-y-2">
+                                {[
+                                  { key: 'similarProductIds', label: 'Similar Products' },
+                                  { key: 'frequentlyBoughtTogetherIds', label: 'Frequently Bought Together' },
+                                ].map(rel => (
+                                  <div key={rel.key}>
+                                    <label className="text-[10px] text-text-dim mb-1 block">{rel.label}</label>
+                                    <div className="flex flex-wrap gap-1 mb-1">
+                                      {(editForm[rel.key] || []).map(pid => {
+                                        const p = allProducts.find(x => x.id === pid)
+                                        return p ? (
+                                          <span key={pid} className="inline-flex items-center gap-1 badge badge-gold text-[9px]">
+                                            {p.name}
+                                            <button type="button" onClick={() => setEditForm({ ...editForm, [rel.key]: (editForm[rel.key] || []).filter(id => id !== pid) })} className="bg-transparent border-none cursor-pointer p-0 text-gold hover:text-white"><X size={9} /></button>
+                                          </span>
+                                        ) : null
+                                      })}
+                                    </div>
+                                    <select value="" onChange={e => {
+                                      if (e.target.value) {
+                                        const ids = editForm[rel.key] || []
+                                        if (!ids.includes(e.target.value)) setEditForm({ ...editForm, [rel.key]: [...ids, e.target.value] })
+                                      }
+                                    }} className="input-field text-[10px] w-full">
+                                      <option value="">+ Add product</option>
+                                      {allProducts.filter(p => p.id !== editing && !(editForm[rel.key] || []).includes(p.id)).map(p => (
+                                        <option key={p.id} value={p.id}>{p.name}</option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           ) : (
                             <div className="flex items-center gap-2.5">
