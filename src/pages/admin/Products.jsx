@@ -13,6 +13,7 @@ import {
 import ImageUpload from '../../components/ui/ImageUpload'
 import ImageManager from '../../components/admin/ImageManager'
 import VariantManager from '../../components/admin/VariantManager'
+import AdminAI from '../../components/admin/AdminAI'
 
 const EMPTY_PRODUCT = {
   name: '', slug: '', description: '', shortDescription: '',
@@ -231,7 +232,10 @@ export default function Products() {
                         <td className="py-2 px-3">
                           {editing === p.id ? (
                             <div className="space-y-2 min-w-[300px]">
-                              <input value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="input-field text-xs w-full" placeholder="Product Name" />
+                              <div className="flex items-center justify-between">
+                                <input value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="input-field text-xs flex-1 mr-2" placeholder="Product Name" />
+                                <AdminAI product={editForm} onApply={(field, value) => setEditForm({ ...editForm, [field]: value })} />
+                              </div>
                               <input value={editForm.slug} onChange={e => setEditForm({ ...editForm, slug: e.target.value })} className="input-field text-xs w-full" placeholder="slug-url" />
                               <textarea value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="input-field text-xs w-full min-h-[60px]" placeholder="Description" />
                               <input value={editForm.shortDescription} onChange={e => setEditForm({ ...editForm, shortDescription: e.target.value })} className="input-field text-xs w-full" placeholder="Short description" />

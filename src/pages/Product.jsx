@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import toast from 'react-hot-toast'
 import { ShoppingCart, ArrowLeft, Edit, Save, Minus, Plus, Truck, RotateCcw, Shield, Heart, Share2, Check } from 'lucide-react'
+import LiveEditBar from '../components/ui/LiveEditBar'
 
 export default function Product() {
   const { id } = useParams()
@@ -372,6 +373,9 @@ export default function Product() {
           </div>
         </section>
       )}
+
+      {/* Live Edit Bar for admins */}
+      <LiveEditBar entityType="products" entityId={product?.id} data={product} onUpdate={() => window.location.reload()} />
     </div>
   )
 }
