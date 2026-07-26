@@ -57,6 +57,10 @@ export default function Products() {
   const [publishing, setPublishing] = useState(false)
   const [loading, setLoading] = useState(true)
   const [allProducts, setAllProducts] = useState([])
+  const [relSearch, setRelSearch] = useState('')
+  const [relField, setRelField] = useState('')
+  const [selected, setSelected] = useState([])
+  const [bulkAction, setBulkAction] = useState('')
   const perPage = 10
 
   useEffect(() => {
@@ -158,6 +162,53 @@ export default function Products() {
     setSyncing(false)
   }
 
+  async function handleBulkAction() {
+    if (!bulkAction || selected.length === 0) return
+    if (!confirm(`Apply "${bulkAction}" to ${selected.length} products?`)) return
+
+    try {
+      if (bulkAction === 'publish') {
+        for (const id of selected) {
+          const item = items.find(p => p.id === id)
+          if (item?.draft) await publishEntity('products', id)
+        }
+        toast.success(`Published ${selected.length} products`)
+      } else if (bulkAction === 'delete') {
+        for (const id of selected) {
+          await deleteEntity('products_draft', id).catch(() => {})
+          await deleteEntity('products', id).catch(() => {})
+        }
+        toast.success(`Deleted ${selected.length} products`)
+      } else if (bulkAction === 'archive') {
+        for (const id of selected) {
+          const item = items.find(p => p.id === id)
+          if (item?.draft) {
+            await saveDraft('products', id, { ...item.draft, status: 'archived' })
+          }
+        }
+        toast.success(`Archived ${selected.length} products`)
+      }
+      await logAudit({ userId: user.uid, action: `bulk_${bulkAction}`, entityType: 'products', newValue: { ids: selected } })
+      setSelected([])
+      setBulkAction('')
+      load()
+    } catch (err) { toast.error(err.message) }
+  }
+
+  function toggleSelect(id) {
+    setSelected(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
+  }
+
+  function toggleSelectAll() {
+    const pageIds = paginated.map(p => p.id)
+    const allSelected = pageIds.every(id => selected.includes(id))
+    if (allSelected) {
+      setSelected(s => s.filter(id => !pageIds.includes(id)))
+    } else {
+      setSelected(s => [...new Set([...s, ...pageIds])])
+    }
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -178,6 +229,20 @@ export default function Products() {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
+        {selected.length > 0 && (
+          <div className="flex items-center gap-2 glass rounded-lg px-3 py-2 border border-gold/20">
+            <span className="text-[11px] text-gold">{selected.length} selected</span>
+            <select value={bulkAction} onChange={e => setBulkAction(e.target.value)} className="input-field text-[10px] w-auto">
+              <option value="">Action...</option>
+              <option value="publish">Publish</option>
+              <option value="archive">Archive</option>
+              <option value="delete">Delete</option>
+            </select>
+            <button onClick={handleBulkAction} disabled={!bulkAction} className="btn-gold text-[10px] px-2 py-1 disabled:opacity-40">
+              Apply
+            </button>
+          </div>
+        )}
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim" size={14} />
           <input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} className="input-field pl-9 text-xs w-full" />
@@ -202,7 +267,10 @@ export default function Products() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/[0.06]">
-                  <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium"></th>
+                  <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">
+                    <input type="checkbox" checked={paginated.length > 0 && paginated.every(p => selected.includes(p.id))}
+                      onChange={toggleSelectAll} className="accent-gold" />
+                  </th>
                   <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Product</th>
                   <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Category</th>
                   <th className="py-2.5 px-3 text-[10px] text-text-muted font-medium">Price</th>
@@ -225,9 +293,12 @@ export default function Products() {
                       <motion.tr key={p.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="border-b border-white/[0.04] hover:bg-white/[0.02]">
                         <td className="py-2 px-2">
-                          <button onClick={() => setExpanded(isExpanded ? null : p.id)} className="p-1 glass rounded hover:bg-gold-dim">
-                            {isExpanded ? <ChevronUp size={12} className="text-text-muted" /> : <ChevronDown size={12} className="text-text-muted" />}
-                          </button>
+                          <div className="flex items-center gap-1">
+                            <input type="checkbox" checked={selected.includes(p.id)} onChange={() => toggleSelect(p.id)} className="accent-gold" />
+                            <button onClick={() => setExpanded(isExpanded ? null : p.id)} className="p-1 glass rounded hover:bg-gold-dim">
+                              {isExpanded ? <ChevronUp size={12} className="text-text-muted" /> : <ChevronDown size={12} className="text-text-muted" />}
+                            </button>
+                          </div>
                         </td>
                         <td className="py-2 px-3">
                           {editing === p.id ? (
