@@ -11,6 +11,7 @@ import {
   ArrowUpCircle, Plus, Eye, History, Loader, ChevronDown, ChevronUp, Link as LinkIcon, Unlink
 } from 'lucide-react'
 import ImageUpload from '../../components/ui/ImageUpload'
+import ImageManager from '../../components/admin/ImageManager'
 import VariantManager from '../../components/admin/VariantManager'
 
 const EMPTY_PRODUCT = {
@@ -234,7 +235,7 @@ export default function Products() {
                               <input value={editForm.slug} onChange={e => setEditForm({ ...editForm, slug: e.target.value })} className="input-field text-xs w-full" placeholder="slug-url" />
                               <textarea value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="input-field text-xs w-full min-h-[60px]" placeholder="Description" />
                               <input value={editForm.shortDescription} onChange={e => setEditForm({ ...editForm, shortDescription: e.target.value })} className="input-field text-xs w-full" placeholder="Short description" />
-                              <ImageUpload currentImage={editForm.images?.[0]} onUpload={url => setEditForm({ ...editForm, images: [url, ...(editForm.images || []).slice(1)] })} />
+                              <ImageManager images={editForm.images || []} onChange={images => setEditForm({ ...editForm, images })} productId={editing} />
                               <VariantManager variants={editForm.variants || []} onChange={variants => setEditForm({ ...editForm, variants })} />
 
                               {/* Product Relationships */}
