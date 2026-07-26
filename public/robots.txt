@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /orders
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+
+Sitemap: https://trinitywoodenworks.com/sitemap.xml

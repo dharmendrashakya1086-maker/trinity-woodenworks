@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { SEO } from '../components/ui/SEO'
 
 export default function Shop() {
   const { category, collectionId } = useParams()
@@ -54,6 +55,11 @@ export default function Shop() {
 
   return (
     <div className="pt-20 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
+      <SEO
+        title={activeCollection ? activeCollection.name : activeCategory ? activeCategory.name : 'Shop All Products'}
+        description={activeCollection?.description || activeCategory?.description || 'Browse handcrafted wooden furniture from Trinity Woodenworks. Tables, chairs, beds, and more.'}
+        url={`/shop${categoryId ? `/${categoryId}` : ''}`}
+      />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold gold-text mb-1" style={{ fontFamily: 'var(--font-heading)' }}>
           {activeCollection ? activeCollection.name : activeCategory ? activeCategory.name : 'All Products'}

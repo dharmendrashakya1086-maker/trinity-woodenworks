@@ -5,6 +5,7 @@ import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { Edit } from 'lucide-react'
+import { SEO } from '../components/ui/SEO'
 
 export default function Categories() {
   const { isAdmin } = useAuth()
@@ -20,6 +21,7 @@ export default function Categories() {
 
   return (
     <div className="pt-20 pb-16 max-w-7xl mx-auto px-4 sm:px-6">
+      <SEO title="Categories" description="Browse our handcrafted wooden furniture categories. Beds, sofas, dining tables, chairs, wardrobes, and more." url="/categories" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold gold-text mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Categories</h1>
         <p className="text-text-muted text-sm">Browse our handcrafted collections</p>

@@ -5,6 +5,7 @@ import { collection, getDocs, query, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { ShoppingCart, ArrowRight, Sparkles, Star, Truck } from 'lucide-react'
 import CategoryRibbon from '../components/ui/CategoryRibbon'
+import { SEO, organizationSchema } from '../components/ui/SEO'
 
 const heroSlides = [
   { title: 'Crafted with Soul', subtitle: 'Handmade wooden furniture from Varanasi', accent: 'Since 1985' },
@@ -50,6 +51,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Handcrafted Wooden Furniture from Varanasi"
+        description="Premium handcrafted wooden furniture from Varanasi. Tables, chairs, beds, sofas, and custom pieces by skilled artisans. Free delivery across India."
+        url="/"
+        structuredData={organizationSchema()}
+      />
       {/* Hero */}
       <section className="relative h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-surface via-surface-alt to-primary" />

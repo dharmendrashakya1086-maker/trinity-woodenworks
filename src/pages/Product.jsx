@@ -8,6 +8,7 @@ import { useCart } from '../contexts/CartContext'
 import toast from 'react-hot-toast'
 import { ShoppingCart, ArrowLeft, Edit, Save, Minus, Plus, Truck, RotateCcw, Shield, Heart, Share2, Check } from 'lucide-react'
 import LiveEditBar from '../components/ui/LiveEditBar'
+import { SEO, productSchema, breadcrumbSchema } from '../components/ui/SEO'
 
 export default function Product() {
   const { id } = useParams()
@@ -131,6 +132,14 @@ export default function Product() {
 
   return (
     <div className="pt-20 pb-16 max-w-6xl mx-auto px-4 sm:px-6">
+      <SEO
+        title={product.name}
+        description={product.seoDescription || product.shortDescription || product.description?.slice(0, 160)}
+        image={product.images?.[0] || product.image}
+        url={`/product/${product.slug || product.id}`}
+        type="product"
+        structuredData={productSchema(product)}
+      />
       <Link to="/shop" className="inline-flex items-center gap-1.5 text-xs text-text-muted hover:text-gold no-underline mb-6 transition-colors">
         <ArrowLeft size={14} /> Back to Shop
       </Link>
