@@ -14,6 +14,7 @@ export default function Product() {
   const { addItem, items } = useCart()
   const [product, setProduct] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [selectedVariant, setSelectedVariant] = useState(null)
   const [qty, setQty] = useState(1)
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({})
@@ -51,7 +52,10 @@ export default function Product() {
 
   async function handleAddToCart() {
     if (!user) { toast.error('Please sign in to add to cart'); return }
-    await addItem(product, qty)
+    const itemToAdd = selectedVariant
+      ? { ...product, ...selectedVariant, variantId: selectedVariant.id, variantName: selectedVariant.name }
+      : product
+    await addItem(itemToAdd, qty)
     toast.success('Added to cart!')
   }
 
@@ -92,7 +96,23 @@ export default function Product() {
     </div>
   )
 
-  const images = product.images?.length ? product.images : [product.image || '/placeholder.svg']
+  // Variant-aware computed values
+  const activePrice = selectedVariant?.price || product.price
+  const activeCompareAt = selectedVariant?.compareAtPrice || product.compareAtPrice
+  const activeStock = selectedVariant?.stock ?? product.stock
+  const activeStockStatus = selectedVariant?.stockStatus || product.stockStatus
+  const activeSku = selectedVariant?.sku || product.sku
+  const activeImage = selectedVariant?.image || null
+  const images = activeImage
+    ? [activeImage, ...(product.images || []).filter(i => i !== activeImage)]
+    : (product.images?.length ? product.images : [product.image || '/placeholder.svg'])
+
+  // Group variants by type
+  const variantTypes = {}
+  ;(product.variants || []).forEach(v => {
+    if (!variantTypes[v.type]) variantTypes[v.type] = []
+    variantTypes[v.type].push(v)
+  })
 
   return (
     <div className="pt-20 pb-16 max-w-6xl mx-auto px-4 sm:px-6">
@@ -163,12 +183,12 @@ export default function Product() {
               {product.brand && <p className="text-xs text-text-muted mb-2">{product.brand}</p>}
 
               <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-2xl font-bold text-gold">₹{product.price?.toLocaleString()}</span>
-                {product.compareAtPrice > product.price && (
+                <span className="text-2xl font-bold text-gold">₹{activePrice?.toLocaleString()}</span>
+                {activeCompareAt > activePrice && (
                   <>
-                    <span className="text-sm text-text-dim line-through">₹{product.compareAtPrice.toLocaleString()}</span>
+                    <span className="text-sm text-text-dim line-through">₹{activeCompareAt.toLocaleString()}</span>
                     <span className="badge badge-green text-[10px]">
-                      {Math.round((1 - product.price / product.compareAtPrice) * 100)}% OFF
+                      {Math.round((1 - activePrice / activeCompareAt) * 100)}% OFF
                     </span>
                   </>
                 )}
@@ -176,6 +196,29 @@ export default function Product() {
 
               {product.shortDescription && (
                 <p className="text-sm text-text-muted mb-3">{product.shortDescription}</p>
+              )}
+
+              {/* Variant Selectors */}
+              {Object.keys(variantTypes).length > 0 && (
+                <div className="space-y-3 mb-5">
+                  {Object.entries(variantTypes).map(([type, variants]) => (
+                    <div key={type}>
+                      <p className="text-[11px] text-text-muted mb-1.5 capitalize">{type}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {variants.map(v => (
+                          <button key={v.id} onClick={() => setSelectedVariant(selectedVariant?.id === v.id ? null : v)}
+                            className={`px-3 py-1.5 rounded-lg text-xs border transition-all cursor-pointer
+                              ${selectedVariant?.id === v.id
+                                ? 'border-gold bg-gold-dim text-gold'
+                                : 'border-white/[0.08] bg-white/[0.02] text-text-muted hover:border-gold/30'}`}>
+                            {v.image && <img src={v.image} alt="" className="w-4 h-4 rounded inline mr-1.5 object-cover" />}
+                            {v.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
 
               <p className="text-sm text-text-muted leading-relaxed mb-5">{product.description || 'No description available.'}</p>
@@ -200,18 +243,18 @@ export default function Product() {
                     <p className="text-xs text-text font-medium">{product.weight}</p>
                   </div>
                 )}
-                {product.sku && (
+                {activeSku && (
                   <div className="glass rounded-lg p-3">
                     <p className="text-[10px] text-text-dim mb-1">SKU</p>
-                    <p className="text-xs text-text font-medium">{product.sku}</p>
+                    <p className="text-xs text-text font-medium">{activeSku}</p>
                   </div>
                 )}
               </div>
 
               {/* Stock */}
               <div className="mb-5">
-                {(product.stock || 0) > 0 ? (
-                  <span className="badge badge-green">In Stock ({product.stock} available)</span>
+                {activeStock > 0 ? (
+                  <span className="badge badge-green">In Stock ({activeStock} available)</span>
                 ) : (
                   <span className="badge badge-red">Out of Stock</span>
                 )}
@@ -224,7 +267,7 @@ export default function Product() {
                   <span>{qty}</span>
                   <button onClick={() => setQty(qty + 1)}><Plus size={14} /></button>
                 </div>
-                <button onClick={handleAddToCart} disabled={(product.stock || 0) <= 0}
+                <button onClick={handleAddToCart} disabled={activeStock <= 0}
                   className="btn-gold flex-1 flex items-center justify-center gap-2 disabled:opacity-40">
                   <ShoppingCart size={16} /> {cartItem ? `In Cart (${cartItem.qty})` : 'Add to Cart'}
                 </button>

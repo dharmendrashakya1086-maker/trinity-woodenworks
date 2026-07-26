@@ -11,6 +11,7 @@ import {
   ArrowUpCircle, Plus, Eye, History, Loader, ChevronDown, ChevronUp
 } from 'lucide-react'
 import ImageUpload from '../../components/ui/ImageUpload'
+import VariantManager from '../../components/admin/VariantManager'
 
 const EMPTY_PRODUCT = {
   name: '', slug: '', description: '', shortDescription: '',
@@ -152,21 +153,6 @@ export default function Products() {
     setSyncing(false)
   }
 
-  function addVariant() {
-    const variants = [...(editForm.variants || []), { id: `v_${Date.now()}`, name: '', sku: '', price: 0, stock: 0, image: '', options: {} }]
-    setEditForm({ ...editForm, variants })
-  }
-
-  function updateVariant(idx, field, value) {
-    const variants = [...editForm.variants]
-    variants[idx] = { ...variants[idx], [field]: value }
-    setEditForm({ ...editForm, variants })
-  }
-
-  function removeVariant(idx) {
-    setEditForm({ ...editForm, variants: editForm.variants.filter((_, i) => i !== idx) })
-  }
-
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -246,6 +232,7 @@ export default function Products() {
                               <textarea value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="input-field text-xs w-full min-h-[60px]" placeholder="Description" />
                               <input value={editForm.shortDescription} onChange={e => setEditForm({ ...editForm, shortDescription: e.target.value })} className="input-field text-xs w-full" placeholder="Short description" />
                               <ImageUpload currentImage={editForm.images?.[0]} onUpload={url => setEditForm({ ...editForm, images: [url, ...(editForm.images || []).slice(1)] })} />
+                              <VariantManager variants={editForm.variants || []} onChange={variants => setEditForm({ ...editForm, variants })} />
                             </div>
                           ) : (
                             <div className="flex items-center gap-2.5">
