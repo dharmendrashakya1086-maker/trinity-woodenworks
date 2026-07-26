@@ -3,12 +3,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 import { ShoppingBag, User, LogOut, Menu, X, Search, Heart, Eye, Store } from 'lucide-react'
+import SearchOverlay from '../ui/SearchOverlay'
 
 export default function Header() {
   const { user, logout } = useAuth()
   const { count } = useCart()
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -29,6 +31,7 @@ export default function Header() {
   }
 
   return (
+    <>
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f] border-b border-white/[0.04]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
@@ -60,6 +63,12 @@ export default function Header() {
 
         {/* Right Icons */}
         <div className="flex items-center gap-1">
+          <button onClick={() => setSearchOpen(true)}
+            className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all bg-transparent border-none cursor-pointer"
+            title="Search">
+            <Search size={18} />
+          </button>
+
           <Link
             to="/shop"
             className="p-2 rounded-lg text-text-muted hover:text-gold hover:bg-gold-dim transition-all"
@@ -158,5 +167,7 @@ export default function Header() {
         </div>
       )}
     </nav>
+    <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
   )
 }

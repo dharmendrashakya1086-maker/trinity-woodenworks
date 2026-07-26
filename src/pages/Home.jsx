@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { collection, getDocs, query, limit } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { ShoppingCart, ArrowRight, Sparkles, Star, Truck } from 'lucide-react'
+import CategoryRibbon from '../components/ui/CategoryRibbon'
 
 const heroSlides = [
   { title: 'Crafted with Soul', subtitle: 'Handmade wooden furniture from Varanasi', accent: 'Since 1985' },
@@ -104,6 +105,13 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Category Ribbon */}
+      {categories.length > 3 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <CategoryRibbon categories={categories.filter(c => c.visibility !== false).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))} />
+        </section>
+      )}
 
       {/* Categories */}
       {categories.length > 0 && (
