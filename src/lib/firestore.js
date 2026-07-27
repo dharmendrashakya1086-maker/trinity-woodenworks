@@ -203,9 +203,9 @@ export async function restoreVersion(entityType, entityId, version) {
 }
 
 // ─── Audit Log ──────────────────────────────────────────────────
-export async function logAudit({ userId, action, entityType, entityId, oldValue, newValue, ip, device }) {
+export async function logAudit({ userId, action, entityType, entityId = null, oldValue, newValue, ip, device }) {
   const entry = {
-    userId,
+    userId: userId || null,
     action,
     entityType,
     entityId,
