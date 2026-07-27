@@ -36,6 +36,15 @@ import AdminReports from './pages/admin/Reports'
 import AdminSettings from './pages/admin/Settings'
 import AdminSeedData from './pages/admin/SeedData'
 import AdminLogin from './pages/admin/Login'
+import AdminMediaLibrary from './pages/admin/MediaLibrary'
+import AdminBrands from './pages/admin/Brands'
+import AdminTags from './pages/admin/Tags'
+import AdminReviews from './pages/admin/Reviews'
+import AdminContactMessages from './pages/admin/ContactMessages'
+import AdminNewsletter from './pages/admin/Newsletter'
+import AdminAuditLog from './pages/admin/AuditLog'
+import AdminNotifications from './pages/admin/NotificationList'
+import AdminAttributes from './pages/admin/Attributes'
 
 export default function App() {
   const { isAdmin } = useAuth()
@@ -77,6 +86,15 @@ export default function App() {
         <Route path="manufacturing" element={<AdminManufacturing />} />
         <Route path="coupons" element={<AdminCoupons />} />
         <Route path="marketing" element={<AdminMarketing />} />
+        <Route path="reviews" element={<AdminReviews />} />
+        <Route path="brands" element={<AdminBrands />} />
+        <Route path="tags" element={<AdminTags />} />
+        <Route path="attributes" element={<AdminAttributes />} />
+        <Route path="media" element={<AdminMediaLibrary />} />
+        <Route path="messages" element={<AdminContactMessages />} />
+        <Route path="newsletter" element={<AdminNewsletter />} />
+        <Route path="audit" element={<AdminAuditLog />} />
+        <Route path="notifications" element={<AdminNotifications />} />
         <Route path="reports" element={<AdminReports />} />
         <Route path="settings" element={<AdminSettings />} />
         <Route path="seed" element={<AdminSeedData />} />

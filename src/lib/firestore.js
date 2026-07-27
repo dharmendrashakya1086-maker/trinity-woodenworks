@@ -44,6 +44,13 @@ export const COLLECTIONS = {
   COUPONS: 'coupons',
   CAMPAIGNS: 'campaigns',
   SETTINGS: 'settings',
+  MEDIA: 'media',
+  BRANDS: 'brands',
+  TAGS: 'tags',
+  REVIEWS: 'reviews',
+  WISHLIST: 'wishlist',
+  ATTRIBUTES: 'attributes',
+  NOTIFICATIONS: 'notifications',
 }
 
 // ─── Base Entity Fields ─────────────────────────────────────────
@@ -365,4 +372,148 @@ export async function getDashboardStats() {
     outOfStock,
     recentOrders: orders.slice(0, 5),
   }
+}
+
+// ─── Media Library Operations ───────────────────────────────────
+export async function uploadMedia(data) {
+  const id = `media_${Date.now()}`
+  return createEntity(COLLECTIONS.MEDIA, id, data)
+}
+
+export async function getMedia() {
+  return getEntities(COLLECTIONS.MEDIA, [orderBy('createdAt', 'desc')])
+}
+
+export async function deleteMedia(id) {
+  return deleteEntity(COLLECTIONS.MEDIA, id)
+}
+
+export async function updateMedia(id, data) {
+  return updateEntity(COLLECTIONS.MEDIA, id, data)
+}
+
+// ─── Brand Operations ───────────────────────────────────────────
+export async function createBrand(data) {
+  const id = `brand_${Date.now()}`
+  return createEntity(COLLECTIONS.BRANDS, id, data)
+}
+
+export async function updateBrand(id, data) {
+  return updateEntity(COLLECTIONS.BRANDS, id, data)
+}
+
+export async function deleteBrand(id) {
+  return deleteEntity(COLLECTIONS.BRANDS, id)
+}
+
+export async function getBrands() {
+  return getEntities(COLLECTIONS.BRANDS)
+}
+
+// ─── Tag Operations ─────────────────────────────────────────────
+export async function createTag(data) {
+  const id = `tag_${Date.now()}`
+  return createEntity(COLLECTIONS.TAGS, id, data)
+}
+
+export async function updateTag(id, data) {
+  return updateEntity(COLLECTIONS.TAGS, id, data)
+}
+
+export async function deleteTag(id) {
+  return deleteEntity(COLLECTIONS.TAGS, id)
+}
+
+export async function getTags() {
+  return getEntities(COLLECTIONS.TAGS)
+}
+
+// ─── Review Operations ──────────────────────────────────────────
+export async function getReviews(productId) {
+  const q = productId
+    ? query(collection(db, COLLECTIONS.REVIEWS), where('productId', '==', productId), orderBy('createdAt', 'desc'))
+    : query(collection(db, COLLECTIONS.REVIEWS), orderBy('createdAt', 'desc'))
+  const snap = await safeGet(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
+export async function updateReview(id, data) {
+  return updateEntity(COLLECTIONS.REVIEWS, id, data)
+}
+
+export async function deleteReview(id) {
+  return deleteEntity(COLLECTIONS.REVIEWS, id)
+}
+
+// ─── Wishlist Operations ────────────────────────────────────────
+export async function getWishlist() {
+  return getEntities(COLLECTIONS.WISHLIST)
+}
+
+// ─── Attribute Operations ───────────────────────────────────────
+export async function createAttribute(data) {
+  const id = `attr_${Date.now()}`
+  return createEntity(COLLECTIONS.ATTRIBUTES, id, data)
+}
+
+export async function updateAttribute(id, data) {
+  return updateEntity(COLLECTIONS.ATTRIBUTES, id, data)
+}
+
+export async function deleteAttribute(id) {
+  return deleteEntity(COLLECTIONS.ATTRIBUTES, id)
+}
+
+export async function getAttributes() {
+  return getEntities(COLLECTIONS.ATTRIBUTES)
+}
+
+// ─── Notification Operations ────────────────────────────────────
+export async function createNotification(data) {
+  const id = `notif_${Date.now()}`
+  return createEntity(COLLECTIONS.NOTIFICATIONS, id, data)
+}
+
+export async function getNotifications(userId) {
+  const q = userId
+    ? query(collection(db, COLLECTIONS.NOTIFICATIONS), where('userId', '==', userId), orderBy('createdAt', 'desc'))
+    : query(collection(db, COLLECTIONS.NOTIFICATIONS), orderBy('createdAt', 'desc'))
+  const snap = await safeGet(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
+export async function markNotificationRead(id) {
+  return updateEntity(COLLECTIONS.NOTIFICATIONS, id, { read: true })
+}
+
+export async function markAllNotificationsRead(userId) {
+  const notifs = await getNotifications(userId)
+  const batch = writeBatch(db)
+  for (const n of notifs.filter(n => !n.read)) {
+    batch.update(doc(db, COLLECTIONS.NOTIFICATIONS, n.id), { read: true })
+  }
+  await batch.commit()
+  return notifs.length
+}
+
+// ─── Contact Messages Operations ────────────────────────────────
+export async function getContactMessages() {
+  return getEntities(COLLECTIONS.CONTACT_MESSAGES, [orderBy('createdAt', 'desc')])
+}
+
+export async function markMessageRead(id) {
+  return updateEntity(COLLECTIONS.CONTACT_MESSAGES, id, { read: true })
+}
+
+export async function deleteMessage(id) {
+  return deleteEntity(COLLECTIONS.CONTACT_MESSAGES, id)
+}
+
+// ─── Newsletter Operations ──────────────────────────────────────
+export async function getNewsletterSubscribers() {
+  return getEntities(COLLECTIONS.NEWSLETTER, [orderBy('createdAt', 'desc')])
+}
+
+export async function deleteSubscriber(id) {
+  return deleteEntity(COLLECTIONS.NEWSLETTER, id)
 }
