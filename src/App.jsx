@@ -27,6 +27,13 @@ import AIChat from './components/ui/AIChat'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminProducts from './pages/admin/Products'
 import AdminOrders from './pages/admin/Orders'
+import AdminCustomers from './pages/admin/Customers'
+import AdminInventory from './pages/admin/Inventory'
+import AdminManufacturing from './pages/admin/Manufacturing'
+import AdminCoupons from './pages/admin/Coupons'
+import AdminMarketing from './pages/admin/Marketing'
+import AdminReports from './pages/admin/Reports'
+import AdminSettings from './pages/admin/Settings'
 import AdminSeedData from './pages/admin/SeedData'
 import AdminLogin from './pages/admin/Login'
 
@@ -65,6 +72,13 @@ export default function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="orders" element={<AdminOrders />} />
+        <Route path="customers" element={<AdminCustomers />} />
+        <Route path="inventory" element={<AdminInventory />} />
+        <Route path="manufacturing" element={<AdminManufacturing />} />
+        <Route path="coupons" element={<AdminCoupons />} />
+        <Route path="marketing" element={<AdminMarketing />} />
+        <Route path="reports" element={<AdminReports />} />
+        <Route path="settings" element={<AdminSettings />} />
         <Route path="seed" element={<AdminSeedData />} />
       </Route>
 

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { getEntities, publishAll, logAudit, getAuditLog } from '../../lib/firestore'
+import { getEntities, publishAll, logAudit, getAuditLog, getDashboardStats, getAllInventory } from '../../lib/firestore'
 import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
-import { Package, ShoppingCart, TrendingUp, ArrowUpCircle, Loader, Shield, FolderTree, Layers } from 'lucide-react'
+import { Package, ShoppingCart, TrendingUp, ArrowUpCircle, Loader, Shield, FolderTree, Layers, Users, AlertTriangle, Clock, IndianRupee } from 'lucide-react'
 import CategoryManager from '../../components/admin/CategoryManager'
 import CollectionManager from '../../components/admin/CollectionManager'
 
 export default function Dashboard() {
   const { user } = useAuth()
   const [stats, setStats] = useState({ draftProducts: 0, liveProducts: 0, draftCategories: 0, liveCategories: 0, draftCollections: 0, liveCollections: 0, orders: 0, totalRevenue: 0 })
+  const [dashStats, setDashStats] = useState(null)
   const [categories, setCategories] = useState([])
   const [collections, setCollections] = useState([])
   const [auditLog, setAuditLog] = useState([])
@@ -20,13 +21,14 @@ export default function Dashboard() {
   useEffect(() => { load() }, [])
 
   async function load() {
-    const [dp, lp, dc, lc, dcol, lcol, orders, audit, cats, cols] = await Promise.all([
+    const [dp, lp, dc, lc, dcol, lcol, orders, audit, cats, cols, ds] = await Promise.all([
       getEntities('products_draft'), getEntities('products'),
       getEntities('categories_draft'), getEntities('categories'),
       getEntities('collections_draft'), getEntities('collections'),
       getEntities('orders'), getAuditLog({ limit: 10 }),
       getEntities('categories'),
       getEntities('collections'),
+      getDashboardStats(),
     ])
     setStats({
       draftProducts: dp.length, liveProducts: lp.length,
@@ -35,6 +37,7 @@ export default function Dashboard() {
       orders: orders.length,
       totalRevenue: orders.reduce((sum, o) => sum + (o.total || 0), 0),
     })
+    setDashStats(ds)
     setCategories(cats)
     setCollections(cols)
     setAuditLog(audit)
@@ -90,29 +93,24 @@ export default function Dashboard() {
       </div>
 
       {activeTab === 'overview' && (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           {[
-            { label: 'Products (Draft)', value: stats.draftProducts, to: '/admin/products' },
+            { label: 'Today\'s Orders', value: dashStats?.todayOrders || 0, to: '/admin/orders', icon: Clock },
+            { label: 'Pending Orders', value: dashStats?.pendingOrders || 0, to: '/admin/orders', icon: Package },
+            { label: 'Total Revenue', value: `₹${(dashStats?.totalRevenue || 0).toLocaleString()}`, to: '/admin/reports', icon: IndianRupee },
+            { label: 'Customers', value: dashStats?.totalCustomers || 0, to: '/admin/customers', icon: Users },
             { label: 'Products (Live)', value: stats.liveProducts, to: '/admin/products' },
-            { label: 'Categories (Draft)', value: stats.draftCategories, to: '#', onClick: () => setActiveTab('categories') },
-            { label: 'Categories (Live)', value: stats.liveCategories, to: '#', onClick: () => setActiveTab('categories') },
-            { label: 'Collections (Draft)', value: stats.draftCollections, to: '#', onClick: () => setActiveTab('collections') },
-            { label: 'Collections (Live)', value: stats.liveCollections, to: '#', onClick: () => setActiveTab('collections') },
-            { label: 'Orders', value: stats.orders, to: '/admin/orders' },
-            { label: 'Revenue', value: `₹${stats.totalRevenue.toLocaleString()}`, to: '/admin/orders' },
+            { label: 'Products (Draft)', value: stats.draftProducts, to: '/admin/products' },
+            { label: 'Low Stock', value: dashStats?.lowStockCount || 0, to: '/admin/inventory', icon: AlertTriangle },
+            { label: 'Out of Stock', value: dashStats?.outOfStockCount || 0, to: '/admin/inventory', icon: AlertTriangle },
           ].map((c, i) => (
             <motion.div key={c.label} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              {c.onClick ? (
-                <button onClick={c.onClick} className="glass glass-hover rounded-xl p-4 flex items-center gap-3 w-full text-left bg-transparent border-none cursor-pointer">
-                  <div className="w-10 h-10 rounded-lg bg-gold-dim border border-gold/10 flex items-center justify-center"><Package className="text-gold" size={18} /></div>
-                  <div><p className="text-[10px] text-text-muted">{c.label}</p><p className="text-lg font-bold text-text">{c.value}</p></div>
-                </button>
-              ) : (
-                <Link to={c.to} className="glass glass-hover rounded-xl p-4 flex items-center gap-3 no-underline block">
-                  <div className="w-10 h-10 rounded-lg bg-gold-dim border border-gold/10 flex items-center justify-center"><Package className="text-gold" size={18} /></div>
-                  <div><p className="text-[10px] text-text-muted">{c.label}</p><p className="text-lg font-bold text-text">{c.value}</p></div>
-                </Link>
-              )}
+              <Link to={c.to} className="glass glass-hover rounded-xl p-4 flex items-center gap-3 no-underline block">
+                <div className="w-10 h-10 rounded-lg bg-gold-dim border border-gold/10 flex items-center justify-center">
+                  {c.icon ? <c.icon className="text-gold" size={18} /> : <Package className="text-gold" size={18} />}
+                </div>
+                <div><p className="text-[10px] text-text-muted">{c.label}</p><p className="text-lg font-bold text-text">{c.value}</p></div>
+              </Link>
             </motion.div>
           ))}
         </div>

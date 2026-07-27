@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
-import { LayoutDashboard, Package, ShoppingCart, Database, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, Database, LogOut, Menu, X, Warehouse, Users, Tag, Megaphone, Factory, BarChart3, Settings } from 'lucide-react'
 
 const nav = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/products', icon: Package, label: 'Products' },
   { to: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
+  { to: '/admin/customers', icon: Users, label: 'Customers' },
+  { to: '/admin/inventory', icon: Warehouse, label: 'Inventory' },
+  { to: '/admin/manufacturing', icon: Factory, label: 'Manufacturing' },
+  { to: '/admin/coupons', icon: Tag, label: 'Coupons' },
+  { to: '/admin/marketing', icon: Megaphone, label: 'Marketing' },
+  { to: '/admin/reports', icon: BarChart3, label: 'Reports' },
+  { to: '/admin/settings', icon: Settings, label: 'Settings' },
   { to: '/admin/seed', icon: Database, label: 'Seed Data' },
 ]
 

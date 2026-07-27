@@ -39,6 +39,11 @@ export const COLLECTIONS = {
   ADMIN: 'admin',
   AUDIT_LOG: 'audit_log',
   ENTITY_VERSIONS: 'entity_versions',
+  INVENTORY: 'inventory',
+  INVENTORY_LOG: 'inventory_log',
+  COUPONS: 'coupons',
+  CAMPAIGNS: 'campaigns',
+  SETTINGS: 'settings',
 }
 
 // ─── Base Entity Fields ─────────────────────────────────────────
@@ -237,4 +242,127 @@ export async function getMergedEntities(entityType) {
     live: live.find(d => d.id === id) || null,
     name: drafts.find(d => d.id === id)?.name || live.find(d => d.id === id)?.name || '',
   }))
+}
+
+// ─── Inventory Operations ───────────────────────────────────────
+export async function adjustStock(productId, variantId, qty, reason, userId) {
+  const id = `${productId}_${variantId || 'main'}`
+  const invRef = doc(db, COLLECTIONS.INVENTORY, id)
+  const snap = await safeGetDoc(invRef)
+  const current = snap.exists() ? snap.data() : { productId, variantId: variantId || null, quantity: 0, reserved: 0 }
+  const newQty = Math.max(0, current.quantity + qty)
+  await setDoc(invRef, { ...current, quantity: newQty, updatedAt: new Date().toISOString() })
+
+  const logId = `inv_${Date.now()}`
+  await setDoc(doc(db, COLLECTIONS.INVENTORY_LOG, logId), {
+    productId, variantId: variantId || null, adjustment: qty, previousQty: current.quantity, newQty,
+    reason, userId, createdAt: new Date().toISOString(),
+  })
+  return { ...current, quantity: newQty }
+}
+
+export async function getInventory(productId) {
+  const q = query(collection(db, COLLECTIONS.INVENTORY), where('productId', '==', productId))
+  const snap = await safeGet(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
+export async function getAllInventory() {
+  return getEntities(COLLECTIONS.INVENTORY)
+}
+
+export async function getInventoryLog(productId) {
+  const q = productId
+    ? query(collection(db, COLLECTIONS.INVENTORY_LOG), where('productId', '==', productId), orderBy('createdAt', 'desc'))
+    : query(collection(db, COLLECTIONS.INVENTORY_LOG), orderBy('createdAt', 'desc'))
+  const snap = await safeGet(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
+// ─── Coupon Operations ──────────────────────────────────────────
+export async function createCoupon(data) {
+  const id = `coupon_${Date.now()}`
+  return createEntity(COLLECTIONS.COUPONS, id, data)
+}
+
+export async function updateCoupon(id, data) {
+  return updateEntity(COLLECTIONS.COUPONS, id, data)
+}
+
+export async function deleteCoupon(id) {
+  return deleteEntity(COLLECTIONS.COUPONS, id)
+}
+
+export async function getCoupons() {
+  return getEntities(COLLECTIONS.COUPONS)
+}
+
+export async function validateCoupon(code, cartTotal) {
+  const q = query(collection(db, COLLECTIONS.COUPONS), where('code', '==', code.toUpperCase()), where('active', '==', true))
+  const snap = await safeGet(q)
+  if (snap.empty) return { valid: false, error: 'Invalid coupon code' }
+  const coupon = { id: snap.docs[0].id, ...snap.docs[0].data() }
+  if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) return { valid: false, error: 'Coupon expired' }
+  if (coupon.minOrder && cartTotal < coupon.minOrder) return { valid: false, error: `Minimum order ₹${coupon.minOrder}` }
+  if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) return { valid: false, error: 'Coupon usage limit reached' }
+  return { valid: true, coupon }
+}
+
+// ─── Campaign Operations ────────────────────────────────────────
+export async function createCampaign(data) {
+  const id = `campaign_${Date.now()}`
+  return createEntity(COLLECTIONS.CAMPAIGNS, id, data)
+}
+
+export async function updateCampaign(id, data) {
+  return updateEntity(COLLECTIONS.CAMPAIGNS, id, data)
+}
+
+export async function deleteCampaign(id) {
+  return deleteEntity(COLLECTIONS.CAMPAIGNS, id)
+}
+
+export async function getCampaigns() {
+  return getEntities(COLLECTIONS.CAMPAIGNS)
+}
+
+// ─── Settings Operations ────────────────────────────────────────
+export async function getSettings() {
+  const snap = await safeGetDoc(doc(db, COLLECTIONS.SETTINGS, 'store'))
+  return snap.exists() ? snap.data() : {}
+}
+
+export async function saveSettings(data) {
+  await setDoc(doc(db, COLLECTIONS.SETTINGS, 'store'), { ...data, updatedAt: new Date().toISOString() })
+  return data
+}
+
+// ─── Dashboard Stats ────────────────────────────────────────────
+export async function getDashboardStats() {
+  const [orders, inventory, customers, products] = await Promise.all([
+    getEntities('orders'),
+    getAllInventory(),
+    getEntities('customers'),
+    getEntities('products'),
+  ])
+  const today = new Date().toISOString().split('T')[0]
+  const todayOrders = orders.filter(o => o.createdAt?.startsWith(today))
+  const pendingOrders = orders.filter(o => o.status === 'pending')
+  const revenue = orders.reduce((s, o) => s + (o.total || 0), 0)
+  const lowStock = inventory.filter(i => i.quantity <= (i.reorderLevel || 5) && i.quantity > 0)
+  const outOfStock = inventory.filter(i => i.quantity === 0)
+  return {
+    todayOrders: todayOrders.length,
+    pendingOrders: pendingOrders.length,
+    totalRevenue: revenue,
+    totalOrders: orders.length,
+    totalCustomers: customers.length,
+    totalProducts: products.length,
+    totalInventory: inventory.reduce((s, i) => s + (i.quantity || 0), 0),
+    lowStockCount: lowStock.length,
+    outOfStockCount: outOfStock.length,
+    lowStock,
+    outOfStock,
+    recentOrders: orders.slice(0, 5),
+  }
 }

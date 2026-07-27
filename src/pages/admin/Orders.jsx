@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { collection, getDocs, doc, updateDoc, query, orderBy } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import toast from 'react-hot-toast'
-import { Search, Eye, Package, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Eye, Package, ChevronLeft, ChevronRight, X, Truck, CheckCircle, Clock, MapPin, CreditCard } from 'lucide-react'
 
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
 const statusColors = {
   pending: 'badge-gold', processing: 'badge-blue', shipped: 'badge-blue',
   delivered: 'badge-green', cancelled: 'badge-red',
 }
+const statusIcons = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle, cancelled: X }
 
 export default function Orders() {
   const [orders, setOrders] = useState([])
@@ -109,33 +110,99 @@ export default function Orders() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelected(null)}>
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className="glass rounded-2xl p-5 max-w-md w-full max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+              className="glass rounded-2xl p-5 max-w-lg w-full max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-text">Order #{selected.id.slice(0, 8).toUpperCase()}</h3>
-                <span className={`badge ${statusColors[selected.status]} text-[9px]`}>{selected.status}</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-text">Order #{selected.id.slice(0, 8).toUpperCase()}</h3>
+                  <p className="text-[10px] text-text-dim">{new Date(selected.createdAt).toLocaleString()}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <select value={selected.status} onChange={e => { updateStatus(selected.id, e.target.value); setSelected({ ...selected, status: e.target.value }) }}
+                    className="input-field text-[10px] w-auto">
+                    {statusOptions.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+                  </select>
+                </div>
               </div>
+
+              {/* Status Timeline */}
+              <div className="flex items-center gap-1 mb-4 overflow-x-auto pb-2">
+                {statusOptions.map((s, i) => {
+                  const Icon = statusIcons[s]
+                  const isActive = statusOptions.indexOf(selected.status) >= i
+                  return (
+                    <div key={s} className="flex items-center gap-1">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${isActive ? 'bg-gold/20 text-gold' : 'bg-white/[0.04] text-text-dim'}`}>
+                        <Icon size={10} />
+                      </div>
+                      {i < statusOptions.length - 1 && <div className={`w-6 h-0.5 ${isActive ? 'bg-gold/30' : 'bg-white/[0.04]'}`} />}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Items */}
               <div className="space-y-2 mb-4">
+                <p className="text-[10px] text-text-dim font-medium">Items ({selected.items?.length || 0})</p>
                 {selected.items?.map((item, j) => (
                   <div key={j} className="flex items-center gap-3 bg-white/[0.02] rounded-lg p-2.5">
                     <img src={item.image || '/placeholder.svg'} alt="" className="w-10 h-10 rounded-lg object-cover" />
-                    <div className="flex-1">
-                      <p className="text-xs text-text">{item.name}</p>
-                      <p className="text-[10px] text-text-muted">₹{item.price?.toLocaleString()} × {item.qty}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-text truncate">{item.name}</p>
+                      <p className="text-[10px] text-text-muted">{item.variantName || ''} ₹{item.price?.toLocaleString()} × {item.qty}</p>
                     </div>
                     <span className="text-xs text-gold">₹{(item.price * item.qty).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
+
+              {/* Shipping Address */}
               {selected.shippingAddress && (
                 <div className="bg-white/[0.02] rounded-lg p-3 mb-3">
-                  <p className="text-[10px] text-text-dim mb-1">Shipping Address</p>
+                  <p className="text-[10px] text-text-dim mb-1 flex items-center gap-1"><MapPin size={10} /> Shipping Address</p>
                   <p className="text-xs text-text">{selected.shippingAddress}</p>
                 </div>
               )}
-              <div className="flex justify-between items-center pt-3 border-t border-white/[0.04]">
-                <span className="text-xs text-text-muted">Total</span>
-                <span className="text-lg font-bold text-gold">₹{selected.total?.toLocaleString()}</span>
+
+              {/* Payment */}
+              {selected.paymentMethod && (
+                <div className="bg-white/[0.02] rounded-lg p-3 mb-3">
+                  <p className="text-[10px] text-text-dim mb-1 flex items-center gap-1"><CreditCard size={10} /> Payment</p>
+                  <p className="text-xs text-text">{selected.paymentMethod}</p>
+                </div>
+              )}
+
+              {/* Totals */}
+              <div className="border-t border-white/[0.04] pt-3 space-y-1.5">
+                {selected.subtotal != null && (
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-text-muted">Subtotal</span>
+                    <span className="text-text">₹{selected.subtotal?.toLocaleString()}</span>
+                  </div>
+                )}
+                {selected.shippingFee != null && (
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-text-muted">Shipping</span>
+                    <span className="text-text">₹{selected.shippingFee?.toLocaleString()}</span>
+                  </div>
+                )}
+                {selected.discount > 0 && (
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-text-muted">Discount</span>
+                    <span className="text-accent-green">-₹{selected.discount?.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-2 border-t border-white/[0.04]">
+                  <span className="text-xs text-text-muted font-medium">Total</span>
+                  <span className="text-lg font-bold text-gold">₹{selected.total?.toLocaleString()}</span>
+                </div>
               </div>
+
+              {selected.notes && (
+                <div className="mt-3 bg-white/[0.02] rounded-lg p-3">
+                  <p className="text-[10px] text-text-dim mb-1">Notes</p>
+                  <p className="text-xs text-text">{selected.notes}</p>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
