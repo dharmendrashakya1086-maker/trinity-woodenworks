@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { saveDraft, publishAll, logAudit } from '../../lib/firestore'
+import { saveDraft, publishAll, logAudit, getEntities, deleteEntity } from '../../lib/firestore'
 import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
-import { Database, CheckCircle, Loader, ArrowUpCircle } from 'lucide-react'
+import { Database, CheckCircle, Loader, ArrowUpCircle, Trash2 } from 'lucide-react'
 
 const categories = [
   { id: 'beds', name: 'Beds', description: 'Handcrafted wooden beds', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600', slug: 'beds', displayOrder: 1, visibility: true, parentId: null, children: [], seoTitle: 'Wooden Beds - Handcrafted Furniture', seoDescription: 'Premium handcrafted wooden beds from Trinity Woodenworks' },
@@ -85,7 +85,28 @@ function generateProducts() {
 export default function SeedData() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [clearing, setClearing] = useState(false)
   const [done, setDone] = useState(false)
+
+  async function handleClear() {
+    if (!confirm('Delete ALL products, categories, and collections from both drafts and live? This cannot be undone.')) return
+    setClearing(true)
+    try {
+      const cols = ['products', 'products_draft', 'categories', 'categories_draft', 'collections', 'collections_draft']
+      let total = 0
+      for (const col of cols) {
+        const items = await getEntities(col)
+        for (const item of items) {
+          await deleteEntity(col, item.id)
+          total++
+        }
+      }
+      await logAudit({ userId: user.uid, action: 'clear_all_data', entityType: 'all', newValue: { deleted: total } })
+      toast.success(`Cleared ${total} documents`)
+      setDone(false)
+    } catch (err) { toast.error('Clear failed: ' + err.message) }
+    setClearing(false)
+  }
 
   async function handleSeed(publish = false) {
     if (!confirm(publish ? 'Add 10 categories and 100 products and publish them LIVE immediately.' : 'Add 10 categories and 100 products to DRAFTS. Nothing goes live until you publish.')) return
@@ -141,6 +162,11 @@ export default function SeedData() {
             <button onClick={() => handleSeed(false)} disabled={loading} className="btn-secondary w-full text-xs disabled:opacity-50">
               Seed Drafts Only
             </button>
+            <div className="border-t border-white/[0.04] pt-3 mt-3">
+              <button onClick={handleClear} disabled={clearing} className="w-full p-2 rounded-lg border border-accent-red/20 text-accent-red text-[11px] hover:bg-accent-red/5 transition-all bg-transparent cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50">
+                {clearing ? <><Loader size={12} className="animate-spin" /> Clearing...</> : <><Trash2 size={12} /> Clear All Data</>}
+              </button>
+            </div>
           </div>
         )}
       </motion.div>
