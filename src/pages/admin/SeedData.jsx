@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { saveDraft } from '../../lib/firestore'
+import { saveDraft, publishAll, logAudit } from '../../lib/firestore'
+import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import { Database, CheckCircle, Loader, ArrowUpCircle } from 'lucide-react'
 
@@ -82,11 +83,12 @@ function generateProducts() {
 }
 
 export default function SeedData() {
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
-  async function handleSeed() {
-    if (!confirm('Add 10 categories and 100 products to DRAFTS. Nothing goes live until you publish.')) return
+  async function handleSeed(publish = false) {
+    if (!confirm(publish ? 'Add 10 categories and 100 products and publish them LIVE immediately.' : 'Add 10 categories and 100 products to DRAFTS. Nothing goes live until you publish.')) return
     setLoading(true)
     try {
       for (const cat of categories) {
@@ -96,8 +98,15 @@ export default function SeedData() {
       for (const p of products) {
         await saveDraft('products', p.id, p)
       }
+      if (publish) {
+        await publishAll('products')
+        await publishAll('categories')
+        await logAudit({ userId: user.uid, action: 'seed_and_publish', entityType: 'all', newValue: { products: products.length, categories: categories.length } })
+        toast.success(`Seeded & published ${products.length} products and ${categories.length} categories!`)
+      } else {
+        toast.success('Drafts seeded! Go to Dashboard → Publish All')
+      }
       setDone(true)
-      toast.success('Drafts seeded! Go to Dashboard → Publish All')
     } catch (err) { toast.error('Seeding failed: ' + err.message) }
     setLoading(false)
   }
@@ -110,24 +119,29 @@ export default function SeedData() {
         </div>
         <h1 className="text-xl font-bold gold-text mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Seed Database</h1>
         <p className="text-text-muted text-sm mb-6">
-          Add 10 categories and 100 products to drafts. PRD-compliant data with slugs, SKUs, materials, dimensions, SEO fields, and more.
+          Add 10 categories and 100 products. Choose "Seed & Publish" to make them live on the Shop immediately, or "Seed Drafts Only" to review first.
         </p>
 
         {done ? (
           <div className="flex flex-col items-center gap-4">
             <CheckCircle size={48} className="text-gold" />
             <div>
-              <p className="text-sm font-semibold text-text">Drafts Seeded!</p>
-              <p className="text-[11px] text-text-muted mt-1">10 categories and 100 products added to drafts</p>
+              <p className="text-sm font-semibold text-text">Done!</p>
+              <p className="text-[11px] text-text-muted mt-1">10 categories and 100 products seeded</p>
             </div>
-            <a href="/admin" className="btn-gold no-underline text-sm inline-flex items-center gap-1.5">
-              <ArrowUpCircle size={14} /> Go to Dashboard → Publish
+            <a href="/shop" className="btn-gold no-underline text-sm inline-flex items-center gap-1.5">
+              <ArrowUpCircle size={14} /> View Shop
             </a>
           </div>
         ) : (
-          <button onClick={handleSeed} disabled={loading} className="btn-gold inline-flex items-center gap-2 text-sm disabled:opacity-50">
-            {loading ? <><Loader size={15} className="animate-spin" /> Seeding...</> : <><Database size={15} /> Seed Draft Data</>}
-          </button>
+          <div className="space-y-3">
+            <button onClick={() => handleSeed(true)} disabled={loading} className="btn-gold w-full inline-flex items-center justify-center gap-2 text-sm disabled:opacity-50">
+              {loading ? <><Loader size={15} className="animate-spin" /> Seeding...</> : <><Database size={15} /> Seed & Publish (Go Live)</>}
+            </button>
+            <button onClick={() => handleSeed(false)} disabled={loading} className="btn-secondary w-full text-xs disabled:opacity-50">
+              Seed Drafts Only
+            </button>
+          </div>
         )}
       </motion.div>
     </div>
