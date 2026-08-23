@@ -5981,7 +5981,7 @@ textarea:focus-visible {
     transform: none !important;
   }
   
-  html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 }
 
 /* ---- High Contrast Mode ---- */
