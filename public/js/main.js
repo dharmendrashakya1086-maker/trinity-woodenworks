@@ -206,8 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (typeof gsap !== 'undefined' && gsap.to) {
           gsap.to(window, { scrollTo: { y: target, offsetY: 80 }, duration: 1, ease: 'power2.inOut' });
-        } else if (window.smoothScroll) {
-          window.smoothScroll.scrollTo(target);
         } else {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
