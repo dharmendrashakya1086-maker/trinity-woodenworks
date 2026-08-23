@@ -1,36 +1,65 @@
+/*
+ * =====================================================
+ * DATABASE CONNECTION & HELPERS
+ * =====================================================
+ * This file handles all database operations.
+ * It supports two databases:
+ *   1. MongoDB Atlas (cloud) — used in production
+ *   2. lowdb (local JSON file) — fallback for development
+ * 
+ * The code automatically uses whichever is available.
+ * =====================================================
+ */
+
+// Import MongoDB driver and bcrypt for password hashing
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 
-const MONGO_URI = process.env.MONGO_URI;
-const DB_NAME = process.env.MONGO_DB_NAME || 'trinity_woodenworks';
+// Read database config from .env file
+const MONGO_URI = process.env.MONGO_URI;  // MongoDB connection string
+const DB_NAME = process.env.MONGO_DB_NAME || 'trinity_woodenworks';  // Database name
 
+// Store database connection (initially null = not connected)
 let client = null;
 let database = null;
 
+// =====================================================
+// CONNECT TO DATABASE
+// =====================================================
 async function connectDB() {
+  // If already connected, return existing connection
   if (database) return database;
+  
+  // If no MongoDB URI in .env, use lowdb (local JSON file)
   if (!MONGO_URI) {
     console.error('MONGO_URI not set! Falling back to lowdb.');
     return initLowdb();
   }
+  
   try {
+    // Create MongoDB client and connect
     client = new MongoClient(MONGO_URI);
     await client.connect();
     database = client.db(DB_NAME);
     console.log('Connected to MongoDB Atlas');
+    
+    // Add default data if collections are empty
     await seedMongoDB(database);
     return database;
   } catch (err) {
+    // If MongoDB fails, fall back to lowdb
     console.error('MongoDB connection failed:', err.message);
     console.log('Falling back to lowdb.');
     return initLowdb();
   }
 }
 
+// Get current database connection
 function getDB() {
   return database;
 }
 
+// Get a specific collection (like a table in SQL)
 function getCollection(name) {
   if (database && database.collection) {
     return database.collection(name);
@@ -40,9 +69,11 @@ function getCollection(name) {
   return null;
 }
 
-// ============================================================
-// LOWDB FALLBACK (if MongoDB not configured)
-// ============================================================
+// =====================================================
+// LOWDB FALLBACK (local JSON file database)
+// =====================================================
+// lowdb stores data in a JSON file — good for development
+// when you don't want to set up MongoDB
 let lowdb = null;
 let lowdbAdapter = null;
 
@@ -52,13 +83,17 @@ function initLowdb() {
   const path = require('path');
   const fs = require('fs');
 
+  // Create data/ and uploads/ folders if they don't exist
   const dataDir = path.join(__dirname, 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   const uploadsDir = path.join(__dirname, 'uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
+  // Create/connect to data/db.json file
   lowdbAdapter = new FileSync(path.join(dataDir, 'db.json'));
   lowdb = low(lowdbAdapter);
+  
+  // Create empty collections if they don't exist
   lowdb.defaults({
     admin: [], customers: [], categories: [], products: [],
     product_images: [], orders: [], order_items: [],
@@ -66,21 +101,35 @@ function initLowdb() {
   }).write();
 
   database = lowdb;
-  seedLowdb(lowdb);
+  seedLowdb(lowdb);  // Add default data
   return lowdb;
 }
 
-// ============================================================
-// SEED FUNCTIONS
-// ============================================================
+// =====================================================
+// SEED FUNCTIONS (add default data on first run)
+// =====================================================
+// These functions add default admin, categories, and products
+// only if the database is empty (first time running)
+
 async function seedMongoDB(db) {
   const collections = ['admin', 'customers', 'categories', 'products', 'orders', 'order_items', 'site_settings', 'messages', 'custom_orders', 'contact_messages'];
+  
   for (const col of collections) {
     const count = await db.collection(col).countDocuments();
+    
+    // Create default admin account (username: admin, password: admin123)
     if (col === 'admin' && count === 0) {
       const hash = bcrypt.hashSync('admin123', 10);
-      await db.collection('admin').insertOne({ id: 1, username: 'admin', password: hash, name: 'Trinity Admin', created_at: new Date().toISOString() });
+      await db.collection('admin').insertOne({ 
+        id: 1, 
+        username: 'admin', 
+        password: hash,  // Password is hashed for security
+        name: 'Trinity Admin', 
+        created_at: new Date().toISOString() 
+      });
     }
+    
+    // Create default product categories
     if (col === 'categories' && count === 0) {
       await db.collection('categories').insertMany([
         { id: 1, name: 'Wooden Decor', description: 'Beautiful handcrafted wooden decorative items for your home', image: 'categories/cat-decor.jpg', icon: 'fa-snowflake', featured: 1, created_at: new Date().toISOString() },
@@ -90,6 +139,8 @@ async function seedMongoDB(db) {
         { id: 5, name: 'Custom Orders', description: 'Customized wooden items made to your specifications', image: 'categories/cat-custom.jpg', icon: 'fa-pencil-ruler', featured: 0, created_at: new Date().toISOString() }
       ]);
     }
+    
+    // Create default products
     if (col === 'products' && count === 0) {
       await db.collection('products').insertMany([
         { id: 1, name: 'Wooden Flower Vase', category_id: 1, description: 'Hand-carved wooden vase with intricate floral patterns.', price: 1299, mrp: 1599, discount_percent: 19, sale_price: 1299, stock: 25, image: 'products/prod-vase.jpg', status: 'active', featured: 1, created_at: new Date().toISOString() },
@@ -106,6 +157,8 @@ async function seedMongoDB(db) {
         { id: 12, name: 'Carved Wooden Elephant', category_id: 1, description: 'Hand-carved wooden elephant statue.', price: 1799, mrp: 2199, discount_percent: 18, sale_price: 1799, stock: 12, image: 'products/prod-elephant.jpg', status: 'active', featured: 0, created_at: new Date().toISOString() }
       ]);
     }
+    
+    // Create default site settings (contact info, shipping, etc.)
     if (col === 'site_settings' && count === 0) {
       await db.collection('site_settings').insertMany([
         { key: 'site_name', value: 'Trinity Woodenworks' },
@@ -121,6 +174,7 @@ async function seedMongoDB(db) {
 }
 
 function seedLowdb(db) {
+  // Same as seedMongoDB but for lowdb (local JSON file)
   const adminCount = db.get('admin').size().value();
   if (adminCount === 0) {
     const hash = bcrypt.hashSync('admin123', 10);
@@ -163,21 +217,27 @@ function seedLowdb(db) {
   }
 }
 
-// ============================================================
+// =====================================================
 // HELPER FUNCTIONS (work with both MongoDB and lowdb)
-// ============================================================
+// =====================================================
+// These functions abstract away the database differences
+// so route files don't need to worry about which DB is used
+
+// Generate a unique ID (for new records)
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 }
 
-// Convert filter to MongoDB query
+// Convert simple filter to MongoDB query format
 function toMongoQuery(filter) {
   const query = {};
   for (const [key, val] of Object.entries(filter)) {
     if (val === undefined || val === '' || val === null) continue;
     if (typeof val === 'object' && val.$like) {
+      // $like = case-insensitive search (like SQL LIKE)
       query[key] = { $regex: val.$like, $options: 'i' };
     } else if (typeof val === 'object' && val.$ne) {
+      // $ne = not equal
       query[key] = { $ne: val.$ne };
     } else {
       query[key] = val;
@@ -186,8 +246,9 @@ function toMongoQuery(filter) {
   return query;
 }
 
+// Find all records in a collection with optional filter, sort, limit
 async function findAll(collection, filter = {}, sort = null, limit = null, offset = 0) {
-  // lowdb fallback
+  // lowdb version
   if (lowdb) {
     let results = lowdb.get(collection);
     if (filter) {
@@ -213,7 +274,7 @@ async function findAll(collection, filter = {}, sort = null, limit = null, offse
     return { data: arr, total };
   }
 
-  // MongoDB
+  // MongoDB version
   const col = database.collection(collection);
   const query = toMongoQuery(filter);
   const total = await col.countDocuments(query);
@@ -229,6 +290,7 @@ async function findAll(collection, filter = {}, sort = null, limit = null, offse
   return { data, total };
 }
 
+// Find one record by ID
 async function findById(collection, id) {
   if (lowdb) return lowdb.get(collection).find({ id: parseInt(id) || id }).value();
   const col = database.collection(collection);
@@ -237,12 +299,14 @@ async function findById(collection, id) {
   return await col.findOne({ _id: new ObjectId(id) });
 }
 
+// Find one record by any key (e.g., find customer by email)
 async function findByKey(collection, keyObj) {
   if (lowdb) return lowdb.get(collection).find(keyObj).value();
   const col = database.collection(collection);
   return await col.findOne(keyObj);
 }
 
+// Insert a new record
 async function insertOne(collection, data) {
   if (lowdb) {
     const maxId = lowdb.get(collection).map('id').max().value() || 0;
@@ -258,6 +322,7 @@ async function insertOne(collection, data) {
   return { ...item, _id: result.insertedId };
 }
 
+// Update an existing record
 async function updateOne(collection, keyObj, data) {
   if (lowdb) {
     lowdb.get(collection).find(keyObj).assign(data, { updated_at: new Date().toISOString() }).write();
@@ -267,6 +332,7 @@ async function updateOne(collection, keyObj, data) {
   await col.updateOne(keyObj, { $set: { ...data, updated_at: new Date().toISOString() } });
 }
 
+// Delete a record
 async function removeOne(collection, keyObj) {
   if (lowdb) {
     lowdb.get(collection).remove(keyObj).write();
@@ -276,11 +342,13 @@ async function removeOne(collection, keyObj) {
   await col.deleteMany(keyObj);
 }
 
+// Count records in a collection
 async function countAll(collection, filter = {}) {
   const result = await findAll(collection, filter);
   return result.total;
 }
 
+// Sum a numeric field (e.g., total order amount)
 async function sumField(collection, field, filter = {}) {
   if (lowdb) return lowdb.get(collection).filter(filter).sumBy(field).value();
   const col = database.collection(collection);
@@ -292,4 +360,17 @@ async function sumField(collection, field, filter = {}) {
   return result.length > 0 ? result[0].total : 0;
 }
 
-module.exports = { connectDB, getDB, findAll, findById, findByKey, insertOne, updateOne, removeOne, countAll, sumField, generateId };
+// Export functions so other files can use them
+module.exports = { 
+  connectDB,     // Connect to database
+  getDB,         // Get database connection
+  findAll,       // Find multiple records
+  findById,      // Find one by ID
+  findByKey,     // Find one by any field
+  insertOne,     // Insert new record
+  updateOne,     // Update existing record
+  removeOne,     // Delete record
+  countAll,      // Count records
+  sumField,      // Sum a field
+  generateId     // Generate unique ID
+};
