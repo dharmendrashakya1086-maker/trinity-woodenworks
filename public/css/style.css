@@ -975,6 +975,18 @@ img { max-width: 100%; height: auto; }
   filter: drop-shadow(0 0 6px rgba(201,169,110,0.4));
 }
 
+.nav-icon.active {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: rgba(201,169,110,0.1);
+}
+
+.nav-icon.active::before { opacity: 1; }
+
+.nav-icon.active i {
+  filter: drop-shadow(0 0 8px rgba(201,169,110,0.5));
+}
+
 /* ---- NAV OVERLAY ---- */
 .nav-overlay {
   display: none;

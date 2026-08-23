@@ -79,7 +79,7 @@
             <span class="cart-badge"><%= cartCount %></span>
           <% } %>
         </a>
-        <a href="/account" class="nav-icon nav-account-desktop" title="Account"><i class="fas fa-user"></i></a>
+        <a href="/account" class="nav-icon nav-account-desktop <%= currentPath === '/login' || currentPath === '/signup' || currentPath === '/account' ? 'active' : '' %>" title="Account"><i class="fas fa-user"></i></a>
         <button class="nav-toggle" id="navToggle" onclick="toggleMenu()">
           <i class="fas fa-bars"></i>
         </button>
