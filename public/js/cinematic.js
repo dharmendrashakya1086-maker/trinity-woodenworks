@@ -43,11 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ---- Scroll Progress Indicator ----
-  if (!document.getElementById('scrollProgress')) {
-    const progressBar = document.createElement('div');
-    progressBar.className = 'scroll-progress';
-    document.body.appendChild(progressBar);
-
+  var progressBar = document.getElementById('scrollProgress');
+  if (progressBar) {
     gsap.to(progressBar, {
       scaleX: 1,
       ease: 'none',
