@@ -276,5 +276,41 @@ document.addEventListener('DOMContentLoaded', function() {
     gsap.to(gridOverlay, { y: 60, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
   }
 
+  // ================================================================
+  // SECTION PARALLAX BACKGROUNDS
+  // Backgrounds move at different speed than content on scroll
+  // ================================================================
+  var getRatio = function(el) {
+    return window.innerHeight / (window.innerHeight + el.offsetHeight);
+  };
+
+  gsap.utils.toArray('section').forEach(function(section, i) {
+    var bg = section.querySelector('.section-parallax-bg');
+    if (!bg) return;
+
+    gsap.fromTo(bg,
+      {
+        backgroundPosition: function() {
+          return i
+            ? '50% ' + (-window.innerHeight * getRatio(section)) + 'px'
+            : '50% 0px';
+        }
+      },
+      {
+        backgroundPosition: function() {
+          return '50% ' + (window.innerHeight * (1 - getRatio(section))) + 'px';
+        },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: function() { return i ? 'top bottom' : 'top top'; },
+          end: 'bottom top',
+          scrub: true,
+          invalidateOnRefresh: true
+        }
+      }
+    );
+  });
+
   console.log('%c🎬 Cinematic loaded — instant scroll reveals active', 'color: #C9A96E; font-size: 14px; font-weight: bold;');
 });
