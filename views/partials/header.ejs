@@ -145,12 +145,15 @@
   </div>
   <script>
   const isLoggedIn = false;
+  let authModalReady = false;
+  setTimeout(function() { authModalReady = true; }, 3000);
   function closeAuthModal(e) {
     if (e.target === e.currentTarget) {
       document.getElementById('authModal').classList.remove('active');
     }
   }
   function showAuthModal() {
+    if (!authModalReady) return;
     document.getElementById('authModal').classList.add('active');
   }
   document.addEventListener('DOMContentLoaded', function() {

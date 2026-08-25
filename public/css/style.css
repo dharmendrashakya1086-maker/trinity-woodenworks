@@ -62,10 +62,25 @@
   --space-2xl: 48px;
   --space-3xl: 64px;
 
-  /* === Border Radius === */
-  --radius: 12px;
+  /* === Typography Scale (10 steps) === */
+  --text-xs: 0.75rem;
+  --text-sm: 0.85rem;
+  --text-base: 1rem;
+  --text-md: 1.1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.5rem;
+  --text-hero: clamp(3rem, 7vw, 5.5rem);
+
+  /* === Border Radius (6 steps) === */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-md: 12px;
   --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-pill: 50px;
+  --radius-circle: 50%;
 
   /* === Transitions (Luxury 400-600ms) === */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -2708,7 +2723,7 @@ img { max-width: 100%; height: auto; }
 
 .footer-col h3 i { color: var(--primary); }
 
-.footer-col h4 {
+.footer-col h3 {
   color: #fff;
   font-size: 0.85rem;
   margin-bottom: 16px;
@@ -4446,7 +4461,7 @@ img { max-width: 100%; height: auto; }
   border-top: 1px solid rgba(201,169,110,0.08) !important;
 }
 
-.footer-col h4 {
+.footer-col h3 {
   color: var(--primary) !important;
   letter-spacing: 2px;
 }
@@ -4793,15 +4808,20 @@ img { max-width: 100%; height: auto; }
 }
 .auth-modal-close {
   position: absolute;
-  top: 14px;
-  right: 16px;
-  background: none;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
   border: none;
-  font-size: 1.6rem;
   color: var(--text-muted);
+  font-size: 1.4rem;
   cursor: pointer;
-  transition: var(--transition);
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 .auth-modal-close:hover { color: var(--danger); transform: rotate(90deg); }
 .auth-modal-logo { margin-bottom: 16px; }
