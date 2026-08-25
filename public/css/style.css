@@ -116,6 +116,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  padding-top: 80px;
 }
 
 ::selection { background: var(--primary); color: var(--dark); }
@@ -818,8 +819,10 @@ img { max-width: 100%; height: auto; }
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   transition: box-shadow 0.3s;
 }
