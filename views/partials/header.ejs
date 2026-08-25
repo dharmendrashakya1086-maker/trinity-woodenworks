@@ -86,6 +86,16 @@
       </div>
     </div>
   </nav>
+  <nav class="liquid-glass-nav">
+    <div class="liquid-glass-nav-inner">
+      <a href="/" class="liquid-nav-link <%= currentPath === '/' ? 'active' : '' %>"><i class="fas fa-home"></i> Home</a>
+      <a href="/shop" class="liquid-nav-link <%= currentPath.startsWith('/shop') || currentPath.startsWith('/product') ? 'active' : '' %>"><i class="fas fa-shopping-bag"></i> Shop</a>
+      <a href="/categories" class="liquid-nav-link <%= currentPath === '/categories' ? 'active' : '' %>"><i class="fas fa-th-large"></i> Categories</a>
+      <a href="/custom-order" class="liquid-nav-link <%= currentPath === '/custom-order' ? 'active' : '' %>"><i class="fas fa-pencil-ruler"></i> Custom Order</a>
+      <a href="/about" class="liquid-nav-link <%= currentPath === '/about' ? 'active' : '' %>"><i class="fas fa-info-circle"></i> About</a>
+      <a href="/contact" class="liquid-nav-link <%= currentPath === '/contact' ? 'active' : '' %>"><i class="fas fa-envelope"></i> Contact</a>
+    </div>
+  </nav>
   <script>
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';

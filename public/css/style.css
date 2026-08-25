@@ -116,7 +116,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-top: 80px;
+  padding-top: 128px;
 }
 
 ::selection { background: var(--primary); color: var(--dark); }
@@ -825,6 +825,120 @@ img { max-width: 100%; height: auto; }
   right: 0;
   z-index: 1000;
   transition: box-shadow 0.3s;
+}
+
+/* ================================================================
+   LIQUID GLASS SUB-NAVBAR
+   ================================================================ */
+.liquid-glass-nav {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(8, 8, 12, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+  overflow: hidden;
+}
+
+.liquid-glass-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 169, 110, 0.06),
+    rgba(0, 240, 255, 0.03),
+    rgba(201, 169, 110, 0.06),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: liquidShimmer 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes liquidShimmer {
+  0%, 100% { background-position: -200% 0; }
+  50% { background-position: 200% 0; }
+}
+
+.liquid-glass-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 169, 110, 0.3),
+    rgba(0, 240, 255, 0.2),
+    rgba(201, 169, 110, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: liquidShimmer 6s ease-in-out infinite;
+}
+
+.liquid-glass-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 24px;
+  height: 48px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.liquid-glass-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.liquid-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.liquid-nav-link:hover {
+  color: var(--text);
+  background: rgba(201, 169, 110, 0.08);
+}
+
+.liquid-nav-link.active {
+  color: var(--primary);
+  background: rgba(201, 169, 110, 0.12);
+}
+
+.liquid-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 1px;
+}
+
+.liquid-nav-link i {
+  font-size: 0.72rem;
 }
 
 .nav-container {
@@ -4032,6 +4146,25 @@ img { max-width: 100%; height: auto; }
 
 /* ---- Mobile (2 columns) ---- */
 @media (max-width: 768px) {
+  .liquid-glass-nav {
+    top: 70px;
+  }
+  .liquid-glass-nav-inner {
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 0 12px;
+  }
+  .liquid-nav-link {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+  .liquid-nav-link i {
+    display: none;
+  }
+  body {
+    padding-top: 118px;
+  }
+
   .nav-container {
     display: flex;
     align-items: center;
